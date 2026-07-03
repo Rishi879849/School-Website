@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, ArrowLeft, Check, LogIn } from 'lucide-react';
 
-export default function RegistrationPage({ onRegister }) {
+export default function RegistrationPage() {
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
+
+  // Self-service registration isn't wired in this iteration — only Super Admin
+  // can create users via POST /api/super-admin/users. The page still renders
+  // so the navbar link works, but submission is a stub.
+  const onRegister = () => false;
 
   // Registration states
   const [role, setRole] = useState('student');

@@ -41,7 +41,7 @@ export default function InstitutionLoginPage() {
             <input 
               type="text" 
               required
-              placeholder="e.g. computerhead@rgpv.ac.in"
+              placeholder="e.g. head@school.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full py-2.5 px-4 rounded-xl border border-gray-300 text-xs text-[#2E1E17] bg-white placeholder-gray-400 focus:outline-none focus:border-[#FF733B]"

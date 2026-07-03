@@ -1,0 +1,495 @@
+// =========================================================================
+// DTV × Eduka — Prisma Schema
+// Target: PostgreSQL 15+
+// Mirrors: database_schema.sql + database/migrations/01_init_multi_tenancy.sql
+//
+// IMPORTANT — Row-Level Security (RLS):
+//   Prisma will create the tables, enums, FKs, and unique constraints, but it
+//   will NOT generate the helper functions (is_super_admin, get_current_school_id)
+//   or the RLS policies. After running `prisma db push`, you MUST apply
+//   `prisma/migrations/01_rls_multi_tenancy/migration.sql` (or
+//   `database/migrations/01_init_multi_tenancy.sql`) once to enable RLS.
+// =========================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----- Enums --------------------------------------------------------------
+
+enum UserRole {
+  super_admin
+  school_admin
+  principal
+  teacher
+  student
+  parent
+
+  @@map("user_role")
+}
+
+// ----- Tenant anchor ------------------------------------------------------
+
+model School {
+  id                    String    @id @default(uuid()) @db.Uuid
+  name                  String    @db.VarChar(255)
+  subdomain             String    @unique @db.VarChar(100)
+  logoUrl               String?   @map("logo_url") @db.VarChar(512)
+  address               String?   @db.Text
+  contactPhone          String?   @map("contact_phone") @db.VarChar(50)
+  contactEmail          String?   @map("contact_email") @db.VarChar(100)
+  subscriptionStatus    String    @default("trial") @map("subscription_status") @db.VarChar(50)
+  subscriptionExpiresAt DateTime? @map("subscription_expires_at") @db.Timestamptz(6)
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  users             User[]
+  academicYears     AcademicYear[]
+  classes           Class[]
+  subjects          Subject[]
+  feeCategories     FeeCategory[]
+  broadcasts        SchoolBroadcast[]
+  bulkIngestionLogs BulkIngestionLog[]
+
+  @@map("schools")
+}
+
+// ----- Auth / RBAC --------------------------------------------------------
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  // school_id is NULL only for super_admin (cross-tenant operator)
+  schoolId     String?  @map("school_id") @db.Uuid
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  role         UserRole
+  firstName    String   @map("first_name") @db.VarChar(100)
+  lastName     String   @map("last_name") @db.VarChar(100)
+  phoneNumber  String?  @map("phone_number") @db.VarChar(50)
+  avatarUrl    String?  @map("avatar_url") @db.VarChar(512)
+  isActive     Boolean  @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  school            School?               @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teacherProfile    TeacherProfile?
+  parentProfile     ParentProfile?
+  studentProfile    StudentProfile?
+  attendanceMarked  AttendanceRecord[]
+  assignmentsGraded StudentAssignment[]
+  gradebookEntries  GradebookEntry[]
+  broadcastsSent    SchoolBroadcast[]
+  bulkUploads       BulkIngestionLog[]
+  // Three relations into TeacherParentMessage — must be named
+  messagesAsTeacher TeacherParentMessage[] @relation("TeacherUser")
+  messagesAsParent  TeacherParentMessage[] @relation("ParentUser")
+  messagesAsSender  TeacherParentMessage[] @relation("Sender")
+
+  @@index([schoolId])
+  @@map("users")
+}
+
+// ----- Academic structure -------------------------------------------------
+
+model AcademicYear {
+  id        String   @id @default(uuid()) @db.Uuid
+  schoolId  String   @map("school_id") @db.Uuid
+  name      String   @db.VarChar(50) // e.g. "2026-2027"
+  startDate DateTime @map("start_date") @db.Date
+  endDate   DateTime @map("end_date") @db.Date
+  isActive  Boolean  @default(false) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  school        School         @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  classSections ClassSection[]
+  feeStructures FeeStructure[]
+
+  @@map("academic_years")
+}
+
+model Class {
+  id        String   @id @default(uuid()) @db.Uuid
+  schoolId  String   @map("school_id") @db.Uuid
+  name      String   @db.VarChar(100) // e.g. "Grade 10"
+  code      String   @db.VarChar(50)  // e.g. "G10"
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  school        School         @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sections      ClassSection[]
+  feeStructures FeeStructure[]
+
+  @@map("classes")
+}
+
+model ClassSection {
+  id             String   @id @default(uuid()) @db.Uuid
+  classId        String   @map("class_id") @db.Uuid
+  academicYearId String   @map("academic_year_id") @db.Uuid
+  sectionName    String   @map("section_name") @db.VarChar(50) // e.g. "Section A"
+  capacity       Int      @default(40)
+  roomNumber     String?  @map("room_number") @db.VarChar(50)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  class             Class                   @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  academicYear      AcademicYear            @relation(fields: [academicYearId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  students          StudentProfile[]
+  attendanceRecords AttendanceRecord[]
+  assignments       Assignment[]
+  teacherSubjects   TeacherSectionSubject[]
+
+  @@map("class_sections")
+}
+
+model Subject {
+  id          String   @id @default(uuid()) @db.Uuid
+  schoolId    String   @map("school_id") @db.Uuid
+  name        String   @db.VarChar(150)
+  code        String   @db.VarChar(50) // e.g. "MATH-101"
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  school          School                  @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  assignments     Assignment[]
+  gradebookEntries GradebookEntry[]
+  teacherSubjects TeacherSectionSubject[]
+
+  @@map("subjects")
+}
+
+// ----- Profile extensions -------------------------------------------------
+
+model TeacherProfile {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @unique @map("user_id") @db.Uuid
+  designation      String?  @db.VarChar(150)
+  qualification    String?  @db.VarChar(255)
+  specialization   String?  @db.Text
+  joinedDate       DateTime @map("joined_date") @db.Date
+  bio              String?  @db.Text
+  performanceScore Decimal  @default(5.00) @map("performance_score") @db.Decimal(3, 2)
+
+  user            User                    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teacherSubjects TeacherSectionSubject[]
+  assignments     Assignment[]
+
+  @@map("teacher_profiles")
+}
+
+model TeacherSectionSubject {
+  id             String @id @default(uuid()) @db.Uuid
+  teacherId      String @map("teacher_id") @db.Uuid
+  classSectionId String @map("class_section_id") @db.Uuid
+  subjectId      String @map("subject_id") @db.Uuid
+
+  teacher      TeacherProfile @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  classSection ClassSection   @relation(fields: [classSectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subject      Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([teacherId, classSectionId, subjectId])
+  @@map("teacher_section_subjects")
+}
+
+model ParentProfile {
+  id                    String  @id @default(uuid()) @db.Uuid
+  userId                String  @unique @map("user_id") @db.Uuid
+  profession            String? @db.VarChar(150)
+  emergencyContactPhone String  @map("emergency_contact_phone") @db.VarChar(50)
+  address               String? @db.Text
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  students StudentProfile[]
+
+  @@map("parent_profiles")
+}
+
+model StudentProfile {
+  id                   String   @id @default(uuid()) @db.Uuid
+  userId               String   @unique @map("user_id") @db.Uuid
+  classSectionId       String?  @map("class_section_id") @db.Uuid
+  parentId             String?  @map("parent_id") @db.Uuid
+  rollNumber           String?  @map("roll_number") @db.VarChar(50)
+  dateOfBirth          DateTime @map("date_of_birth") @db.Date
+  gender               String   @db.VarChar(20)
+  nationalId           String?  @map("national_id") @db.VarChar(100)
+  passportNumber       String?  @map("passport_number") @db.VarChar(100)
+  previousSchool       String?  @map("previous_school") @db.Text
+  studyArea            String?  @map("study_area") @db.VarChar(150)
+  highestQualification String?  @map("highest_qualification") @db.VarChar(150)
+  enrollmentStatus     String   @default("active") @map("enrollment_status") @db.VarChar(50)
+
+  user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  classSection       ClassSection?         @relation(fields: [classSectionId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  parent             ParentProfile?        @relation(fields: [parentId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  attendance         AttendanceRecord[]
+  studentAssignments StudentAssignment[]
+  gradebookEntries   GradebookEntry[]
+  feeLedgers         StudentFeeLedger[]
+  aiChats            AiCompassChat[]
+  skillGapProfile    SkillGapProfile?
+  careerRoadmap      CareerRoadmap?
+
+  @@map("student_profiles")
+}
+
+// ----- Attendance ---------------------------------------------------------
+
+model AttendanceRecord {
+  id             String   @id @default(uuid()) @db.Uuid
+  studentId      String   @map("student_id") @db.Uuid
+  classSectionId String   @map("class_section_id") @db.Uuid
+  markedBy       String?  @map("marked_by") @db.Uuid
+  attendanceDate DateTime @map("attendance_date") @db.Date
+  status         String   @db.VarChar(20) // present, absent, late, excused
+  remarks        String?  @db.Text
+  isLocked       Boolean  @default(false) @map("is_locked")
+  markedAt       DateTime @default(now()) @map("marked_at") @db.Timestamptz(6)
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  student      StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  classSection ClassSection   @relation(fields: [classSectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  marker       User?          @relation(fields: [markedBy], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@unique([studentId, attendanceDate])
+  @@index([attendanceDate, classSectionId])
+  @@map("attendance_records")
+}
+
+// ----- Gradebook ----------------------------------------------------------
+
+model Assignment {
+  id                String   @id @default(uuid()) @db.Uuid
+  classSectionId    String   @map("class_section_id") @db.Uuid
+  subjectId         String   @map("subject_id") @db.Uuid
+  teacherId         String?  @map("teacher_id") @db.Uuid
+  title             String   @db.VarChar(255)
+  description       String?  @db.Text
+  dueDate           DateTime @map("due_date") @db.Timestamptz(6)
+  maxScore          Decimal  @default(100.00) @map("max_score") @db.Decimal(5, 2)
+  fileAttachmentUrl String?  @map("file_attachment_url") @db.VarChar(512)
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  classSection       ClassSection        @relation(fields: [classSectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subject            Subject             @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  teacher            TeacherProfile?     @relation(fields: [teacherId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  studentAssignments StudentAssignment[]
+
+  @@map("assignments")
+}
+
+model StudentAssignment {
+  id                String    @id @default(uuid()) @db.Uuid
+  assignmentId      String    @map("assignment_id") @db.Uuid
+  studentId         String    @map("student_id") @db.Uuid
+  submittedAt       DateTime? @map("submitted_at") @db.Timestamptz(6)
+  fileSubmissionUrl String?   @map("file_submission_url") @db.VarChar(512)
+  scoreObtained     Decimal?  @map("score_obtained") @db.Decimal(5, 2)
+  status            String    @default("pending") @db.VarChar(20) // pending, submitted, graded, late
+  feedback          String?   @db.Text
+  gradedBy          String?   @map("graded_by") @db.Uuid
+
+  assignment Assignment     @relation(fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  student    StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  grader     User?          @relation(fields: [gradedBy], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@unique([assignmentId, studentId])
+  @@map("student_assignments")
+}
+
+model GradebookEntry {
+  id              String   @id @default(uuid()) @db.Uuid
+  studentId       String   @map("student_id") @db.Uuid
+  subjectId       String   @map("subject_id") @db.Uuid
+  term            String   @db.VarChar(50) // "Term 1", "Midterm", "Finals"
+  examScore       Decimal  @map("exam_score") @db.Decimal(5, 2)
+  assignmentAvg   Decimal? @map("assignment_avg") @db.Decimal(5, 2)
+  totalScore      Decimal  @map("total_score") @db.Decimal(5, 2)
+  gradeLetter     String   @map("grade_letter") @db.VarChar(5)
+  teacherFeedback String?  @map("teacher_feedback") @db.Text
+  enteredBy       String?  @map("entered_by") @db.Uuid
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  student       StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subject       Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  enteredByUser User?          @relation(fields: [enteredBy], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@unique([studentId, subjectId, term])
+  @@map("gradebook_entries")
+}
+
+// ----- Finance ------------------------------------------------------------
+
+model FeeCategory {
+  id          String  @id @default(uuid()) @db.Uuid
+  schoolId    String  @map("school_id") @db.Uuid
+  name        String  @db.VarChar(150)
+  description String? @db.Text
+
+  school        School         @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  feeStructures FeeStructure[]
+
+  @@map("fee_categories")
+}
+
+model FeeStructure {
+  id             String   @id @default(uuid()) @db.Uuid
+  feeCategoryId  String   @map("fee_category_id") @db.Uuid
+  classId        String   @map("class_id") @db.Uuid
+  academicYearId String   @map("academic_year_id") @db.Uuid
+  amount         Decimal  @db.Decimal(10, 2)
+  dueDate        DateTime @map("due_date") @db.Date
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  feeCategory    FeeCategory         @relation(fields: [feeCategoryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  class          Class               @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  academicYear   AcademicYear        @relation(fields: [academicYearId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  studentLedgers StudentFeeLedger[]
+
+  @@map("fee_structures")
+}
+
+model StudentFeeLedger {
+  id             String   @id @default(uuid()) @db.Uuid
+  studentId      String   @map("student_id") @db.Uuid
+  feeStructureId String   @map("fee_structure_id") @db.Uuid
+  amountDue      Decimal  @map("amount_due") @db.Decimal(10, 2)
+  amountPaid     Decimal  @default(0.00) @map("amount_paid") @db.Decimal(10, 2)
+  status         String   @default("unpaid") @db.VarChar(20) // unpaid, partial, paid, overdue
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  student      StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  feeStructure FeeStructure   @relation(fields: [feeStructureId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  payments     FeePayment[]
+
+  @@unique([studentId, feeStructureId])
+  @@map("student_fee_ledgers")
+}
+
+model FeePayment {
+  id                   String   @id @default(uuid()) @db.Uuid
+  studentFeeLedgerId   String   @map("student_fee_ledger_id") @db.Uuid
+  amountPaid           Decimal  @map("amount_paid") @db.Decimal(10, 2)
+  paymentMethod        String   @map("payment_method") @db.VarChar(50) // card, cash, bank_transfer
+  transactionReference String?  @unique @map("transaction_reference") @db.VarChar(100)
+  paymentDate          DateTime @default(now()) @map("payment_date") @db.Timestamptz(6)
+  receiptUrl           String?  @map("receipt_url") @db.VarChar(512)
+
+  ledger StudentFeeLedger @relation(fields: [studentFeeLedgerId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("fee_payments")
+}
+
+// ----- Communications -----------------------------------------------------
+
+model SchoolBroadcast {
+  id             String    @id @default(uuid()) @db.Uuid
+  schoolId       String    @map("school_id") @db.Uuid
+  senderId       String?   @map("sender_id") @db.Uuid
+  title          String    @db.VarChar(255)
+  content        String    @db.Text
+  targetAudience String    @default("all") @map("target_audience") @db.VarChar(50)
+  expiresAt      DateTime? @map("expires_at") @db.Date
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sender User?  @relation(fields: [senderId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@map("school_broadcasts")
+}
+
+model TeacherParentMessage {
+  id            String   @id @default(uuid()) @db.Uuid
+  teacherUserId String   @map("teacher_user_id") @db.Uuid
+  parentUserId  String   @map("parent_user_id") @db.Uuid
+  senderId      String   @map("sender_id") @db.Uuid
+  messageText   String   @map("message_text") @db.Text
+  isRead        Boolean  @default(false) @map("is_read")
+  sentAt        DateTime @default(now()) @map("sent_at") @db.Timestamptz(6)
+
+  teacher User @relation("TeacherUser", fields: [teacherUserId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  parent  User @relation("ParentUser",  fields: [parentUserId],  references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sender  User @relation("Sender",      fields: [senderId],      references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("teacher_parent_messages")
+}
+
+// ----- AI Compass (career mentor) -----------------------------------------
+
+model AiCompassChat {
+  id           String   @id @default(uuid()) @db.Uuid
+  studentId    String   @map("student_id") @db.Uuid
+  sessionTitle String   @map("session_title") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  student  StudentProfile     @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  messages AiCompassMessage[]
+
+  @@map("ai_compass_chats")
+}
+
+model AiCompassMessage {
+  id            String   @id @default(uuid()) @db.Uuid
+  chatSessionId String   @map("chat_session_id") @db.Uuid
+  sender        String   @db.VarChar(10) // 'student' or 'ai'
+  messageText   String   @map("message_text") @db.Text
+  sentAt        DateTime @default(now()) @map("sent_at") @db.Timestamptz(6)
+
+  chatSession AiCompassChat @relation(fields: [chatSessionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("ai_compass_messages")
+}
+
+model SkillGapProfile {
+  id                String   @id @default(uuid()) @db.Uuid
+  studentId         String   @unique @map("student_id") @db.Uuid
+  analyzedAt        DateTime @default(now()) @map("analyzed_at") @db.Timestamptz(6)
+  profileSummary    String   @map("profile_summary") @db.Text
+  strengths         String[] // Array of core strength tags
+  weaknesses        String[] // Array of weak subjects/skills
+  jobAlignmentScore Decimal  @map("job_alignment_score") @db.Decimal(5, 2)
+
+  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("skill_gap_profiles")
+}
+
+model CareerRoadmap {
+  id          String   @id @default(uuid()) @db.Uuid
+  studentId   String   @unique @map("student_id") @db.Uuid
+  targetRole  String   @map("target_role") @db.VarChar(255)
+  roadmapData Json     @map("roadmap_data")
+  generatedAt DateTime @default(now()) @map("generated_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("career_roadmaps")
+}
+
+// ----- SaaS bulk upload logs ----------------------------------------------
+
+model BulkIngestionLog {
+  id               String   @id @default(uuid()) @db.Uuid
+  schoolId         String   @map("school_id") @db.Uuid
+  uploadedBy       String?  @map("uploaded_by") @db.Uuid
+  fileName         String   @map("file_name") @db.VarChar(255)
+  entityType       String   @map("entity_type") @db.VarChar(50) // 'student_profiles' or 'teacher_profiles'
+  recordsProcessed Int      @default(0) @map("records_processed")
+  recordsFailed    Int      @default(0) @map("records_failed")
+  status           String   @default("processing") @db.VarChar(50) // processing, completed, failed
+  errorSummary     String?  @map("error_summary") @db.Text
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  uploader User?  @relation(fields: [uploadedBy], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@map("bulk_ingestion_logs")
+}

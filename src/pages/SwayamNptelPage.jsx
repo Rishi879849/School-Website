@@ -22,15 +22,15 @@ export default function SwayamNptelPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">E-Learning Portal</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">SWAYAM - NPTEL Local Chapter</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            UIT RGPV is an active local chapter for the SWAYAM-NPTEL online course ecosystem, enabling students to gain credits through virtual national lectures.
+            Edukids Academy is an active participant in SWAYAM-NPTEL online course programs, enabling students to gain supplementary certifications through virtual lectures.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
           <div className="border border-[#2E1E17]/10 p-6 rounded-[2rem] space-y-3">
             <Globe className="text-[#FF733B]" size={20} />
-            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">Credit Transfer</h4>
-            <p className="text-[11px] text-gray-500 font-medium">Students can substitute up to 20% of their semester credits by completing certified online NPTEL courses.</p>
+            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">Certifications</h4>
+            <p className="text-[11px] text-gray-500 font-medium">Students can supplement their academic progress by completing certified online NPTEL courses.</p>
           </div>
 
           <div className="border border-[#2E1E17]/10 p-6 rounded-[2rem] space-y-3">

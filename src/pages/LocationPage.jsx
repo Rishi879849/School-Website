@@ -18,7 +18,7 @@ export default function LocationPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Navigation & Coordinates</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Campus Location</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            UIT RGPV is situated in the historical city of Bhopal, easily accessible via rail, road, and air links.
+            Edukids Academy is situated in the historical city of Bhopal, easily accessible via rail, road, and air links.
           </p>
         </div>
 
@@ -30,7 +30,7 @@ export default function LocationPage() {
             <div className="w-12 h-12 bg-orange-500/20 text-[#FF733B] rounded-full flex items-center justify-center mx-auto animate-bounce">
               <MapPin size={24} />
             </div>
-            <h4 className="text-xs font-bold text-[#2E1E17]">UIT RGPV Campus Node</h4>
+            <h4 className="text-xs font-bold text-[#2E1E17]">Edukids Academy Campus</h4>
             <p className="text-[10px] text-gray-400 font-medium">Bhopal Bypass Road, Gandhi Nagar, Bhopal, MP 462033</p>
           </div>
         </div>

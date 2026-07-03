@@ -18,7 +18,7 @@ export default function NccPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Military & Social Training</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">National Cadet Corps (NCC)</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            The NCC wing at UIT RGPV focuses on developing character, discipline, leadership, and a spirit of selfless service among the students.
+            The NCC junior wing at Edukids Academy focuses on developing character, discipline, leadership, and a spirit of selfless service among the students.
           </p>
         </div>
 

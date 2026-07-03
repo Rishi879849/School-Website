@@ -38,9 +38,7 @@ export default function LoginPage({ onLogin, activeRole, onRoleChange }) {
     { role: 'super_admin', email: 'superadmin@school.edu', pass: '123456', label: 'Super Admin' },
     { role: 'school_admin', email: 'schooladmin@school.edu', pass: '123456', label: 'School Admin' },
     { role: 'principal', email: 'principal@school.edu', pass: '123456', label: 'Principal' },
-    { role: 'teacher', email: 'teacher@school.edu', pass: '123456', label: 'Teacher' },
-    { role: 'student', email: 'student@school.edu', pass: '123456', label: 'Student' },
-    { role: 'parent', email: 'parent@school.edu', pass: '123456', label: 'Parent' }
+    { role: 'teacher', email: 'teacher@school.edu', pass: '123456', label: 'Teacher' }
   ];
 
   return (
@@ -64,7 +62,7 @@ export default function LoginPage({ onLogin, activeRole, onRoleChange }) {
           <span className="text-[10px] font-extrabold text-[#FF733B] uppercase tracking-wider block mb-2 flex items-center gap-1">
             <ShieldCheck size={12} /> One-Click Simulation Helper:
           </span>
-          <div className="grid grid-cols-3 gap-1.5">
+          <div className="grid grid-cols-2 gap-1.5">
             {simulationPresets.map(preset => (
               <button
                 key={preset.role}
@@ -85,14 +83,12 @@ export default function LoginPage({ onLogin, activeRole, onRoleChange }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1.5">1. Active Workspace Role</label>
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-2 gap-1.5">
               {[
                 { id: 'super_admin', label: 'Super Admin' },
                 { id: 'school_admin', label: 'School Admin' },
                 { id: 'principal', label: 'Principal' },
-                { id: 'teacher', label: 'Teacher' },
-                { id: 'student', label: 'Student' },
-                { id: 'parent', label: 'Parent' }
+                { id: 'teacher', label: 'Teacher' }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -114,7 +110,7 @@ export default function LoginPage({ onLogin, activeRole, onRoleChange }) {
             <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1">Email / Simulation Token</label>
             <input 
               type="text" 
-              placeholder="e.g. student@school.edu"
+              placeholder="e.g. teacher@school.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full py-2.5 px-4 rounded-xl border border-gray-300 text-xs text-[#2E1E17] bg-white placeholder-gray-400 focus:outline-none focus:border-[#FF733B]"

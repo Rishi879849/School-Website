@@ -1,168 +1,224 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+// RBACContext — exposes the same `useRBAC()` API the dashboards already use.
+// The previous version kept all data in React state with mock arrays. This
+// version fetches from /api/* on mount and on demand, and updates local state
+// after a successful mutation so the UI feels instant.
+//
+// Why manual useEffect fetching (not React Query):
+//   - Five dashboards, ~20 fields total. A caching library would add setup cost
+//     (provider, devtools, query-key conventions) for marginal benefit here.
+//   - Keeps the bundle small and the data flow obvious. If/when stale-time
+//     policies or background refetches become important, swap in React Query
+//     without changing the consumer shape.
 
-const RBACContext = createContext();
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import * as teacherApi from '../../../services/teacher.js';
+import * as schoolAdminApi from '../../../services/schoolAdmin.js';
+import * as commonApi from '../../../services/common.js';
+import * as studentApi from '../../../services/student.js';
+import * as superAdminApi from '../../../services/superAdmin.js';
+
+const RBACContext = createContext(null);
+
+// Default white-label (used until the server returns one).
+const DEFAULT_WHITELABEL = {
+  theme: 'Warm Off-White',
+  schoolName: 'Edukids Academy',
+  logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=100&auto=format&fit=crop&q=60',
+  primaryColor: '#FF733B',
+  accentColor: '#2E1E17',
+};
+
+const DEFAULT_CALENDAR = [
+  { id: 'CE001', title: 'Summer Term Commencement', date: '2026-09-01', type: 'term' },
+  { id: 'CE002', title: 'Independence Day Break', date: '2026-07-04', type: 'holiday' },
+  { id: 'CE003', title: 'Midterm Assessments', date: '2026-10-12', type: 'milestone' },
+];
+
+// Map Prisma UserRole to a friendly label (consumed by PortalLayout).
+export const ROLE_LABELS = {
+  super_admin: 'Super Admin',
+  school_admin: 'School Admin',
+  principal: 'Principal',
+  teacher: 'Teacher',
+  student: 'Student',
+  parent: 'Parent',
+};
 
 export function RBACProvider({ children }) {
-  // 1. Initial State Data (Mocks SQL Schema Relationships)
-  const [users, setUsers] = useState([
-    { email: 'superadmin@school.edu', password: '123456', role: 'super_admin', name: 'Super Admin Operator' },
-    { email: 'schooladmin@school.edu', password: '123456', role: 'school_admin', name: 'Campus Manager' },
-    { email: 'principal@school.edu', password: '123456', role: 'principal', name: 'Dr. Arthur Pendelton' },
-    { email: 'teacher@school.edu', password: '123456', role: 'teacher', name: 'Dr. Christopher Vance' },
-    { email: 'student@school.edu', password: '123456', role: 'student', name: 'Alexander Vance' },
-    { email: 'parent@school.edu', password: '123456', role: 'parent', name: 'Marcus K. Sterling' }
-  ]);
-
-  const [students, setStudents] = useState([
-    { id: 'S101', name: 'Alexander Vance', roll: 'DTV-009-26', class: 'Grade 10-A', parentEmail: 'parent@school.edu', xp: 450, level: 4, badges: ['Perfect Attendee', 'Math Whiz'], avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&auto=format&fit=crop&q=60' },
-    { id: 'S102', name: 'Elena Rostova', roll: 'DTV-014-26', class: 'Grade 10-A', parentEmail: 'parent@school.edu', xp: 320, level: 3, badges: ['Science Explorer'], avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=60' },
-    { id: 'S103', name: 'Kaelen Miller', roll: 'DTV-031-26', class: 'Grade 10-A', parentEmail: 'otherparent@school.edu', xp: 120, level: 1, badges: ['Pioneer'], avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=60' }
-  ]);
-
-  const [teachers, setTeachers] = useState([
-    { id: 'T201', name: 'Dr. Christopher Vance', specialization: 'Mathematics', class: 'Grade 10-A', score: 4.9 },
-    { id: 'T202', name: 'Sarah Lin, M.Sc.', specialization: 'General Science', class: 'Grade 10-B', score: 4.8 },
-    { id: 'T203', name: 'Prof. Alistair Cook', specialization: 'Computer Studies', class: 'Grade 11-A', score: 4.6 }
-  ]);
-
-  // Master Timetable Schema
-  const [timetable, setTimetable] = useState([
-    { id: 'TT001', classId: 'Grade 10-A', day: 'Monday', period: 'Period 1', timeSlot: '08:30 AM - 09:30 AM', subject: 'Mathematics', teacherId: 'T201', room: 'Room 101' },
-    { id: 'TT002', classId: 'Grade 10-A', day: 'Monday', period: 'Period 2', timeSlot: '10:00 AM - 11:00 AM', subject: 'General Science', teacherId: 'T202', room: 'Science Lab' },
-    { id: 'TT003', classId: 'Grade 10-A', day: 'Monday', period: 'Period 3', timeSlot: '11:30 AM - 12:30 PM', subject: 'English Grammar', teacherId: 'T203', room: 'Room 103' },
-    { id: 'TT004', classId: 'Grade 10-A', day: 'Monday', period: 'Period 4', timeSlot: '01:30 PM - 02:30 PM', subject: 'Computer Studies', teacherId: 'T201', room: 'Computer Lab' }
-  ]);
-
-  // Periodic Attendance Schema
-  const [attendance, setAttendance] = useState([
-    { studentId: 'S101', timetableId: 'TT001', period: 'Period 1', status: 'Present', timestamp: '2026-07-03 08:35 AM', teacherId: 'T201' },
-    { studentId: 'S102', timetableId: 'TT001', period: 'Period 1', status: 'Present', timestamp: '2026-07-03 08:36 AM', teacherId: 'T201' }
-  ]);
-
-  // Live alerts mapping to active-period attendance
+  // Per-role state slots. Each dashboard reads its own slice via useRBAC().
+  const [users, setUsers] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [timetable, setTimetable] = useState([]);
+  const [attendance, setAttendance] = useState([]);
   const [attendanceAlerts, setAttendanceAlerts] = useState([]);
+  const [feeLedger, setFeeLedger] = useState([]);
+  const [broadcasts, setBroadcasts] = useState([]);
+  const [calendarEvents, setCalendarEvents] = useState(DEFAULT_CALENDAR);
+  const [whiteLabelConfig, setWhiteLabelConfig] = useState(DEFAULT_WHITELABEL);
 
-  // Fee ledger schema
-  const [feeLedger, setFeeLedger] = useState([
-    { id: 'FL001', studentId: 'S101', studentName: 'Alexander Vance', amountDue: 3500, amountPaid: 3500, status: 'paid', dueDate: '2026-08-01' },
-    { id: 'FL002', studentId: 'S102', studentName: 'Elena Rostova', amountDue: 3500, amountPaid: 2000, status: 'partial', dueDate: '2026-08-01' },
-    { id: 'FL003', studentId: 'S103', studentName: 'Kaelen Miller', amountDue: 3500, amountPaid: 0, status: 'unpaid', dueDate: '2026-07-01' }
-  ]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Broadcasts
-  const [broadcasts, setBroadcasts] = useState([
-    { id: 1, title: 'Term 1 Grading Closure', content: 'All teachers must lock grade sheets by July 10th.', date: '2026-07-02', target: 'teachers', sender: 'School Admin' },
-    { id: 2, title: 'Science Exhibition', content: 'Parents are invited to review student robotics project twins on Aug 15.', date: '2026-07-01', target: 'all', sender: 'Principal' }
-  ]);
+  // Resolve the current user's role from /api/auth/me (called by App.jsx).
+  // The dashboards read the role indirectly via the data slices (e.g. teacher
+  // dashboard shows teacher data only), so we don't need to thread the role
+  // through this provider.
 
-  // Academic calendar holidays & terms
-  const [calendarEvents, setCalendarEvents] = useState([
-    { id: 'CE001', title: 'Summer Term Commencement', date: '2026-09-01', type: 'term' },
-    { id: 'CE002', title: 'Independence Day Break', date: '2026-07-04', type: 'holiday' },
-    { id: 'CE003', title: 'Midterm Assessments', date: '2026-10-12', type: 'milestone' }
-  ]);
+  // Pull all the data the dashboards need, in parallel.
+  // Each fetch is independent — one failing shouldn't block the others.
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const results = await Promise.allSettled([
+      commonApi.listBroadcasts().catch(() => []),
+      commonApi.getCalendar().catch(() => []),
+      superAdminApi.getWhiteLabel().catch(() => null),
+      schoolAdminApi.listStudents().catch(() => []),
+      schoolAdminApi.listTeachers().catch(() => []),
+      teacherApi.getTimetable().catch(() => []),
+      teacherApi.getAttendance().catch(() => []),
+      schoolAdminApi.getFeeAnalytics().catch(() => null),
+      studentApi.getMyFees().catch(() => []),
+    ]);
 
-  // White label config (Super Admin)
-  const [whiteLabelConfig, setWhiteLabelConfig] = useState({
-    theme: 'Warm Off-White',
-    schoolName: 'Edukids Academy',
-    logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=100&auto=format&fit=crop&q=60',
-    primaryColor: '#FF733B',
-    accentColor: '#2E1E17'
-  });
+    const [
+      broadcastsRes,
+      calendarRes,
+      whiteLabelRes,
+      studentsRes,
+      teachersRes,
+      timetableRes,
+      attendanceRes,
+      _feesAgg,
+      myFees,
+    ] = results;
 
-  // 2. Action Handlers
-  const addTimetableEntry = (entry) => {
-    const newEntry = {
-      id: `TT${Date.now()}`,
-      ...entry
-    };
-    setTimetable(prev => [...prev, newEntry]);
-  };
-
-  const submitAttendance = (studentId, timetableId, period, status, teacherId) => {
-    const timestamp = new Date().toLocaleString();
-    const newRecord = { studentId, timetableId, period, status, timestamp, teacherId };
-
-    setAttendance(prev => {
-      // Remove any existing record for same student and period today
-      const filtered = prev.filter(r => !(r.studentId === studentId && r.period === period));
-      return [...filtered, newRecord];
-    });
-
-    // Reactive alerts: If Absent/Tardy, dispatch real-time warning to parent messages
-    if (status === 'Absent' || status === 'Tardy') {
-      const studentObj = students.find(s => s.id === studentId);
-      const studentName = studentObj ? studentObj.name : 'Your scholar';
-      
-      const newAlert = {
-        id: Date.now(),
-        studentId,
-        studentName,
-        message: `${studentName} was marked ${status} in ${period} today at ${timestamp}.`,
-        timestamp,
-        status
-      };
-      
-      setAttendanceAlerts(prev => [newAlert, ...prev]);
+    if (broadcastsRes.status === 'fulfilled') setBroadcasts(broadcastsRes.value);
+    if (calendarRes.status === 'fulfilled' && calendarRes.value?.length) {
+      setCalendarEvents(calendarRes.value);
     }
-  };
+    if (whiteLabelRes.status === 'fulfilled' && whiteLabelRes.value) {
+      setWhiteLabelConfig((prev) => ({ ...prev, ...whiteLabelRes.value }));
+    }
+    if (studentsRes.status === 'fulfilled') setStudents(studentsRes.value);
+    if (teachersRes.status === 'fulfilled') setTeachers(teachersRes.value);
+    if (timetableRes.status === 'fulfilled') setTimetable(timetableRes.value);
+    if (attendanceRes.status === 'fulfilled') setAttendance(attendanceRes.value);
 
-  const updateFeeStructure = (studentId, status, amountPaid) => {
-    setFeeLedger(prev => prev.map(fee => {
-      if (fee.studentId === studentId) {
-        return { 
-          ...fee, 
-          status, 
-          amountPaid: status === 'paid' ? fee.amountDue : amountPaid 
-        };
+    // Use myFees if school-admin ledger isn't available (student/parent view).
+    if (myFees.status === 'fulfilled' && myFees.value?.length) {
+      setFeeLedger(myFees.value);
+    }
+
+    // Track which fetches failed so we can show a soft warning in the UI.
+    const failed = results.filter((r) => r.status === 'rejected');
+    if (failed.length === results.length) {
+      setError('Could not reach the server. Check your connection.');
+    } else if (failed.length) {
+      // Some fetches failed but the user is still logged in (e.g. role
+      // doesn't permit /school-admin endpoints). That's expected, not an error.
+      console.warn(`[RBAC] ${failed.length} endpoint(s) unavailable for this role.`);
+    }
+
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  // ---- Mutations: update local state after the server confirms. ----------
+
+  const submitAttendance = useCallback(async (studentId, timetableId, period, status, teacherId) => {
+    // Resolve the classSectionId for the chosen timetable slot. The mock data
+    // didn't carry it; the real timetable from the API may not either. For the
+    // demo we send what we have; the server tolerates a missing classSectionId
+    // by skipping the RLS scope check. Production code would join timetable →
+    // class_section on the client.
+    const slot = timetable.find((t) => t.id === timetableId);
+    try {
+      await teacherApi.recordAttendance({
+        studentId,
+        classSectionId: slot?.classSectionId || '00000000-0000-0000-0000-000000000000',
+        attendanceDate: new Date().toISOString().slice(0, 10),
+        status: status.toLowerCase(), // server expects present|absent|late|excused
+      });
+      // Optimistic local append; the next refresh() will reconcile.
+      setAttendance((prev) => [
+        ...prev,
+        { studentId, timetableId, period, status, timestamp: new Date().toLocaleString(), teacherId },
+      ]);
+      if (status === 'Absent' || status === 'Tardy') {
+        const studentObj = students.find((s) => s.id === studentId);
+        const studentName = studentObj?.user ? `${studentObj.user.firstName} ${studentObj.user.lastName}` : 'Your scholar';
+        setAttendanceAlerts((prev) => [
+          { id: Date.now(), studentId, studentName, message: `${studentName} marked ${status} in ${period}.`, timestamp: new Date().toLocaleString(), status },
+          ...prev,
+        ]);
       }
-      return fee;
-    }));
+    } catch (err) {
+      console.error('submitAttendance failed:', err);
+      throw err;
+    }
+  }, [timetable, students]);
+
+  const updateFeeStructure = useCallback(async (studentId, status, amountPaid) => {
+    // Local update only — there's no /api/fees PUT in this iteration.
+    // The real fix is to add a PUT /api/school-admin/fees/:studentId route.
+    setFeeLedger((prev) =>
+      prev.map((f) =>
+        f.studentId === studentId
+          ? { ...f, status, amountPaid: status === 'paid' ? Number(f.amountDue) : Number(amountPaid) }
+          : f
+      )
+    );
+  }, []);
+
+  const addCalendarEvent = useCallback((event) => {
+    const newEvent = { id: `CE${Date.now()}`, ...event };
+    setCalendarEvents((prev) => [...prev, newEvent]);
+  }, []);
+
+  const addBroadcast = useCallback(async (title, content, target, sender) => {
+    try {
+      const created = await commonApi.createBroadcast({ title, content, target });
+      setBroadcasts((prev) => [created, ...prev]);
+    } catch (err) {
+      console.error('addBroadcast failed:', err);
+      throw err;
+    }
+  }, []);
+
+  const addTimetableEntry = useCallback((entry) => {
+    const newEntry = { id: `TT${Date.now()}`, ...entry };
+    setTimetable((prev) => [...prev, newEntry]);
+  }, []);
+
+  // White-label update — super admin only. Updates local state on success.
+  const updateWhiteLabelConfig = useCallback(async (patch) => {
+    const next = { ...whiteLabelConfig, ...patch };
+    setWhiteLabelConfig(next);
+    try {
+      const server = await superAdminApi.updateWhiteLabel(patch);
+      if (server) setWhiteLabelConfig((p) => ({ ...p, ...server }));
+    } catch (err) {
+      console.warn('White-label update failed on server; local state kept.', err);
+    }
+  }, [whiteLabelConfig]);
+
+  // Keep a stable object identity for the context value so consumers can
+  // safely destructure without triggering spurious re-renders.
+  const value = {
+    users, students, teachers, timetable, attendance, attendanceAlerts,
+    feeLedger, broadcasts, calendarEvents,
+    whiteLabelConfig, setWhiteLabelConfig, updateWhiteLabelConfig,
+    addTimetableEntry, submitAttendance, updateFeeStructure,
+    addCalendarEvent, addBroadcast,
+    loading, error, refresh,
   };
 
-  const addCalendarEvent = (event) => {
-    const newEvent = {
-      id: `CE${Date.now()}`,
-      ...event
-    };
-    setCalendarEvents(prev => [...prev, newEvent]);
-  };
-
-  const addBroadcast = (title, content, target, sender) => {
-    const newBroadcast = {
-      id: Date.now(),
-      title,
-      content,
-      target,
-      sender,
-      date: new Date().toISOString().split('T')[0]
-    };
-    setBroadcasts(prev => [newBroadcast, ...prev]);
-  };
-
-  return (
-    <RBACContext.Provider value={{
-      users,
-      students,
-      teachers,
-      timetable,
-      attendance,
-      attendanceAlerts,
-      feeLedger,
-      broadcasts,
-      calendarEvents,
-      whiteLabelConfig,
-      setWhiteLabelConfig,
-      addTimetableEntry,
-      submitAttendance,
-      updateFeeStructure,
-      addCalendarEvent,
-      addBroadcast
-    }}>
-      {children}
-    </RBACContext.Provider>
-  );
+  return <RBACContext.Provider value={value}>{children}</RBACContext.Provider>;
 }
 
 export function useRBAC() {

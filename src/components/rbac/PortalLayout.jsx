@@ -6,11 +6,11 @@ import PrincipalDashboard from './Principal/PrincipalDashboard';
 import TeacherDashboard from './Teacher/TeacherDashboard';
 import StudentDashboard from './Student/StudentDashboard';
 import ParentDashboard from './Parent/ParentDashboard';
-import { LogOut, RefreshCw, Star, Users, CheckCircle } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
 export default function PortalLayout({ currentRole, onLogout }) {
   const { whiteLabelConfig } = useRBAC();
-  const [activeRole, setActiveRole] = useState(currentRole || 'student');
+  const [activeRole] = useState(currentRole || 'teacher');
 
   const renderActiveDashboard = () => {
     switch (activeRole) {
@@ -27,7 +27,7 @@ export default function PortalLayout({ currentRole, onLogout }) {
       case 'parent':
         return <ParentDashboard />;
       default:
-        return <StudentDashboard />;
+        return <TeacherDashboard />;
     }
   };
 
@@ -37,7 +37,7 @@ export default function PortalLayout({ currentRole, onLogout }) {
     principal: 'Principal',
     teacher: 'Teacher',
     student: 'Student',
-    parent: 'Parent'
+    parent: 'Parent',
   };
 
   return (
@@ -64,7 +64,7 @@ export default function PortalLayout({ currentRole, onLogout }) {
 
           <div className="flex items-center gap-3">
             <span className="text-[10px] bg-[#2E1E17]/5 font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider text-[#2E1E17]">
-              Session: {roleNames[activeRole]}
+              Session: {roleNames[activeRole] || activeRole}
             </span>
             <button 
               onClick={onLogout}
@@ -81,30 +81,9 @@ export default function PortalLayout({ currentRole, onLogout }) {
         {renderActiveDashboard()}
       </main>
 
-      {/* Role Simulator Switcher Deck */}
-      <footer className="bg-white border-t border-[#2E1E17]/10 py-5 mt-auto shadow-inner">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-left">
-            <h5 className="text-[10px] uppercase tracking-widest text-[#FF733B] font-extrabold">Simulation Control Deck</h5>
-            <p className="text-[10px] text-gray-400 font-semibold mt-0.5">Toggle between session contexts to test Engine A & Engine B interactions.</p>
-          </div>
-          
-          <div className="flex flex-wrap gap-1.5">
-            {Object.keys(roleNames).map((role) => (
-              <button
-                key={role}
-                onClick={() => setActiveRole(role)}
-                className={`py-1.5 px-3.5 rounded-xl text-[10px] font-extrabold uppercase transition-all ${
-                  activeRole === role
-                    ? 'bg-[#FF733B] text-white shadow-md'
-                    : 'bg-[#FAF6F0] hover:bg-gray-100 text-[#2E1E17] border border-[#2E1E17]/10'
-                }`}
-              >
-                {roleNames[role]}
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* Standard Copyright Footer */}
+      <footer className="bg-white border-t border-[#2E1E17]/10 py-4 mt-auto text-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+        &copy; {new Date().getFullYear()} {whiteLabelConfig.schoolName} ERP. All Rights Reserved.
       </footer>
 
     </div>

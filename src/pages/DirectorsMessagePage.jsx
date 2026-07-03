@@ -39,19 +39,19 @@ export default function DirectorsMessagePage() {
             <div className="text-xs text-gray-500 font-semibold leading-relaxed space-y-4">
               <p>
                 <Quote size={20} className="text-[#FF733B] inline-block mr-1.5 shrink-0 rotate-180" />
-                Welcome to the University Institute of Technology, RGPV. As Director, I am immensely proud of our legacy in scientific rigor and technological advancement.
+                Welcome to Edukids Academy. As Director, I am immensely proud of our legacy in scientific rigor and fundamental education.
               </p>
               <p>
-                In today's digital era, we believe that education must evolve beyond standard classroom walls. We are building sandbox systems, virtual design models, and immersive engineering programs to prepare our pupils for global recruitment networks.
+                In today's digital era, we believe that education must evolve beyond standard classroom walls. We are building sandbox systems, virtual design models, and immersive learning programs to prepare our pupils for senior secondary and board milestones.
               </p>
               <p>
-                We invite you to participate in our active computational labs, explore our departmental tracks, and build a premium career trajectory.
+                We invite you to participate in our active computational labs, explore our departmental tracks, and build a premium educational trajectory.
               </p>
             </div>
             
             <div className="pt-2">
               <span className="block text-xs font-bold text-[#2E1E17]">Dr. Alistair Cook</span>
-              <span className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Director, UIT RGPV</span>
+              <span className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Director, Edukids Academy</span>
             </div>
           </div>
         </div>
