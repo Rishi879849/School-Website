@@ -38,7 +38,7 @@ import PosPage from './pages/PosPage';
 import SwayamNptelPage from './pages/SwayamNptelPage';
 
 import { login as apiLogin, logout as apiLogout, fetchCurrentUser } from './services/auth.js';
-import { supabase } from './supabaseClient'; // Connected client
+import { supabase } from './supabaseClient'; 
 
 function App() {
   // Authentication states
@@ -49,23 +49,21 @@ function App() {
   const [dbUsers, setDbUsers] = useState([]);
   const [dbLoading, setDbLoading] = useState(true);
 
-  // 1. Existing Session Hydration & Supabase Fetching Combined
+  // Unified Hydration & Supabase Fetching
   useEffect(() => {
     let cancelled = false;
 
-    // Check application login sessions
     async function hydrateAuth() {
       try {
         const user = await fetchCurrentUser();
         if (!cancelled) setCurrentUser(user);
-      } catch {
+      } catch (err) {
         if (!cancelled) setCurrentUser(null);
       } finally {
         if (!cancelled) setIsHydrating(false);
       }
     }
 
-    // Connect and verify Supabase data connection
     async function loadSupabaseData() {
       try {
         setDbLoading(true);
@@ -82,7 +80,7 @@ function App() {
     hydrateAuth();
     loadSupabaseData();
 
-    return () => { cancelled = true; };
+    return () => { cancelled = false; };
   }, []);
 
   const handleLoginUser = async (email, password) => {
@@ -101,7 +99,6 @@ function App() {
     setCurrentUser(null);
   };
 
-  // While hydrating, show a minimal splash
   if (isHydrating) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAF6F0] text-[#2E1E17]/50 text-xs font-bold uppercase tracking-widest">
@@ -112,15 +109,13 @@ function App() {
 
   return (
     <div className="min-h-screen relative flex flex-col">
-      {/* Subtle light particle canvas background */}
       <ParticleBackground role={currentUser ? currentUser.role : 'brand'} />
 
-      {/* Temporary Database Status Overlay Indicator (Delete this block later once verified) */}
+      {/* Database Connection Status Overlay */}
       <div className="bg-slate-900 text-white text-[10px] p-2 text-center z-50 opacity-80">
         Database Link: {dbLoading ? "Connecting..." : dbUsers.length > 0 ? `🟢 Active (${dbUsers.length} Users Pulled)` : "🔴 Table Connected but Empty"}
       </div>
 
-      {/* Role State Routing */}
       {currentUser ? (
         <PortalLayout
           currentRole={currentUser.role}
@@ -150,7 +145,6 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/admission-form" element={<AdmissionFormPage />} />
 
-              {/* New Dropdown page routes */}
               <Route path="/about-edukids" element={<AboutEdukidsPage />} />
               <Route path="/vision-mission" element={<VisionMissionPage />} />
               <Route path="/directors-message" element={<DirectorsMessagePage />} />
@@ -174,7 +168,6 @@ function App() {
         </>
       )}
 
-      {/* Floating AI Mentor Chat Assistant */}
       <AIChatMentor />
     </div>
   );
