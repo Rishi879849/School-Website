@@ -38,29 +38,50 @@ import PosPage from './pages/PosPage';
 import SwayamNptelPage from './pages/SwayamNptelPage';
 
 import { login as apiLogin, logout as apiLogout, fetchCurrentUser } from './services/auth.js';
+import { supabase } from './supabaseClient'; // Connected client
 
 function App() {
-  // The authenticated user, or null. Hydrated from /api/auth/me on mount.
+  // Authentication states
   const [currentUser, setCurrentUser] = useState(null);
   const [isHydrating, setIsHydrating] = useState(true);
 
-  // On first mount, ask the server: "is there a session?" If yes, restore it.
-  // This makes refreshes survive — without it, refreshing after login would
-  // drop the user back to the public site even though the cookie is still set.
+  // Supabase test data states
+  const [dbUsers, setDbUsers] = useState([]);
+  const [dbLoading, setDbLoading] = useState(true);
+
+  // 1. Existing Session Hydration & Supabase Fetching Combined
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+
+    // Check application login sessions
+    async function hydrateAuth() {
       try {
         const user = await fetchCurrentUser();
         if (!cancelled) setCurrentUser(user);
       } catch {
-        // 401 is expected when not logged in. The api.js interceptor already
-        // handled the offline/refresh dance; here we just give up cleanly.
         if (!cancelled) setCurrentUser(null);
       } finally {
         if (!cancelled) setIsHydrating(false);
       }
-    })();
+    }
+
+    // Connect and verify Supabase data connection
+    async function loadSupabaseData() {
+      try {
+        setDbLoading(true);
+        const { data, error } = await supabase.from('users').select('*');
+        if (error) throw error;
+        if (!cancelled && data) setDbUsers(data);
+      } catch (err) {
+        console.error("Error connecting to Supabase table:", err.message);
+      } finally {
+        if (!cancelled) setDbLoading(false);
+      }
+    }
+
+    hydrateAuth();
+    loadSupabaseData();
+
     return () => { cancelled = true; };
   }, []);
 
@@ -70,19 +91,17 @@ function App() {
       setCurrentUser(user);
       return true;
     } catch (err) {
-      // Surface the server's error message to the LoginPage if it wants to display it.
       const message = err?.response?.data?.error || 'Login failed.';
       throw new Error(message);
     }
   };
 
   const handleLogout = async () => {
-    try { await apiLogout(); } catch { /* ignore — we're logging out anyway */ }
+    try { await apiLogout(); } catch { /* ignore */ }
     setCurrentUser(null);
   };
 
-  // While hydrating, show a minimal splash so we don't flash the marketing site
-  // for users who are already logged in.
+  // While hydrating, show a minimal splash
   if (isHydrating) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAF6F0] text-[#2E1E17]/50 text-xs font-bold uppercase tracking-widest">
@@ -95,6 +114,11 @@ function App() {
     <div className="min-h-screen relative flex flex-col">
       {/* Subtle light particle canvas background */}
       <ParticleBackground role={currentUser ? currentUser.role : 'brand'} />
+
+      {/* Temporary Database Status Overlay Indicator (Delete this block later once verified) */}
+      <div className="bg-slate-900 text-white text-[10px] p-2 text-center z-50 opacity-80">
+        Database Link: {dbLoading ? "Connecting..." : dbUsers.length > 0 ? `🟢 Active (${dbUsers.length} Users Pulled)` : "🔴 Table Connected but Empty"}
+      </div>
 
       {/* Role State Routing */}
       {currentUser ? (
