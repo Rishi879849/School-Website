@@ -5,8 +5,23 @@
 import api from './api.js';
 
 export async function login(email, password) {
-  const { data } = await api.post('/auth/login', { email, password });
-  return data.user;
+  try {
+    const { data } = await api.post('/auth/login', { email, password });
+    return data.user;
+  } catch (err) {
+    const message = err?.response?.data?.error || 'Login failed.';
+    throw new Error(message);
+  }
+}
+
+export async function register(payload) {
+  try {
+    const { data } = await api.post('/auth/register', payload);
+    return data.user;
+  } catch (err) {
+    const message = err?.response?.data?.error || 'Registration failed.';
+    throw new Error(message);
+  }
 }
 
 export async function logout() {

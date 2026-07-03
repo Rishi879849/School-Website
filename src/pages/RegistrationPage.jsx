@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, ArrowLeft, Check, LogIn } from 'lucide-react';
+import { register as apiRegister } from '../services/auth.js';
 
 export default function RegistrationPage() {
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
-
-  // Self-service registration isn't wired in this iteration — only Super Admin
-  // can create users via POST /api/super-admin/users. The page still renders
-  // so the navbar link works, but submission is a stub.
-  const onRegister = () => false;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Registration states
   const [role, setRole] = useState('student');
@@ -29,36 +26,37 @@ export default function RegistrationPage() {
   // Teacher Specific
   const [specialization, setSpecialization] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password || !firstName || !lastName) {
       alert('Please fill out all required fields.');
       return;
     }
 
-    const result = onRegister({
-      role,
-      email,
-      password,
-      firstName,
-      lastName,
-      parentName,
-      dob,
-      gender,
-      grade,
-      address,
-      prevSchool,
-      specialization
-    });
-
-    if (result) {
+    setIsSubmitting(true);
+    try {
+      await apiRegister({
+        role,
+        email,
+        password,
+        firstName,
+        lastName,
+        parentName,
+        dob,
+        gender,
+        grade,
+        address,
+        prevSchool,
+        specialization,
+      });
       setSuccess(true);
       setTimeout(() => {
-        // Auto-navigate to login page after successful registration
         navigate('/login', { state: { email, password, role } });
       }, 2000);
-    } else {
-      alert('Registration failed.');
+    } catch (err) {
+      alert(err.message || 'Registration failed.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -267,9 +265,10 @@ export default function RegistrationPage() {
 
               <button 
                 type="submit"
-                className="w-full mt-4 bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3 rounded-xl text-xs md:text-sm uppercase tracking-widest transition duration-300 shadow-lg shadow-orange-500/20"
+                disabled={isSubmitting}
+                className="w-full mt-4 bg-[#FF733B] hover:bg-[#E6622E] disabled:opacity-60 text-white font-extrabold py-3 rounded-xl text-xs md:text-sm uppercase tracking-widest transition duration-300 shadow-lg shadow-orange-500/20"
               >
-                Register and Generate Account
+                {isSubmitting ? 'Creating Account…' : 'Register and Generate Account'}
               </button>
 
               <p className="text-[10px] text-center text-gray-400 mt-2 font-bold uppercase tracking-wider">

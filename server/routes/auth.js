@@ -52,6 +52,95 @@ function publicUser(user) {
   };
 }
 
+// POST /api/auth/register — self-service signup for student / teacher / parent.
+router.post('/register', async (req, res) => {
+  const {
+    email,
+    password,
+    role,
+    firstName,
+    lastName,
+    dob,
+    gender,
+    address,
+    prevSchool,
+    specialization,
+  } = req.body || {};
+
+  if (!email || !password || !firstName || !lastName || !role) {
+    return res.status(400).json({ error: 'Email, password, name, and role are required.' });
+  }
+
+  const allowedRoles = ['student', 'teacher', 'parent'];
+  if (!allowedRoles.includes(role)) {
+    return res.status(400).json({ error: 'Only student, teacher, or parent accounts can self-register.' });
+  }
+
+  const school = await prisma.school.findFirst({ orderBy: { createdAt: 'asc' } });
+  if (!school) {
+    return res.status(503).json({ error: 'No school configured yet. Run npm run db:seed first.' });
+  }
+
+  try {
+    const passwordHash = await bcrypt.hash(String(password), 10);
+    const normalizedEmail = String(email).toLowerCase();
+
+    const user = await prisma.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
+        data: {
+          email: normalizedEmail,
+          passwordHash,
+          role,
+          firstName,
+          lastName,
+          schoolId: school.id,
+        },
+      });
+
+      if (role === 'teacher') {
+        await tx.teacherProfile.create({
+          data: {
+            userId: newUser.id,
+            specialization: specialization || null,
+            joinedDate: new Date(),
+          },
+        });
+      }
+
+      if (role === 'parent') {
+        await tx.parentProfile.create({
+          data: {
+            userId: newUser.id,
+            emergencyContactPhone: '+10000000000',
+            address: address || null,
+          },
+        });
+      }
+
+      if (role === 'student') {
+        await tx.studentProfile.create({
+          data: {
+            userId: newUser.id,
+            dateOfBirth: dob ? new Date(dob) : new Date('2010-01-01'),
+            gender: gender || 'Male',
+            previousSchool: prevSchool || null,
+          },
+        });
+      }
+
+      return newUser;
+    });
+
+    return res.status(201).json({ success: true, user: publicUser(user) });
+  } catch (err) {
+    if (err.code === 'P2002') {
+      return res.status(409).json({ error: 'That email is already registered.' });
+    }
+    console.error('Register error:', err);
+    return res.status(500).json({ error: 'Registration failed.' });
+  }
+});
+
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body || {};

@@ -2,56 +2,108 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
+const DEMO_PASSWORD = process.env.DEMO_USER_PASSWORD || '123456';
+
+const DEMO_USERS = [
+  { email: 'superadmin@school.edu', role: 'super_admin', firstName: 'System', lastName: 'Administrator' },
+  { email: 'schooladmin@school.edu', role: 'school_admin', firstName: 'Sarah', lastName: 'Mitchell' },
+  { email: 'principal@school.edu', role: 'principal', firstName: 'James', lastName: 'Carter' },
+  { email: 'teacher@school.edu', role: 'teacher', firstName: 'Christopher', lastName: 'Vance' },
+  { email: 'student@school.edu', role: 'student', firstName: 'Liam', lastName: 'Sterling' },
+  { email: 'parent@school.edu', role: 'parent', firstName: 'Marcus', lastName: 'Sterling' },
+];
 
 async function main() {
-  console.log('🌱 Starting database seed script...');
+  console.log('🌱 Seeding demo school and users…');
 
-  const superAdminEmail = 'superadmin@school.edu';
-  const defaultPassword = process.env.INITIAL_SUPERADMIN_PASSWORD || 'superpassword123';
+  const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
 
-  // 1. Check if Super Admin already exists
-  const existingUser = await prisma.users.findUnique({
-    where: { email: superAdminEmail }
-  });
-
-  if (existingUser) {
-    console.log('✅ Super Admin record already exists in database.');
-    return;
+  let school = await prisma.school.findFirst({ where: { subdomain: 'edukids' } });
+  if (!school) {
+    school = await prisma.school.create({
+      data: {
+        name: 'Edukids Academy',
+        subdomain: 'edukids',
+        contactEmail: 'contact@edukids.edu',
+        logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=100&auto=format&fit=crop&q=60',
+        subscriptionStatus: 'active',
+      },
+    });
+    console.log(`✅ Created default school: ${school.name}`);
+  } else {
+    console.log(`✅ Using existing school: ${school.name}`);
   }
 
-  // 2. Hash default password
-  const salt = await bcrypt.genSalt(10);
-  const passwordHash = await bcrypt.hash(defaultPassword, salt);
+  for (const demo of DEMO_USERS) {
+    const email = demo.email.toLowerCase();
+    const schoolId = demo.role === 'super_admin' ? null : school.id;
 
-  // 3. Create Super Admin user record
-  // Note: school_id is NULL for Super Admins
-  const newSuperAdmin = await prisma.users.create({
-    data: {
-      email: superAdminEmail,
-      password_hash: passwordHash,
-      role: 'super_admin',
-      first_name: 'System',
-      last_name: 'Administrator',
-      phone_number: '+10000000000',
-      avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100',
-      is_active: true
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      await prisma.user.update({
+        where: { email },
+        data: { passwordHash, isActive: true, role: demo.role, schoolId },
+      });
+      console.log(`🔄 Reset demo account: ${email} (${demo.role})`);
+      continue;
     }
-  });
 
-  console.log(`🚀 Default Super Admin account bootstrapped successfully:`);
-  console.log(`   - Email:    ${newSuperAdmin.email}`);
-  console.log(`   - Role:     ${newSuperAdmin.role}`);
-  console.log(`   - Password: ${defaultPassword}`);
-  console.log(`   ⚠️  Change this default password immediately after first login.`);
-  console.log(``);
-  console.log(`   Reminder: if you haven't already, run 'npm run db:rls' to enable`);
-  console.log(`   Row-Level Security policies. Without that, tenant isolation is off.`);
+    const user = await prisma.user.create({
+      data: {
+        email,
+        passwordHash,
+        role: demo.role,
+        firstName: demo.firstName,
+        lastName: demo.lastName,
+        schoolId,
+        isActive: true,
+      },
+    });
+
+    if (demo.role === 'teacher') {
+      await prisma.teacherProfile.create({
+        data: {
+          userId: user.id,
+          specialization: 'Computer Science',
+          joinedDate: new Date(),
+        },
+      });
+    }
+
+    if (demo.role === 'parent') {
+      await prisma.parentProfile.create({
+        data: {
+          userId: user.id,
+          emergencyContactPhone: '+10000000000',
+        },
+      });
+    }
+
+    if (demo.role === 'student') {
+      await prisma.studentProfile.create({
+        data: {
+          userId: user.id,
+          dateOfBirth: new Date('2010-05-15'),
+          gender: 'Male',
+        },
+      });
+    }
+
+    console.log(`✅ Created ${demo.role}: ${email}`);
+  }
+
+  console.log('\n🚀 Demo accounts ready (password for all):', DEMO_PASSWORD);
+  console.log('   superadmin@school.edu  → Super Admin');
+  console.log('   schooladmin@school.edu → School Admin');
+  console.log('   principal@school.edu   → Principal');
+  console.log('   teacher@school.edu     → Teacher');
+  console.log('   student@school.edu     → Student');
+  console.log('   parent@school.edu      → Parent');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Seeding failed with error:');
-    console.error(e);
+    console.error('❌ Seeding failed:', e);
     process.exit(1);
   })
   .finally(async () => {

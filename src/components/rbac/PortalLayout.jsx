@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRBAC } from './context/RBACContext';
 import SuperAdminDashboard from './SuperAdmin/SuperAdminDashboard';
 import SchoolAdminDashboard from './SchoolAdmin/SchoolAdminDashboard';
@@ -10,7 +10,7 @@ import { LogOut } from 'lucide-react';
 
 export default function PortalLayout({ currentRole, onLogout }) {
   const { whiteLabelConfig } = useRBAC();
-  const [activeRole] = useState(currentRole || 'teacher');
+  const activeRole = currentRole || 'teacher';
 
   const renderActiveDashboard = () => {
     switch (activeRole) {
