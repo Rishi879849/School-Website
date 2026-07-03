@@ -7,6 +7,8 @@ import AIChatMentor from './components/AIChatMentor';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+import PortalLayout from './components/rbac/PortalLayout';
+
 // Sub-pages
 import AdmissionFormPage from './pages/AdmissionFormPage';
 import RegistrationPage from './pages/RegistrationPage';
@@ -157,21 +159,9 @@ function App() {
 
       {/* Role State Routing */}
       {isLoggedIn ? (
-        <Dashboards 
-          activeRole={activeRole} 
+        <PortalLayout 
+          currentRole={activeRole} 
           onLogout={handleLogout}
-          students={students}
-          setStudents={setStudents}
-          teachers={teachers}
-          setTeachers={setTeachers}
-          feeLedger={feeLedger}
-          setFeeLedger={setFeeLedger}
-          parentMessages={parentMessages}
-          setParentMessages={setParentMessages}
-          broadcasts={broadcasts}
-          setBroadcasts={setBroadcasts}
-          onboardingTenants={onboardingTenants}
-          setOnboardingTenants={setOnboardingTenants}
         />
       ) : (
         <>

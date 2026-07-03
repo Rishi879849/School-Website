@@ -39,6 +39,19 @@ export default function Dashboards({
   const [newMathGrade, setNewMathGrade] = useState({ studentId: 'S101', score: 90 });
   const [parentNewMsg, setParentNewMsg] = useState('');
   const [teacherNewMsg, setTeacherNewMsg] = useState('');
+  const [studentChatMessages, setStudentChatMessages] = useState([
+    { sender: 'ai', text: "Hello Alexander! I'm your Edukids Study Buddy. Ask me about your Math or Science homework today! 📚", date: 'Just now' }
+  ]);
+  const [studentChatInput, setStudentChatInput] = useState('');
+  const [algebraHWStatus, setAlgebraHWStatus] = useState('Pending');
+  const [isBackingUp, setIsBackingUp] = useState(false);
+  const [backupProgress, setBackupProgress] = useState('');
+  const [meetingLogs, setMeetingLogs] = useState([
+    { id: 1, studentName: 'Kaelen Miller', date: '2026-07-08', time: '10:00 AM', status: 'Scheduled' }
+  ]);
+  const [superAdminSubTab, setSuperAdminSubTab] = useState('system');
+
+
 
   // Auto timestamp log locks on initial mount
   useEffect(() => {
@@ -140,6 +153,86 @@ export default function Dashboards({
     ]);
     setParentNewMsg('');
   };
+
+  const handleStudentSendChat = (e) => {
+    e.preventDefault();
+    if (!studentChatInput.trim()) return;
+    const userMsg = { 
+      sender: 'student', 
+      text: studentChatInput, 
+      date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+    };
+    
+    let replyText = "That sounds interesting! Let's focus on mastering this topic step-by-step.";
+    const query = studentChatInput.toLowerCase();
+    if (query.includes('math') || query.includes('algebra')) {
+      replyText = "Mathematics is all about patterns! For your Algebra homework, remember to solve the quadratic equation using the formula x = (-b ± √(b² - 4ac)) / 2a.";
+    } else if (query.includes('science') || query.includes('physics')) {
+      replyText = "Your General Science lab project on light optics is coming up. Make sure to draw clear ray diagrams for convex lenses!";
+    } else if (query.includes('homework') || query.includes('pending')) {
+      replyText = `You currently have ${algebraHWStatus === 'Pending' ? '1 pending assignment: Algebra Practice Sheet.' : '0 pending assignments! Outstanding job!'}`;
+    }
+
+    setStudentChatMessages(prev => [...prev, userMsg]);
+    setStudentChatInput('');
+
+    setTimeout(() => {
+      setStudentChatMessages(prev => [...prev, {
+        sender: 'ai',
+        text: replyText,
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+    }, 600);
+  };
+
+  const handleUploadHomework = () => {
+    const fileUploaded = prompt("Enter mock homework file name (e.g., algebra_vance.pdf):");
+    if (fileUploaded) {
+      setAlgebraHWStatus('Submitted (Pending Grading)');
+      alert(`Success: ${fileUploaded} uploaded to student files. Status updated to Submitted.`);
+    }
+  };
+
+  const handleTriggerBackup = () => {
+    setIsBackingUp(true);
+    setBackupProgress('Initializing cloud backup node...\n');
+    setTimeout(() => {
+      setBackupProgress(prev => prev + 'Archiving global multi-campus schemas...\n');
+    }, 600);
+    setTimeout(() => {
+      setBackupProgress(prev => prev + 'Encrypting record packages via SSL SHA-256...\n');
+    }, 1200);
+    setTimeout(() => {
+      setBackupProgress(prev => prev + 'Backup sync complete. SHA Hash: 9e108d81ac\nStatus: Securely Vaulted.');
+      setIsBackingUp(false);
+    }, 1800);
+  };
+
+  const handleScheduleMeeting = (studentName) => {
+    const date = prompt("Enter meeting date (YYYY-MM-DD):", "2026-07-10");
+    const time = prompt("Enter meeting time:", "02:00 PM");
+    if (date && time) {
+      setMeetingLogs(prev => [
+        ...prev,
+        { id: Date.now(), studentName, date, time, status: 'Scheduled' }
+      ]);
+      alert(`Meeting scheduled with parents of ${studentName} on ${date} at ${time}.`);
+    }
+  };
+
+  const handlePayFee = (studentId) => {
+    setFeeLedger(prev => prev.map(fee => {
+      if (fee.studentId === studentId) {
+        return { ...fee, status: 'paid', amountPaid: fee.amountDue };
+      }
+      return fee;
+    }));
+    alert("Payment Successful! Mock payment transaction completed via secure gateway.");
+  };
+
+
+
+
 
   // Get active identity config
   const getRoleTheme = (role) => {
@@ -318,129 +411,530 @@ export default function Dashboards({
               {/* 1. SUPER ADMIN WORKSPACE */}
               {activeRole === 'super_admin' && (
                 <div className="space-y-6">
-                  {/* Trust Metrics grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    {[
-                      { title: 'Active Trust Campuses', value: '4 Campuses', detail: 'Delhi, Mumbai, Bangalore, Pune', icon: BookOpen, color: 'text-blue-600 bg-blue-50' },
-                      { title: 'Global Student Roster', value: '4,200 Pupils', detail: 'Classes 1 to 12 enrolled', icon: Users, color: 'text-indigo-600 bg-indigo-50' },
-                      { title: 'Active Faculty & Staff', value: '320 Teachers', detail: '98% retention rate', icon: Activity, color: 'text-emerald-600 bg-emerald-50' },
-                      { title: 'System Telemetry Nodes', value: '99.98% Uptime', detail: 'All campuses synced', icon: ShieldCheck, color: 'text-teal-600 bg-teal-50' }
-                    ].map((stat, idx) => (
-                      <div key={idx} className="bg-white border border-[#2E1E17]/10 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
-                        <div className={`p-3 rounded-xl ${stat.color}`}>
-                          <stat.icon size={18} />
-                        </div>
-                        <div>
-                          <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">{stat.title}</span>
-                          <h4 className="text-xl font-bold text-[#2E1E17] mt-1">{stat.value}</h4>
-                          <span className="text-[10px] text-gray-400 block mt-0.5">{stat.detail}</span>
-                        </div>
+                  {/* Premium Admin Header */}
+                  <div className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                    <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[9px] bg-blue-600 text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+                          Head of Trust Workspace
+                        </span>
+                        <h3 className="text-xl md:text-2xl font-bold font-serif">Edukids School Trust Command</h3>
+                        <p className="text-xs text-white/70">
+                          Account: <strong className="text-white">superadmin@school.edu</strong> • Global Database: <strong className="text-emerald-400">Synced & Protected</strong>
+                        </p>
                       </div>
+
+                      <div className="bg-white/10 backdrop-blur-md border border-white/15 px-4 py-2.5 rounded-2xl text-xs flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping inline-block"></span>
+                        <span className="font-extrabold uppercase tracking-wider text-[10px]">All Systems Operational</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sub-Navigation Tabs */}
+                  <div className="flex flex-wrap gap-2 border-b border-[#2E1E17]/10 pb-2">
+                    {[
+                      { id: 'system', label: 'System Telemetry', desc: 'Server load & backups' },
+                      { id: 'operations', label: 'School Operations', desc: 'Broadcasts & settings' },
+                      { id: 'academic', label: 'Academic Audits', desc: 'Roster & meetings' },
+                      { id: 'finance', label: 'Global Fee Ledger', desc: 'Dues & payments status' }
+                    ].map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setSuperAdminSubTab(tab.id)}
+                        className={`py-2.5 px-4 rounded-xl text-xs font-bold transition-all text-left flex flex-col justify-center min-w-[120px] ${
+                          superAdminSubTab === tab.id
+                            ? 'bg-[#2E1E17] text-white shadow-md'
+                            : 'bg-white border border-[#2E1E17]/10 text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
+                        }`}
+                      >
+                        <span>{tab.label}</span>
+                        <span className={`text-[8.5px] font-normal block mt-0.5 ${superAdminSubTab === tab.id ? 'text-white/70' : 'text-gray-400'}`}>
+                          {tab.desc}
+                        </span>
+                      </button>
                     ))}
                   </div>
 
-                  {/* Telemetry charts and logs */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-8 bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm">
-                      <h4 className="text-sm font-bold text-[#2E1E17] mb-4">Trust Systems Digital Network Load</h4>
-                      <div className="h-48 w-full bg-[#FAF6F0] border border-[#2E1E17]/10 rounded-xl flex items-end p-4 relative justify-between">
-                        {[35, 45, 60, 50, 42, 65, 80, 72, 90, 85, 95, 78, 62, 54, 40].map((val, idx) => (
-                          <div key={idx} className="flex-1 mx-0.5 bg-blue-600 rounded-t" style={{ height: `${val}%` }}></div>
-                        ))}
-                        <span className="absolute bottom-2 left-4 text-[9px] text-gray-400 uppercase tracking-widest font-bold">Network query requests last 15 mins</span>
-                      </div>
-                    </div>
-
-                    <div className="lg:col-span-4 bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between">
-                      <div>
-                        <h4 className="text-sm font-bold text-[#2E1E17] mb-3">Campus Provisioning States</h4>
-                        <div className="space-y-3">
-                          {onboardingTenants.map((t) => (
-                            <div key={t.id} className="flex justify-between items-center text-xs border-b border-[#2E1E17]/5 pb-2">
-                              <div>
-                                <h5 className="font-bold text-[#2E1E17]">{t.name}</h5>
-                                <span className="text-[9px] text-gray-400 block">{t.subdomain}</span>
-                              </div>
-                              <span className={`text-[8px] font-extrabold uppercase px-2 py-0.5 rounded ${
-                                t.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                              }`}>{t.status}</span>
+                  {/* Tab 1: System Telemetry */}
+                  {superAdminSubTab === 'system' && (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[
+                          { title: 'Campuses Registered', value: '4 Campuses', detail: 'Delhi, Mumbai, Bangalore, Pune', icon: BookOpen, color: 'text-blue-600 bg-blue-50 border-blue-500/10' },
+                          { title: 'Global Student Roster', value: '4,200 Pupils', detail: 'Classes 1 to 12', icon: Users, color: 'text-indigo-600 bg-indigo-50 border-indigo-500/10' },
+                          { title: 'Sync Node Health', value: '99.98%', detail: 'All active campus nodes OK', icon: Activity, color: 'text-emerald-600 bg-emerald-50 border-emerald-500/10' },
+                          { title: 'Backup Status', value: 'Protected', detail: 'Encrypted via SHA-256', icon: ShieldCheck, color: 'text-teal-600 bg-teal-50 border-teal-500/10' }
+                        ].map((stat, idx) => (
+                          <div key={idx} className={`bg-white border rounded-2xl p-4 flex items-start gap-4 shadow-sm hover:scale-[1.02] transition duration-300 ${stat.color}`}>
+                            <div className="p-3 rounded-xl bg-white border border-[#2E1E17]/5 shadow-sm">
+                              <stat.icon size={18} />
                             </div>
-                          ))}
+                            <div>
+                              <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">{stat.title}</span>
+                              <h4 className="text-lg font-bold text-[#2E1E17] mt-1">{stat.value}</h4>
+                              <span className="text-[9.5px] text-gray-400 block mt-0.5">{stat.detail}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                          <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                            <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Trust Systems Digital Network Load</h4>
+                            <button 
+                              onClick={() => alert("Server Ping Latency:\n- Delhi Campus: 12ms\n- Mumbai Campus: 15ms\n- Bangalore Campus: 18ms\n- Pune Campus: 22ms")}
+                              className="text-[10px] font-extrabold text-blue-600 hover:underline uppercase tracking-wider animate-pulse"
+                            >
+                              Ping Server Nodes
+                            </button>
+                          </div>
+                          
+                          <div className="h-48 w-full bg-[#FAF6F0]/60 border border-[#2E1E17]/10 rounded-2xl flex items-end p-4 relative justify-between overflow-hidden shadow-inner">
+                            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#2e1e17_1px,transparent_1px)] [background-size:12px_12px]" />
+                            {[35, 45, 60, 50, 42, 65, 80, 72, 90, 85, 95, 78, 62, 54, 40].map((val, idx) => (
+                              <div key={idx} className="flex-1 mx-0.5 bg-blue-600 hover:bg-blue-500 rounded-t transition-all duration-300" style={{ height: `${val}%` }} title={`Node load: ${val}%`} />
+                            ))}
+                            <span className="absolute bottom-2 left-4 text-[9px] text-gray-400 uppercase tracking-widest font-extrabold font-mono">Network query requests last 15 mins</span>
+                          </div>
+                        </div>
+
+                        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between min-h-[280px]">
+                          <div className="space-y-4">
+                            <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                              <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Campus Provisioning</h4>
+                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            </div>
+                            
+                            <div className="space-y-3">
+                              {onboardingTenants.slice(0, 3).map((t) => (
+                                <div key={t.id} className="flex justify-between items-center text-xs border-b border-[#2E1E17]/5 pb-2">
+                                  <div>
+                                    <h5 className="font-extrabold text-[#2E1E17]">{t.name}</h5>
+                                    <span className="text-[9px] text-gray-400 block font-mono">{t.subdomain}</span>
+                                  </div>
+                                  <span className={`text-[8px] font-extrabold uppercase px-2 py-0.5 rounded border ${
+                                    t.status === 'active' 
+                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
+                                      : 'bg-amber-50 text-amber-700 border-amber-100 animate-pulse'
+                                  }`}>{t.status}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2 mt-4">
+                            <button 
+                              onClick={handleTriggerBackup}
+                              disabled={isBackingUp}
+                              className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 transition"
+                            >
+                              {isBackingUp ? <RefreshCw size={12} className="animate-spin" /> : <ShieldCheck size={14} />} Backup Node
+                            </button>
+                            <button 
+                              onClick={() => setActiveTab('tenants')}
+                              className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1 transition"
+                            >
+                              Provision <ArrowRight size={12} />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <button 
-                        onClick={() => setActiveTab('tenants')}
-                        className="w-full bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest border border-[#2E1E17]/10 mt-4 flex items-center justify-center gap-1"
-                      >
-                        Manage Campuses <ArrowRight size={12} />
-                      </button>
+
+                      {backupProgress && (
+                        <div className="bg-white border border-[#2E1E17]/10 rounded-3xl p-5 shadow-sm space-y-2">
+                          <h5 className="text-[9px] font-extrabold uppercase tracking-widest text-[#FF733B]">Live Telemetry Backup Stream</h5>
+                          <pre className="text-[10px] font-mono text-gray-600 bg-[#FAF6F0] p-4 rounded-xl border border-[#2E1E17]/5 overflow-x-auto leading-relaxed whitespace-pre-line text-left">
+                            {backupProgress}
+                          </pre>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
+
+                  {/* Tab 2: School Operations */}
+                  {superAdminSubTab === 'operations' && (
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                      <div className="lg:col-span-5 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                        <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                          <h4 className="text-sm font-bold text-[#2E1E17] font-serif">School Operations Settings</h4>
+                        </div>
+                        
+                        <div className="space-y-3.5 text-xs text-[#2E1E17]/80">
+                          <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2.5">
+                            <span className="text-gray-500 font-semibold">Active Campuses:</span>
+                            <strong className="text-black">4 Synced</strong>
+                          </div>
+                          <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2.5">
+                            <span className="text-gray-500 font-semibold">Global Segment:</span>
+                            <strong className="text-black">Classes 1 to 12</strong>
+                          </div>
+                          <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2.5">
+                            <span className="text-gray-500 font-semibold">Broadcasting Center:</span>
+                            <strong className="text-[#FF733B] font-bold">Enabled (Super Admin Level)</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500 font-semibold">SQL Telemetry Logs:</span>
+                            <strong className="text-emerald-600 font-bold">4,200 Student Nodes</strong>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2.5 pt-3">
+                          <button 
+                            onClick={() => alert("Redirecting to Bulk Pupil loader...")}
+                            className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition"
+                          >
+                            <UploadCloud size={14} /> Bulk Student Ingest
+                          </button>
+                          <button 
+                            onClick={() => alert("Opening trust fee configuration console...")}
+                            className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition"
+                          >
+                            <DollarSign size={14} /> Global Fee Setup
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Global Broadcast compiler */}
+                      <div className="lg:col-span-7 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                        <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                          <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Publish Trust-Wide Announcement</h4>
+                          <span className="text-[9.5px] text-[#FF733B] font-bold uppercase tracking-wider">Broadcast Dispatch</span>
+                        </div>
+
+                        <form onSubmit={handlePublishBroadcast} className="space-y-3">
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Headline</label>
+                              <input 
+                                type="text" 
+                                placeholder="e.g. Campus Holiday Alert"
+                                value={broadcastTitle}
+                                onChange={(e) => setBroadcastTitle(e.target.value)}
+                                className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
+                                required
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Target Audience</label>
+                              <select 
+                                value={broadcastTarget}
+                                onChange={(e) => setBroadcastTarget(e.target.value)}
+                                className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
+                              >
+                                <option value="all">All Campuses & Roles</option>
+                                <option value="teachers">All Faculty Teachers Only</option>
+                                <option value="parents">All Scholar Parents Only</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Content Text Message</label>
+                            <textarea 
+                              placeholder="Type trust announcement details here..." 
+                              rows={2}
+                              value={broadcastContent}
+                              onChange={(e) => setBroadcastContent(e.target.value)}
+                              className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
+                              required
+                            ></textarea>
+                          </div>
+                          <button 
+                            type="submit"
+                            className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition"
+                          >
+                            Publish Trust Broadcast
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tab 3: Academic Audits */}
+                  {superAdminSubTab === 'academic' && (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                          <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                            <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Global Student Academic Roster</h4>
+                            <span className="text-[10px] text-[#FF733B] font-extrabold uppercase bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-100">Audit View</span>
+                          </div>
+
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-xs text-left border-collapse">
+                              <thead>
+                                <tr className="border-b border-[#2E1E17]/10 text-gray-400 font-bold">
+                                  <th className="py-2">Student Name</th>
+                                  <th className="py-2">Class</th>
+                                  <th className="py-2">Overall Score</th>
+                                  <th className="py-2">Attendance</th>
+                                  <th className="py-2 text-right">Academic Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {students.map((s) => (
+                                  <tr key={s.id} className="border-b border-[#2E1E17]/5 hover:bg-gray-50/50 transition">
+                                    <td className="py-3 flex items-center gap-2">
+                                      <img src={s.avatar} alt="" className="w-6 h-6 rounded-full object-cover border border-[#2E1E17]/10" />
+                                      <span className="font-bold text-[#2E1E17]">{s.name}</span>
+                                    </td>
+                                    <td className="py-3 text-gray-500">{s.class}</td>
+                                    <td className="py-3 font-extrabold text-[#2E1E17]">{s.grade}%</td>
+                                    <td className="py-3 uppercase font-semibold text-[10px] text-gray-600">{s.attendance}</td>
+                                    <td className="py-3 text-right">
+                                      {s.atRisk ? (
+                                        <button 
+                                          onClick={() => handleScheduleMeeting(s.name)}
+                                          className="text-[9px] font-extrabold bg-red-50 hover:bg-red-100 text-red-600 px-2 py-0.5 rounded-lg border border-red-200"
+                                        >
+                                          Schedule Parent Meeting
+                                        </button>
+                                      ) : (
+                                        <span className="text-[9px] font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-lg border border-emerald-200">
+                                          On Track
+                                        </span>
+                                      )}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        {/* Faculty list audit */}
+                        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between min-h-[300px]">
+                          <div className="space-y-4">
+                            <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                              <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Faculty Performance Scores</h4>
+                              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Global</span>
+                            </div>
+
+                            <div className="space-y-3.5">
+                              {teachers.map((t) => (
+                                <div key={t.id} className="text-xs border-b border-[#2E1E17]/5 pb-2 text-left">
+                                  <div className="flex justify-between items-center mb-1">
+                                    <h5 className="font-extrabold text-[#2E1E17]">{t.name}</h5>
+                                    <span className="text-[10px] text-amber-500 font-bold flex items-center gap-0.5">
+                                      <Star size={10} fill="currentColor" /> {t.score}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between text-[9px] text-gray-500">
+                                    <span>Specialization: {t.specialization}</span>
+                                    <span>Class: {t.class}</span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Scheduled Meetings */}
+                      {meetingLogs.length > 0 && (
+                        <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                          <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                            <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Scheduled Parent Meetings</h4>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {meetingLogs.map((log) => (
+                              <div key={log.id} className="p-3.5 bg-[#FAF6F0]/40 border border-[#2E1E17]/5 rounded-2xl text-xs text-left flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-extrabold text-[#2E1E17]">{log.studentName}</h5>
+                                  <span className="text-[9.5px] text-gray-500 block mt-0.5">Date: {log.date} • Time: {log.time}</span>
+                                  <span className="text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded border border-purple-200 bg-purple-50 text-purple-700 mt-2 inline-block">
+                                    {log.status}
+                                  </span>
+                                </div>
+                                <button 
+                                  onClick={() => {
+                                    setMeetingLogs(prev => prev.filter(m => m.id !== log.id));
+                                    alert('Meeting logged and completed.');
+                                  }}
+                                  className="text-[9.5px] font-extrabold text-emerald-600 hover:text-emerald-700 uppercase"
+                                >
+                                  Complete
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Tab 4: Finance Ledgers */}
+                  {superAdminSubTab === 'finance' && (
+                    <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Global Student Tuition Fee Ledger</h4>
+                        <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-100">Financial Audit</span>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-xs text-left border-collapse">
+                          <thead>
+                            <tr className="border-b border-[#2E1E17]/10 text-gray-400 font-bold">
+                              <th className="py-2.5">Student Name</th>
+                              <th className="py-2.5">Due Date</th>
+                              <th className="py-2.5">Total Dues</th>
+                              <th className="py-2.5">Amount Paid</th>
+                              <th className="py-2.5 font-bold">Status</th>
+                              <th className="py-2.5 text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {feeLedger.map((fee) => (
+                              <tr key={fee.studentId} className="border-b border-[#2E1E17]/5 hover:bg-gray-50/50 transition">
+                                <td className="py-3 font-extrabold text-[#2E1E17]">{fee.studentName}</td>
+                                <td className="py-3 text-gray-500 font-mono">{fee.dueDate}</td>
+                                <td className="py-3 font-bold text-[#2E1E17]">${fee.amountDue}</td>
+                                <td className="py-3 text-gray-500">${fee.amountPaid}</td>
+                                <td className="py-3">
+                                  <span className={`text-[8.5px] font-extrabold uppercase px-2 py-0.5 rounded border inline-block ${
+                                    fee.status === 'paid' 
+                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                      : fee.status === 'partial'
+                                      ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                      : 'bg-red-50 text-red-700 border-red-200 animate-pulse'
+                                  }`}>
+                                    {fee.status}
+                                  </span>
+                                </td>
+                                <td className="py-3 text-right">
+                                  {fee.status !== 'paid' ? (
+                                    <button 
+                                      onClick={() => handlePayFee(fee.studentId)}
+                                      className="text-[9px] font-extrabold bg-[#FF733B]/10 hover:bg-[#FF733B]/20 text-[#FF733B] px-2.5 py-1 rounded-lg border border-[#FF733B]/20 transition"
+                                    >
+                                      Mark Paid
+                                    </button>
+                                  ) : (
+                                    <button 
+                                      onClick={() => {
+                                        setFeeLedger(prev => prev.map(f => {
+                                          if (f.studentId === fee.studentId) {
+                                            return { ...f, status: 'unpaid', amountPaid: 0 };
+                                          }
+                                          return f;
+                                        }));
+                                        alert("Status reverted to unpaid.");
+                                      }}
+                                      className="text-[9px] font-extrabold bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-200 transition"
+                                    >
+                                      Mark Unpaid
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
               {/* 2. SCHOOL ADMIN WORKSPACE */}
               {activeRole === 'school_admin' && (
                 <div className="space-y-6">
+                  {/* Premium Admin Header Banner */}
+                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#4A3226] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                    <div className="absolute right-[-5%] top-[-20%] w-64 h-64 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[9px] bg-[#FF733B] text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+                          Campus Administration
+                        </span>
+                        <h3 className="text-xl md:text-2xl font-bold font-serif">School Operations Portal</h3>
+                        <p className="text-xs text-white/70">
+                          Active Node: <strong className="text-white">schooladmin@school.edu</strong> • Segment: <strong className="text-white">Classes 1-12</strong>
+                        </p>
+                      </div>
+
+                      <div className="bg-white/10 backdrop-blur-md border border-white/15 px-4 py-3 rounded-2xl text-xs md:text-right">
+                        <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold block">Fee target</span>
+                        <span className="font-extrabold text-[#FF733B] block mt-0.5">88.5% Collected</span>
+                        <span className="text-[9px] text-emerald-400 font-semibold block mt-0.5">AY 2026-27 Term 1</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* School Settings + Broadcast Grid */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-6 bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
-                      <h4 className="text-sm font-bold text-[#2E1E17]">School Records Settings</h4>
+                    {/* Settings Panel */}
+                    <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-5">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">School Records Settings</h4>
+                        <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">Live</span>
+                      </div>
                       
-                      <div className="space-y-3 text-xs text-[#2E1E17]/80">
-                        <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2">
-                          <span className="text-gray-500">Institution ID:</span>
+                      <div className="space-y-3.5 text-xs text-[#2E1E17]/80">
+                        <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2.5">
+                          <span className="text-gray-500 font-semibold">Institution ID:</span>
                           <strong className="text-black">EDUKA-SV-091</strong>
                         </div>
-                        <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2">
-                          <span className="text-gray-500">Active School Segment:</span>
+                        <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2.5">
+                          <span className="text-gray-500 font-semibold">Active School Segment:</span>
                           <strong className="text-black">Class 1–12 School Segment</strong>
                         </div>
-                        <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2">
-                          <span className="text-gray-500">Active Term Duration:</span>
+                        <div className="flex justify-between border-b border-[#2E1E17]/5 pb-2.5">
+                          <span className="text-gray-500 font-semibold">Active Term Duration:</span>
                           <strong className="text-black">Sep 01 - Jun 30</strong>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Database Record Count:</span>
+                          <span className="text-gray-500 font-semibold">Database Record Count:</span>
                           <strong className="text-emerald-600 font-bold">1,940 Logs Active</strong>
                         </div>
                       </div>
 
-                      <div className="flex gap-2 pt-2">
+                      <div className="flex gap-2.5 pt-3">
                         <button 
                           onClick={() => setActiveTab('bulk_ingest')}
-                          className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest border border-[#2E1E17]/10 flex items-center justify-center gap-1.5"
+                          className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition"
                         >
                           <UploadCloud size={14} /> Bulk Pupil Load
                         </button>
                         <button 
                           onClick={() => setActiveTab('fees_setup')}
-                          className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5"
+                          className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition"
                         >
                           <DollarSign size={14} /> Configure Fees
                         </button>
                       </div>
                     </div>
 
-                    <div className="lg:col-span-6 bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm">
-                      <h4 className="text-sm font-bold text-[#2E1E17] mb-3">Publish Immediate Broadcast</h4>
-                      <form onSubmit={handlePublishBroadcast} className="space-y-3">
+                    {/* Broadcast Compiler */}
+                    <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Publish Immediate Broadcast</h4>
+                        <span className="text-[9.5px] text-[#FF733B] font-bold uppercase tracking-wider">Homeroom Dispatcher</span>
+                      </div>
+
+                      <form onSubmit={handlePublishBroadcast} className="space-y-3.5">
                         <div>
-                          <label className="block text-[10px] text-gray-500 uppercase font-bold mb-1">Broadcast Header</label>
+                          <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Broadcast Header</label>
                           <input 
                             type="text" 
-                            placeholder="e.g. Schedule Update"
+                            placeholder="e.g. Term Schedule Update"
                             value={broadcastTitle}
                             onChange={(e) => setBroadcastTitle(e.target.value)}
-                            className="w-full py-2 px-3 rounded-lg border border-gray-300 text-xs bg-white text-[#2E1E17]"
+                            className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-[10px] text-gray-500 uppercase font-bold mb-1">Target Role Audience</label>
+                          <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Target Role Audience</label>
                           <select 
                             value={broadcastTarget}
                             onChange={(e) => setBroadcastTarget(e.target.value)}
-                            className="w-full py-2 px-3 rounded-lg border border-gray-300 text-xs bg-white text-[#2E1E17]"
+                            className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
                           >
                             <option value="all">All School Roles</option>
                             <option value="teachers">Teachers Only</option>
@@ -448,19 +942,19 @@ export default function Dashboards({
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[10px] text-gray-500 uppercase font-bold mb-1">Content Text</label>
+                          <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Content Text</label>
                           <textarea 
                             placeholder="Type messages here..." 
-                            rows={3}
+                            rows={2}
                             value={broadcastContent}
                             onChange={(e) => setBroadcastContent(e.target.value)}
-                            className="w-full py-2 px-3 rounded-lg border border-gray-300 text-xs bg-white text-[#2E1E17]"
+                            className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
                             required
                           ></textarea>
                         </div>
                         <button 
                           type="submit"
-                          className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg text-xs uppercase tracking-widest transition"
+                          className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition"
                         >
                           Publish School Broadcast
                         </button>
@@ -473,61 +967,90 @@ export default function Dashboards({
               {/* 3. PRINCIPAL COMMAND DASHBOARD */}
               {activeRole === 'principal' && (
                 <div className="space-y-6">
+                  {/* Premium Header Banner */}
+                  <div className="bg-gradient-to-br from-[#451A03] to-[#2E1001] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                    <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[9px] bg-[#FF733B] text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+                          Office of the Principal
+                        </span>
+                        <h3 className="text-xl md:text-2xl font-bold font-serif">Academic Command Center</h3>
+                        <p className="text-xs text-white/70">
+                          User: <strong className="text-white">principal@school.edu</strong> • Campus Jurisdiction: <strong className="text-white">Active</strong>
+                        </p>
+                      </div>
+
+                      <div className="bg-white/10 backdrop-blur-md border border-white/15 px-4 py-3 rounded-2xl text-xs md:text-right">
+                        <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold block">Annual target</span>
+                        <span className="font-extrabold text-[#FF733B] block mt-0.5">100% Board Pass Rate</span>
+                        <span className="text-[9px] text-emerald-400 font-semibold block mt-0.5">100% Faculty Certified</span>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Overview Stats */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {[
-                      { title: 'Campus-wide Attendance', value: '94.8%', icon: UserCheck, color: 'text-rose-600 bg-rose-50' },
-                      { title: 'Fee Collection Progress', value: '88.5%', icon: DollarSign, color: 'text-emerald-600 bg-emerald-50' },
-                      { title: 'Teacher Performance index', value: '4.8 / 5.0', icon: Award, color: 'text-amber-600 bg-amber-50' },
-                      { title: 'Scholars At Academic Risk', value: '1 Student', icon: ShieldAlert, color: 'text-red-600 bg-red-50' }
+                      { title: 'Campus Attendance', value: '94.8%', detail: 'Term 1 average', icon: UserCheck, color: 'text-rose-600 bg-rose-50 border-rose-500/10' },
+                      { title: 'Fee Collection Progress', value: '88.5%', detail: '$4,200 remaining dues', icon: DollarSign, color: 'text-emerald-600 bg-emerald-50 border-emerald-500/10' },
+                      { title: 'Teacher Performance Index', value: '4.8 / 5.0', detail: 'Based on student feedback', icon: Award, color: 'text-amber-600 bg-amber-50 border-amber-500/10' },
+                      { title: 'Academic Risk Roster', value: `${students.filter(s => s.atRisk).length} Pupil`, detail: 'Needs immediate support', icon: ShieldAlert, color: 'text-red-600 bg-red-50 border-red-500/10' }
                     ].map((stat, idx) => (
-                      <div key={idx} className="bg-white border border-[#2E1E17]/10 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
-                        <div className={`p-3 rounded-xl ${stat.color}`}>
-                          <stat.icon size={18} />
+                      <div key={idx} className={`bg-white border rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:scale-[1.02] transition duration-300 ${stat.color}`}>
+                        <div className="p-3 rounded-xl bg-white border border-[#2E1E17]/5 shadow-sm">
+                          <stat.icon size={20} />
                         </div>
                         <div>
                           <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">{stat.title}</span>
                           <h4 className="text-xl font-bold text-[#2E1E17] mt-1">{stat.value}</h4>
+                          <span className="text-[10px] text-gray-400 block mt-0.5 font-semibold">{stat.detail}</span>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Attendance curves & Teacher audit grid */}
+                  {/* Cohort and Faculty reviews */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-8 bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm text-left">
-                      <h4 className="text-sm font-bold text-[#2E1E17] mb-4">Student Cohort Academic Standing (Alert Active)</h4>
-                      
+                    {/* Academic Risk Roster Table */}
+                    <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Student Cohort Academic Standings</h4>
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Class 10-A</span>
+                      </div>
+
                       <div className="overflow-x-auto">
                         <table className="w-full text-xs text-left border-collapse">
                           <thead>
                             <tr className="border-b border-[#2E1E17]/10 text-gray-400 font-bold">
-                              <th className="py-2">Student Name</th>
-                              <th className="py-2">Roll ID</th>
-                              <th className="py-2">Class</th>
-                              <th className="py-2">Overall Score</th>
-                              <th className="py-2">Attendance Status</th>
-                              <th className="py-2">Actions</th>
+                              <th className="py-2.5">Student Name</th>
+                              <th className="py-2.5">Roll ID</th>
+                              <th className="py-2.5">Overall Score</th>
+                              <th className="py-2.5">Attendance</th>
+                              <th className="py-2.5 text-right">Actions</th>
                             </tr>
                           </thead>
                           <tbody>
                             {students.map((s) => (
-                              <tr key={s.id} className={`border-b border-[#2E1E17]/5 hover:bg-gray-50 ${s.atRisk ? 'bg-red-50/50 text-red-700' : ''}`}>
+                              <tr key={s.id} className={`border-b border-[#2E1E17]/5 hover:bg-gray-50/55 transition ${s.atRisk ? 'bg-red-50/30' : ''}`}>
                                 <td className="py-3 flex items-center gap-2">
-                                  <img src={s.avatar} alt="" className="w-6 h-6 rounded-full object-cover" />
+                                  <img src={s.avatar} alt="" className="w-6 h-6 rounded-full object-cover border border-[#2E1E17]/10" />
                                   <span className="font-bold text-[#2E1E17]">{s.name}</span>
                                 </td>
-                                <td className="py-3 text-gray-500">{s.roll}</td>
-                                <td className="py-3 text-gray-500">{s.class}</td>
+                                <td className="py-3 text-gray-500 font-mono">{s.roll}</td>
                                 <td className="py-3 font-extrabold text-[#2E1E17]">{s.grade}%</td>
                                 <td className="py-3 uppercase font-semibold text-[10px] text-gray-600">{s.attendance}</td>
-                                <td className="py-3">
+                                <td className="py-3 text-right">
                                   {s.atRisk ? (
-                                    <span className="text-[9px] font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded border border-red-200">
-                                      Needs Academic Support
-                                    </span>
+                                    <button 
+                                      onClick={() => handleScheduleMeeting(s.name)}
+                                      className="text-[9px] font-extrabold bg-red-100 hover:bg-red-200 text-red-700 px-2.5 py-1 rounded-lg border border-red-200 transition"
+                                    >
+                                      Schedule Parent Meeting
+                                    </button>
                                   ) : (
-                                    <span className="text-[9px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">
+                                    <span className="text-[9px] font-bold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg border border-emerald-200">
                                       On Track
                                     </span>
                                   )}
@@ -539,84 +1062,167 @@ export default function Dashboards({
                       </div>
                     </div>
 
-                    <div className="lg:col-span-4 bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm">
-                      <h4 className="text-sm font-bold text-[#2E1E17] mb-3">Faculty Performance Reviews</h4>
-                      <div className="space-y-3">
-                        {teachers.map((t) => (
-                          <div key={t.id} className="text-xs border-b border-[#2E1E17]/5 pb-2">
-                            <div className="flex justify-between items-center mb-1">
-                              <h5 className="font-bold text-[#2E1E17]">{t.name}</h5>
-                              <span className="text-[10px] text-amber-500 font-bold flex items-center gap-0.5">
-                                <Star size={10} fill="currentColor" /> {t.score}
+                    {/* Faculty performance audits */}
+                    <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between min-h-[300px]">
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                          <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Faculty Audit Roster</h4>
+                          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">AY 2026-27</span>
+                        </div>
+
+                        <div className="space-y-3.5">
+                          {teachers.map((t) => (
+                            <div key={t.id} className="text-xs border-b border-[#2E1E17]/5 pb-2 text-left">
+                              <div className="flex justify-between items-center mb-1">
+                                <h5 className="font-extrabold text-[#2E1E17]">{t.name}</h5>
+                                <span className="text-[10px] text-amber-500 font-bold flex items-center gap-0.5">
+                                  <Star size={10} fill="currentColor" /> {t.score}
+                                </span>
+                              </div>
+                              <div className="flex justify-between text-[9px] text-gray-500">
+                                <span>Specialization: {t.specialization}</span>
+                                <span>Class: {t.class}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scheduled Parent Meetings Section */}
+                  {meetingLogs.length > 0 && (
+                    <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Scheduled Parent Meetings Board</h4>
+                        <span className="text-[9.5px] bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded font-extrabold uppercase">Principal Log</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {meetingLogs.map((log) => (
+                          <div key={log.id} className="p-3.5 bg-[#FAF6F0]/40 border border-[#2E1E17]/5 rounded-2xl text-xs text-left flex justify-between items-start gap-4">
+                            <div>
+                              <h5 className="font-extrabold text-[#2E1E17]">{log.studentName}</h5>
+                              <span className="text-[9.5px] text-gray-500 block mt-0.5">Date: {log.date} • Time: {log.time}</span>
+                              <span className="text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded border border-purple-200 bg-purple-50 text-purple-700 mt-2 inline-block">
+                                {log.status}
                               </span>
                             </div>
-                            <div className="flex justify-between text-[10px] text-gray-500">
-                              <span>Specialization: {t.specialization}</span>
-                              <span>Class: {t.class}</span>
-                            </div>
+                            <button 
+                              onClick={() => {
+                                setMeetingLogs(prev => prev.filter(m => m.id !== log.id));
+                                alert('Meeting completed and logged.');
+                              }}
+                              className="text-[9.5px] font-extrabold text-emerald-600 hover:text-emerald-700 uppercase"
+                            >
+                              Mark Done
+                            </button>
                           </div>
                         ))}
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 
               {/* 4. TEACHER WORKSPACE */}
               {activeRole === 'teacher' && (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm text-left flex flex-col justify-between">
-                      <div>
-                        <h4 className="text-sm font-bold text-[#2E1E17] mb-2">Class Section Telemetry (AY 2026)</h4>
-                        <p className="text-xs text-gray-500 leading-relaxed mb-4">
-                          You are currently assigned to **Grade 10 - Section A** for Mathematics and Science. Active roster contains {students.length} scholars.
+                  {/* Premium Teacher Header Banner */}
+                  <div className="bg-gradient-to-br from-[#064E3B] to-[#022C22] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                    <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[9px] bg-emerald-600 text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+                          Faculty Workspace
+                        </span>
+                        <h3 className="text-xl md:text-2xl font-bold font-serif">Homeroom Advisor Console</h3>
+                        <p className="text-xs text-white/70">
+                          Teacher: <strong className="text-white">Dr. Christopher Vance</strong> • Classroom: <strong className="text-white">Grade 10-A (Room 101)</strong>
                         </p>
                       </div>
-                      <div className="flex gap-2">
+
+                      <div className="bg-white/10 backdrop-blur-md border border-white/15 px-4 py-3 rounded-2xl text-xs md:text-right">
+                        <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold block">Section stats</span>
+                        <span className="font-extrabold text-[#FF733B] block mt-0.5">{students.length} Enrolled Pupils</span>
+                        <span className="text-[9.5px] text-emerald-400 font-semibold block mt-0.5">Today Attendance: 98%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Teacher Action Boards */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Telemetry Panel */}
+                    <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                          <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Class Section Telemetry</h4>
+                          <span className="text-[10px] text-emerald-600 font-extrabold uppercase bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">AY 2026-27</span>
+                        </div>
+                        <p className="text-xs text-gray-500 leading-relaxed">
+                          You are currently assigned to **Grade 10 - Section A** for Mathematics and General Science courses. Active rosters are connected to the central SQL trust database.
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2.5 mt-4">
                         <button 
                           onClick={() => setActiveTab('attendance')}
-                          className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-bold py-2.5 rounded-lg text-xs uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5"
+                          className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition"
                         >
-                          <UserCheck size={14} /> Open Attendance Matrix
+                          <UserCheck size={14} /> Mark Attendance
                         </button>
                         <button 
                           onClick={() => setActiveTab('gradebook')}
-                          className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] font-bold py-2.5 rounded-lg text-xs uppercase tracking-widest border border-[#2E1E17]/10 flex items-center justify-center gap-1.5"
+                          className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 transition"
                         >
-                          <FileText size={14} /> Mark Entry
+                          <FileText size={14} /> Enter Scores
                         </button>
                       </div>
                     </div>
 
-                    {/* Teacher direct text messenger to parents */}
-                    <div className="bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between">
-                      <div>
-                        <h4 className="text-sm font-bold text-[#2E1E17] mb-3">Teacher-Parent Direct Messenger</h4>
-                        <div className="h-32 overflow-y-auto space-y-2 border border-[#2E1E17]/10 rounded-xl p-3 bg-[#FAF6F0] text-xs">
+                    {/* Teacher parent messenger */}
+                    <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif flex items-center gap-1.5">
+                          <MessageSquare size={16} className="text-emerald-600" />
+                          Parent Direct Messenger
+                        </h4>
+                        <span className="text-[9px] uppercase tracking-widest text-[#FF733B] font-extrabold">Active Logs</span>
+                      </div>
+
+                      <div className="flex flex-col h-[200px]">
+                        <div className="flex-1 overflow-y-auto space-y-2.5 mb-3 pr-1 text-xs text-left">
                           {parentMessages.map((m, idx) => (
-                            <div key={idx} className={`p-2.5 rounded-lg max-w-[85%] ${m.sender === 'teacher' ? 'bg-emerald-100 text-emerald-900 ml-auto' : 'bg-purple-100 text-purple-900 mr-auto'}`}>
+                            <div key={idx} className={`p-2.5 rounded-2xl max-w-[85%] ${
+                              m.sender === 'teacher' 
+                                ? 'bg-emerald-600 text-white ml-auto shadow-md' 
+                                : 'bg-[#FAF6F0] text-[#2E1E17] mr-auto border border-[#2E1E17]/5 shadow-sm'
+                            }`}>
                               <p className="leading-relaxed font-semibold">{m.text}</p>
-                              <span className="text-[8px] text-gray-500 block mt-1 text-right">{m.date}</span>
+                              <span className={`text-[8.5px] block mt-1 text-right ${
+                                m.sender === 'teacher' ? 'text-white/70' : 'text-gray-400'
+                              }`}>{m.date}</span>
                             </div>
                           ))}
                         </div>
+
+                        <form onSubmit={handleTeacherSendMsg} className="flex gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="Send attendance warning or homework check to parents..."
+                            value={teacherNewMsg}
+                            onChange={(e) => setTeacherNewMsg(e.target.value)}
+                            className="flex-1 py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] placeholder-gray-400 focus:outline-none focus:border-[#FF733B] transition"
+                          />
+                          <button 
+                            type="submit"
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition"
+                          >
+                            Send
+                          </button>
+                        </form>
                       </div>
-                      <form onSubmit={handleTeacherSendMsg} className="mt-3 flex gap-2">
-                        <input 
-                          type="text" 
-                          placeholder="Send attendance warning to parents..."
-                          value={teacherNewMsg}
-                          onChange={(e) => setTeacherNewMsg(e.target.value)}
-                          className="flex-1 py-1.5 px-3 rounded-lg border border-gray-300 text-xs bg-white text-[#2E1E17]"
-                        />
-                        <button 
-                          type="submit"
-                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs"
-                        >
-                          Send
-                        </button>
-                      </form>
                     </div>
                   </div>
                 </div>
@@ -625,80 +1231,224 @@ export default function Dashboards({
               {/* 5. STUDENT COMPASS HUB */}
               {activeRole === 'student' && (
                 <div className="space-y-6">
-                  {/* Calendar timetable + Grade view */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-8 space-y-6">
-                      <div className="bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm">
-                        <h4 className="text-sm font-bold text-[#2E1E17] mb-4">Daily Class Timetable Calendar</h4>
-                        <div className="grid grid-cols-5 gap-3 text-xs text-center">
-                          {[
-                            { day: 'MON', time: '08:30 AM', subject: 'Mathematics', room: 'Room 101' },
-                            { day: 'TUE', time: '10:00 AM', subject: 'General Science', room: 'Science Lab' },
-                            { day: 'WED', time: '01:00 PM', subject: 'English Grammar', room: 'Room 103' },
-                            { day: 'THU', time: '08:30 AM', subject: 'Computer Studies', room: 'Computer Lab' },
-                            { day: 'FRI', time: '10:00 AM', subject: 'History & Civics', room: 'Room 101' }
-                          ].map((t, idx) => (
-                            <div key={idx} className="bg-[#FAF6F0] rounded-xl p-3 border border-[#2E1E17]/10 text-center">
-                              <span className="text-[10px] text-[#FF733B] font-extrabold uppercase tracking-wider block">{t.day}</span>
-                              <strong className="block text-[#2E1E17] mt-1 text-[11px] truncate">{t.subject}</strong>
-                              <span className="text-[9px] text-gray-500 block mt-1">{t.time}</span>
-                              <span className="text-[8px] text-gray-400 block mt-0.5 font-bold uppercase">{t.room}</span>
-                            </div>
-                          ))}
-                        </div>
+                  {/* Premium Welcome Panel */}
+                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#4A3226] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                    <div className="absolute right-[-5%] top-[-20%] w-64 h-64 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute left-[-10%] bottom-[-30%] w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] bg-[#FF733B] text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+                          Active Student Workspace
+                        </span>
+                        <h3 className="text-xl md:text-2xl font-bold font-serif">Welcome back, {students[0]?.name}! 👋</h3>
+                        <p className="text-xs text-white/70 font-medium">
+                          Class: <strong className="text-white">{students[0]?.class}</strong> • House: <strong className="text-white">Phoenix House 🔥</strong> • Roll: <strong className="text-white">{students[0]?.roll}</strong>
+                        </p>
                       </div>
 
-                      {/* Transcripts and attendance */}
-                      <div className="bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm">
-                        <h4 className="text-sm font-bold text-[#2E1E17] mb-4">Personal Academic Transcript (Mock SQL Logs)</h4>
-                        
-                        <div className="grid grid-cols-3 gap-4 text-center">
-                          <div className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10">
-                            <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Mathematics Grade</span>
-                            <h5 className="text-xl font-extrabold text-[#2E1E17] mt-1">{students[0].mathGrade}%</h5>
-                            <span className="text-[9px] text-emerald-600 font-semibold block mt-0.5">Grade A (Passed)</span>
-                          </div>
-                          <div className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10">
-                            <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Science Grade</span>
-                            <h5 className="text-xl font-extrabold text-[#2E1E17] mt-1">{students[0].physGrade}%</h5>
-                            <span className="text-[9px] text-emerald-600 font-semibold block mt-0.5">Grade B (Passed)</span>
-                          </div>
-                          <div className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10">
-                            <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Historical Attendance</span>
-                            <h5 className="text-xl font-extrabold text-[#2E1E17] mt-1">98.2%</h5>
-                            <span className="text-[9px] text-gray-400 block mt-0.5">0 Unexcused Absences</span>
-                          </div>
+                      <div className="bg-white/10 backdrop-blur-md border border-white/15 px-4 py-3 rounded-2xl text-xs md:text-right">
+                        <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold block">Current Milestone</span>
+                        <span className="font-extrabold text-[#FF733B] block mt-0.5">Stream Specialization (Class 11)</span>
+                        <span className="text-[9.5px] text-emerald-400 font-semibold block mt-0.5">Academic standing: Strong</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* High-Fidelity Stats Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {[
+                      { title: 'Academic Score', value: `${students[0]?.grade}%`, detail: 'Ranked 3rd in Class', icon: Award, color: 'text-orange-600 bg-orange-50 border-orange-500/10' },
+                      { title: 'Term Attendance', value: '98.2%', detail: '0 Unexcused Absences', icon: UserCheck, color: 'text-emerald-600 bg-emerald-50 border-emerald-500/10' },
+                      { title: 'Homework Status', value: algebraHWStatus === 'Pending' ? '14 / 16' : '15 / 16', detail: algebraHWStatus === 'Pending' ? '1 Pending Task' : '0 Pending Tasks', icon: FileText, color: 'text-purple-600 bg-purple-50 border-purple-500/10' },
+                      { title: 'House Points', value: '450 pts', detail: '+50 gained yesterday', icon: Star, color: 'text-amber-600 bg-amber-50 border-amber-500/10' }
+                    ].map((stat, idx) => (
+                      <div key={idx} className={`bg-white border rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:scale-[1.02] transition duration-300 ${stat.color}`}>
+                        <div className="p-3 rounded-xl bg-white border border-[#2E1E17]/5 shadow-sm">
+                          <stat.icon size={20} />
                         </div>
+                        <div>
+                          <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">{stat.title}</span>
+                          <h4 className="text-xl font-bold text-[#2E1E17] mt-1">{stat.value}</h4>
+                          <span className="text-[10px] text-gray-400 block mt-0.5 font-semibold">{stat.detail}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Timetable schedule and Grades Progress */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Period Timeline Schedule */}
+                    <div className="lg:col-span-7 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Today's Daily Timetable</h4>
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">AY 2026-27</span>
+                      </div>
+
+                      <div className="space-y-3.5">
+                        {[
+                          { time: '08:30 AM - 09:30 AM', subject: 'Mathematics', teacher: 'Dr. Christopher Vance', room: 'Room 101', active: true },
+                          { time: '10:00 AM - 11:00 AM', subject: 'General Science', teacher: 'Sarah Lin, M.Sc.', room: 'Science Lab', next: true },
+                          { time: '11:30 AM - 12:30 PM', subject: 'English Grammar', teacher: 'Prof. Alistair Cook', room: 'Room 103' },
+                          { time: '01:30 PM - 02:30 PM', subject: 'Computer Studies', teacher: 'Homeroom Advisor', room: 'Computer Lab' }
+                        ].map((period, index) => (
+                          <div key={index} className={`p-3.5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition duration-200 ${
+                            period.active 
+                              ? 'border-emerald-500/20 bg-emerald-50/40' 
+                              : period.next 
+                              ? 'border-amber-500/20 bg-amber-50/40'
+                              : 'border-[#2E1E17]/5 bg-[#FAF6F0]/40'
+                          }`}>
+                            <div className="flex items-start gap-3">
+                              <span className="text-[11px] font-extrabold text-[#FF733B] bg-white border border-[#2E1E17]/10 rounded-xl px-2.5 py-1 text-center shadow-sm whitespace-nowrap">
+                                Period {index + 1}
+                              </span>
+                              <div>
+                                <h5 className="text-xs font-bold text-[#2E1E17]">{period.subject}</h5>
+                                <span className="text-[10px] text-gray-500">{period.teacher} • Room {period.room}</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 self-start sm:self-center">
+                              <span className="text-[9.5px] text-gray-400 font-bold">{period.time}</span>
+                              {period.active && (
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping inline-block"></span>
+                              )}
+                              {period.next && (
+                                <span className="text-[8px] bg-amber-100 text-amber-800 border border-amber-200 px-1.5 py-0.5 rounded font-extrabold uppercase">Next</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
-                    <div className="lg:col-span-4 space-y-6">
-                      <div className="bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm">
-                        <h4 className="text-sm font-bold text-[#2E1E17] mb-3">Pending Action Items</h4>
-                        <div className="space-y-3 text-xs">
-                          {[
-                            { title: 'Algebra Practice Sheet', due: 'July 10, 2026', type: 'Homework' },
-                            { title: 'Science Project submission', due: 'July 15, 2026', type: 'Project' }
-                          ].map((item, idx) => (
-                            <div key={idx} className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10 text-left flex justify-between items-center">
-                              <div>
-                                <h5 className="font-bold text-[#2E1E17]">{item.title}</h5>
-                                <span className="text-[9px] text-gray-400 block mt-0.5">Due: {item.due}</span>
-                              </div>
-                              <span className="text-[8px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-extrabold border border-orange-200">
-                                {item.type}
-                              </span>
+                    {/* Course Marks Progression */}
+                    <div className="lg:col-span-5 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4 flex flex-col justify-between">
+                      <div className="border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Subject Mark Progression</h4>
+                      </div>
+
+                      <div className="space-y-4 py-2">
+                        {[
+                          { subject: 'Mathematics (Algebra)', score: students[0]?.mathGrade || 92, max: 100, color: 'bg-[#FF733B]' },
+                          { subject: 'General Science (Physics)', score: students[0]?.physGrade || 88, max: 100, color: 'bg-blue-500' },
+                          { subject: 'English Language', score: students[0]?.engGrade || 95, max: 100, color: 'bg-emerald-500' },
+                          { subject: 'Computer Studies', score: 94, max: 100, color: 'bg-purple-500' }
+                        ].map((prog, idx) => (
+                          <div key={idx} className="space-y-1.5 text-xs">
+                            <div className="flex justify-between font-bold text-[#2E1E17]/90">
+                              <span>{prog.subject}</span>
+                              <span>{prog.score} / {prog.max}</span>
                             </div>
-                          ))}
-                        </div>
+                            <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                              <div className={`h-full ${prog.color} rounded-full`} style={{ width: `${(prog.score / prog.max) * 100}%` }}></div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
 
                       <button 
                         onClick={() => setActiveTab('roadmap')}
-                        className="w-full bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3.5 rounded-xl text-xs uppercase tracking-widest hover:scale-[1.02] transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-1.5"
+                        className="w-full bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3.5 rounded-xl text-xs uppercase tracking-widest hover:scale-[1.02] transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-1.5 mt-2"
                       >
-                        <Award size={14} /> Open Academic Study Roadmap
+                        <Award size={14} /> Open AI Academic Roadmap
                       </button>
+                    </div>
+                  </div>
+
+                  {/* Homework and AI study coach widget */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Homework list */}
+                    <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif font-serif">Class Assignments & Projects</h4>
+                        <span className="text-[9.5px] bg-[#FF733B]/10 text-[#FF733B] border border-[#FF733B]/20 px-2 py-0.5 rounded font-extrabold uppercase">Active</span>
+                      </div>
+
+                      <div className="space-y-3.5">
+                        <div className="p-3.5 bg-[#FAF6F0]/40 border border-[#2E1E17]/5 rounded-2xl text-xs text-left flex justify-between items-center gap-4">
+                          <div>
+                            <h5 className="font-extrabold text-[#2E1E17]">Algebra Practice Sheet</h5>
+                            <span className="text-[10px] text-gray-500 block mt-0.5">Due: July 10, 2026 • Teacher: Dr. Vance</span>
+                            <span className={`text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded border mt-1.5 inline-block ${
+                              algebraHWStatus === 'Pending' 
+                                ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            }`}>
+                              {algebraHWStatus}
+                            </span>
+                          </div>
+                          {algebraHWStatus === 'Pending' ? (
+                            <button 
+                              onClick={handleUploadHomework}
+                              className="bg-white border border-[#2E1E17]/10 hover:border-black text-[#2E1E17] font-extrabold text-[10px] px-3.5 py-2 rounded-xl transition duration-200 shadow-sm whitespace-nowrap"
+                            >
+                              Upload File
+                            </button>
+                          ) : (
+                            <span className="text-[10px] text-emerald-600 font-extrabold uppercase tracking-wider">Submitted</span>
+                          )}
+                        </div>
+
+                        <div className="p-3.5 bg-[#FAF6F0]/40 border border-[#2E1E17]/5 rounded-2xl text-xs text-left flex justify-between items-center gap-4">
+                          <div>
+                            <h5 className="font-extrabold text-[#2E1E17]">Science Optics Lab Report</h5>
+                            <span className="text-[10px] text-gray-500 block mt-0.5">Due: July 15, 2026 • Teacher: Mrs. Lin</span>
+                            <span className="text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded border mt-1.5 inline-block bg-purple-50 text-purple-700 border-purple-200">
+                              In Progress
+                            </span>
+                          </div>
+                          <button 
+                            onClick={() => alert('Mock science report started. Resources are loading.')}
+                            className="bg-white border border-[#2E1E17]/10 hover:border-black text-[#2E1E17] font-extrabold text-[10px] px-3.5 py-2 rounded-xl transition duration-200 shadow-sm whitespace-nowrap"
+                          >
+                            Open Lab
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* AI Chat Buddy */}
+                    <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+                          Study Buddy AI Coach
+                        </h4>
+                        <span className="text-[9px] uppercase tracking-widest text-[#FF733B] font-extrabold bg-[#FF733B]/5 border border-[#FF733B]/10 px-2 py-0.5 rounded-lg">Online</span>
+                      </div>
+
+                      <div className="flex flex-col h-[180px]">
+                        <div className="flex-1 overflow-y-auto space-y-2.5 mb-3 pr-1 text-xs text-left scrollbar-thin">
+                          {studentChatMessages.map((m, idx) => (
+                            <div key={idx} className={`p-2.5 rounded-2xl max-w-[85%] ${
+                              m.sender === 'student' 
+                                ? 'bg-[#FF733B] text-white ml-auto shadow-md' 
+                                : 'bg-[#FAF6F0] text-[#2E1E17] mr-auto border border-[#2E1E17]/5 shadow-sm'
+                            }`}>
+                              <p className="leading-relaxed font-semibold">{m.text}</p>
+                              <span className={`text-[8px] block mt-1 text-right ${
+                                m.sender === 'student' ? 'text-white/70' : 'text-gray-400'
+                              }`}>{m.date}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <form onSubmit={handleStudentSendChat} className="flex gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="Ask AI Study Buddy (e.g. 'Math', 'Science')..."
+                            value={studentChatInput}
+                            onChange={(e) => setStudentChatInput(e.target.value)}
+                            className="flex-1 py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] placeholder-gray-400 focus:outline-none focus:border-[#FF733B] transition"
+                          />
+                          <button 
+                            type="submit"
+                            className="bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition"
+                          >
+                            Send
+                          </button>
+                        </form>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -707,45 +1457,67 @@ export default function Dashboards({
               {/* 6. PARENT TELEMETRY PORTAL */}
               {activeRole === 'parent' && (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-8 bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
-                        <h4 className="text-sm font-bold text-[#2E1E17]">Linked Scholar: Alexander Vance (Grade 10-A)</h4>
-                        <span className="text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-200 py-0.5 px-2 rounded-full font-bold">
-                          Attendance Status Today: Present
+                  {/* Premium Parent Header Banner */}
+                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#3D251A] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                    <div className="absolute right-[-5%] top-[-20%] w-64 h-64 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[9px] bg-[#FF733B] text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+                          Parent Portal Workspace
                         </span>
+                        <h3 className="text-xl md:text-2xl font-bold font-serif">Scholar Telemetry: Alexander Vance</h3>
+                        <p className="text-xs text-white/70">
+                          Grade: <strong className="text-white">Grade 10-A</strong> • Homeroom Advisor: <strong className="text-white">Dr. Christopher Vance</strong>
+                        </p>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-6">
-                        <div className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10">
-                          <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Overall Grade Point</span>
-                          <h5 className="text-xl font-extrabold text-[#2E1E17] mt-1">92.5%</h5>
-                          <span className="text-[9px] text-emerald-600 font-semibold block mt-0.5">Grade A Average</span>
-                        </div>
-                        <div className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10">
-                          <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Academic Term Attendance</span>
-                          <h5 className="text-xl font-extrabold text-[#2E1E17] mt-1">98.2%</h5>
-                          <span className="text-[9px] text-gray-400 block mt-0.5">On Target</span>
-                        </div>
-                        <div className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10">
-                          <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Assigned Homeroom Teacher</span>
-                          <h5 className="text-xs font-bold text-[#2E1E17] mt-1 truncate">Dr. Christopher Vance</h5>
-                          <span className="text-[8px] text-sky-600 block mt-0.5 font-semibold">Specialist</span>
-                        </div>
+                      <div className="bg-white/10 backdrop-blur-md border border-white/15 px-4 py-3 rounded-2xl text-xs md:text-right">
+                        <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold block">Attendance today</span>
+                        <span className="font-extrabold text-[#FF733B] block mt-0.5">Present & Active</span>
+                        <span className="text-[9px] text-emerald-400 font-semibold block mt-0.5">Logged in: 08:30 AM</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scholar Summary Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm">
+                      <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Overall Grade Average</span>
+                      <h5 className="text-2xl font-extrabold text-[#2E1E17] mt-1">92.5%</h5>
+                      <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">Grade A (Passing)</span>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm">
+                      <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Term Attendance</span>
+                      <h5 className="text-2xl font-extrabold text-[#2E1E17] mt-1">98.2%</h5>
+                      <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">0 Unexcused Absences</span>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm">
+                      <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Assignments Completed</span>
+                      <h5 className="text-2xl font-extrabold text-[#2E1E17] mt-1">15 / 16</h5>
+                      <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">1 Grading Pending</span>
+                    </div>
+                  </div>
+
+                  {/* Grade curves and fee ledger columns */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Course Grade Curves */}
+                    <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Subject Wise Grade Curves</h4>
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Mid-Term AY 2026</span>
                       </div>
 
-                      {/* Course progress list */}
-                      <h5 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Subject Wise Grade Curves</h5>
-                      <div className="space-y-3">
+                      <div className="space-y-3.5">
                         {[
-                          { subject: 'Mathematics (Algebra & Geometry)', score: 92, status: 'Outstanding' },
-                          { subject: 'Science (Physics & Chemistry)', score: 88, status: 'Satisfactory' },
-                          { subject: 'Computer Studies (Coding & Logic)', score: 95, status: 'Outstanding' }
+                          { subject: 'Mathematics (Algebra & Geometry)', score: 92, status: 'Outstanding', color: 'text-orange-600' },
+                          { subject: 'Science (Physics & Chemistry)', score: 88, status: 'Satisfactory', color: 'text-[#2E1E17]' },
+                          { subject: 'Computer Studies (Coding & Logic)', score: 95, status: 'Outstanding', color: 'text-purple-600' }
                         ].map((s, idx) => (
-                          <div key={idx} className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10 text-xs text-left flex items-center justify-between">
+                          <div key={idx} className="p-3.5 bg-[#FAF6F0]/40 rounded-2xl border border-[#2E1E17]/5 text-xs text-left flex items-center justify-between gap-4 transition hover:bg-[#FAF6F0]/80">
                             <div>
-                              <strong className="text-[#2E1E17] block">{s.subject}</strong>
-                              <span className="text-[9px] text-gray-500 block mt-0.5">Status: {s.status}</span>
+                              <strong className="text-[#2E1E17] block font-bold">{s.subject}</strong>
+                              <span className="text-[9.5px] text-gray-500 block mt-0.5">Status: <strong className={s.color}>{s.status}</strong></span>
                             </div>
                             <div className="text-right">
                               <span className="text-sm font-extrabold text-[#2E1E17] block">{s.score}%</span>
@@ -756,40 +1528,39 @@ export default function Dashboards({
                       </div>
                     </div>
 
-                    <div className="lg:col-span-4 bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between h-[360px]">
-                      <div>
-                        <h4 className="text-sm font-bold text-[#2E1E17] mb-3">Outstanding Fee Ledger</h4>
-                        <div className="space-y-3 text-xs">
+                    {/* Outstanding fee ledger */}
+                    <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between min-h-[350px]">
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
+                          <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Tuition Fee Ledger</h4>
+                          <span className="text-[9.5px] text-gray-400 font-bold uppercase tracking-wider">Balances</span>
+                        </div>
+
+                        <div className="space-y-3">
                           {feeLedger.slice(0, 3).map((fee, idx) => (
-                            <div key={idx} className="p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/10 text-left flex justify-between items-center">
+                            <div key={idx} className="p-3 bg-[#FAF6F0]/40 rounded-2xl border border-[#2E1E17]/5 text-left flex justify-between items-center transition">
                               <div>
-                                <h5 className="font-bold text-[#2E1E17]">{fee.studentName}</h5>
-                                <span className="text-[9px] text-gray-400 block mt-0.5">Due: {fee.dueDate}</span>
+                                <h5 className="font-extrabold text-[#2E1E17]">{fee.studentName}</h5>
+                                <span className="text-[9.5px] text-gray-500 block mt-0.5">Due: {fee.dueDate}</span>
                               </div>
                               <div className="text-right">
                                 <span className="text-xs font-extrabold text-[#2E1E17] block">${fee.amountDue - fee.amountPaid}</span>
-                                <span className={`text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded border mt-1 inline-block ${
-                                  fee.status === 'paid' 
-                                    ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
-                                    : fee.status === 'partial'
-                                    ? 'bg-amber-100 text-amber-700 border-amber-200'
-                                    : 'bg-red-100 text-red-700 border-red-200 animate-pulse'
-                                }`}>
-                                  {fee.status}
-                                </span>
+                                {fee.status !== 'paid' ? (
+                                  <button 
+                                    onClick={() => handlePayFee(fee.studentId)}
+                                    className="text-[8px] bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-2 py-0.5 rounded font-extrabold uppercase mt-1 transition animate-pulse"
+                                  >
+                                    Pay ${fee.amountDue - fee.amountPaid}
+                                  </button>
+                                ) : (
+                                  <span className="text-[8px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-extrabold uppercase mt-1 inline-block">
+                                    Paid
+                                  </span>
+                                )}
                               </div>
                             </div>
                           ))}
                         </div>
-                      </div>
-
-                      <div className="border-t border-[#2E1E17]/10 pt-4 mt-4">
-                        <button 
-                          onClick={() => alert('Secure payment sandbox mock triggered successfully.')}
-                          className="w-full bg-gradient-to-r from-purple-600 to-purple-400 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest hover:scale-[1.02] transition shadow-lg shadow-purple-500/25 flex items-center justify-center gap-1.5"
-                        >
-                          <DollarSign size={14} /> Clear Ledger Balance
-                        </button>
                       </div>
                     </div>
                   </div>
