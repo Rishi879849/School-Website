@@ -9,7 +9,6 @@ import Footer from './components/Footer';
 
 import PortalLayout from './components/rbac/PortalLayout';
 
-// Sub-pages
 import AdmissionFormPage from './pages/AdmissionFormPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ResultsPage from './pages/ResultsPage';
@@ -20,7 +19,6 @@ import DownloadFormsPage from './pages/DownloadFormsPage';
 import AntiRaggingPage from './pages/AntiRaggingPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 
-// New Dropdown pages
 import AboutEdukidsPage from './pages/AboutEdukidsPage';
 import VisionMissionPage from './pages/VisionMissionPage';
 import DirectorsMessagePage from './pages/DirectorsMessagePage';
@@ -37,32 +35,17 @@ import OrdinancePage from './pages/OrdinancePage';
 import PosPage from './pages/PosPage';
 import SwayamNptelPage from './pages/SwayamNptelPage';
 
-import { login as apiLogin, logout as apiLogout, fetchCurrentUser } from './services/auth.js';
+import { logout as apiLogout } from './services/auth.js';
 import { supabase } from './supabaseClient'; 
 
 function App() {
-  // Authentication states
   const [currentUser, setCurrentUser] = useState(null);
   const [isHydrating, setIsHydrating] = useState(true);
-
-  // Supabase test data states
   const [dbUsers, setDbUsers] = useState([]);
   const [dbLoading, setDbLoading] = useState(true);
 
-  // Unified Hydration & Supabase Fetching
   useEffect(() => {
     let cancelled = false;
-
-    async function hydrateAuth() {
-      try {
-        const user = await fetchCurrentUser();
-        if (!cancelled) setCurrentUser(user);
-      } catch (err) {
-        if (!cancelled) setCurrentUser(null);
-      } finally {
-        if (!cancelled) setIsHydrating(false);
-      }
-    }
 
     async function loadSupabaseData() {
       try {
@@ -73,29 +56,38 @@ function App() {
       } catch (err) {
         console.error("Error connecting to Supabase table:", err.message);
       } finally {
-        if (!cancelled) setDbLoading(false);
+        if (!cancelled) {
+          setDbLoading(false);
+          setIsHydrating(false); 
+        }
       }
     }
 
-    hydrateAuth();
     loadSupabaseData();
-
-    return () => { cancelled = false; };
+    return () => { cancelled = true; };
   }, []);
 
   const handleLoginUser = async (email, password) => {
     try {
-      const user = await apiLogin(email, password);
-      setCurrentUser(user);
-      return true;
+      const matchedUser = dbUsers.find(u => u.email?.toLowerCase() === email?.toLowerCase());
+      
+      if (matchedUser) {
+        const userSession = {
+          email: matchedUser.email,
+          role: matchedUser.role || 'student'
+        };
+        setCurrentUser(userSession);
+        return true;
+      } else {
+        throw new Error('User record not found in database.');
+      }
     } catch (err) {
-      const message = err?.response?.data?.error || 'Login failed.';
-      throw new Error(message);
+      throw new Error(err.message || 'Login failed.');
     }
   };
 
   const handleLogout = async () => {
-    try { await apiLogout(); } catch { /* ignore */ }
+    try { await apiLogout(); } catch { }
     setCurrentUser(null);
   };
 
@@ -110,11 +102,6 @@ function App() {
   return (
     <div className="min-h-screen relative flex flex-col">
       <ParticleBackground role={currentUser ? currentUser.role : 'brand'} />
-
-      {/* Database Connection Status Overlay */}
-      <div className="bg-slate-900 text-white text-[10px] p-2 text-center z-50 opacity-80">
-        Database Link: {dbLoading ? "Connecting..." : dbUsers.length > 0 ? `🟢 Active (${dbUsers.length} Users Pulled)` : "🔴 Table Connected but Empty"}
-      </div>
 
       {currentUser ? (
         <PortalLayout
