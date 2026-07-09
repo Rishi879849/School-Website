@@ -10,12 +10,12 @@ export default function MarketingSite() {
 
   // Photo Gallery Data
   const galleryItems = [
-    { id: 1, type: 'sandbox', title: 'VR Simulation Lab', url: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=500&auto=format&fit=crop&q=60' },
-    { id: 2, type: 'campus', title: 'Central Glass Library', url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=500&auto=format&fit=crop&q=60' },
-    { id: 3, type: 'sandbox', title: 'Robotics Workshop', url: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=500&auto=format&fit=crop&q=60' },
-    { id: 4, type: 'classroom', title: 'Computational Physics Hall', url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&auto=format&fit=crop&q=60' },
-    { id: 5, type: 'classroom', title: 'Design Twin Studio', url: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=500&auto=format&fit=crop&q=60' },
-    { id: 6, type: 'campus', title: 'Student Innovation Garden', url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&auto=format&fit=crop&q=60' }
+    { id: 1, type: 'lab', title: 'Science Laboratory', url: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=500&auto=format&fit=crop&q=60' },
+    { id: 2, type: 'campus', title: 'School Library', url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=500&auto=format&fit=crop&q=60' },
+    { id: 3, type: 'lab', title: 'Computer Lab', url: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=500&auto=format&fit=crop&q=60' },
+    { id: 4, type: 'classroom', title: 'Smart Classroom', url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&auto=format&fit=crop&q=60' },
+    { id: 5, type: 'classroom', title: 'Art & Craft Studio', url: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=500&auto=format&fit=crop&q=60' },
+    { id: 6, type: 'campus', title: 'School Play Ground', url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&auto=format&fit=crop&q=60' }
   ];
 
   const filteredGallery = galleryFilter === 'all'
@@ -24,7 +24,7 @@ export default function MarketingSite() {
 
   // Simulated PDF Downloader
   const triggerPdfDownload = (fileName) => {
-    alert(`Compiling DTV Secure Archive: ${fileName}.pdf is preparing for system download.`);
+    alert(`Compiling Secure Archive: ${fileName}.pdf is preparing for system download.`);
   };
 
   return (
@@ -75,16 +75,10 @@ export default function MarketingSite() {
               Admission Form <ArrowRight size={14} />
             </Link>
             <Link 
-              to="/registration"
-              className="bg-white border border-[#2E1E17]/20 hover:border-black text-[#2E1E17] font-extrabold text-xs md:text-sm px-7 py-3.5 rounded-2xl hover:scale-105 active:scale-95 transition-all duration-300"
-            >
-              Create Account
-            </Link>
-            <Link 
               to="/login"
-              className="bg-[#2F221E] hover:bg-black text-white font-extrabold text-xs md:text-sm px-7 py-3.5 rounded-2xl hover:scale-105 active:scale-95 transition-all duration-300"
+              className="bg-[#2F221E] hover:bg-black text-white font-extrabold text-xs md:text-sm px-8 py-3.5 rounded-2xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5"
             >
-              Access Portal
+              Login to Portal <ArrowRight size={14} />
             </Link>
           </div>
 
@@ -180,26 +174,26 @@ export default function MarketingSite() {
         <section className="w-full max-w-7xl mx-auto px-4 md:px-8 py-16 border-t border-[#2E1E17]/10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-5 text-left space-y-4">
-              <span className="text-[11px] font-bold text-[#FF733B] uppercase tracking-widest block">Audit Telemetry</span>
+              <span className="text-[11px] font-bold text-[#FF733B] uppercase tracking-widest block">School Telemetry</span>
               <h3 className="text-3xl font-normal text-[#2E1E17] font-serif leading-tight">School Progression Report</h3>
               <p className="text-xs text-gray-600 leading-relaxed font-semibold">
-                A high-fidelity growth chart mapping academic achievement metrics, digital sandbox active sessions, and student placement growth over the last five fiscal terms.
+                A high-fidelity growth chart mapping academic achievement metrics, digital classroom active sessions, and student board exam success rates over the last five terms.
               </p>
               
               <div className="space-y-3 pt-2 text-xs font-semibold text-[#2E1E17]/85">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#FF733B]"></span>
-                  <span>98.2% Placement in Advanced AI Laboratories</span>
+                  <span>98.2% Score average in board examinations</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#4ADE80]"></span>
-                  <span>12 Virtual Sandbox Facilities fully operational</span>
+                  <span>12 Smart Classrooms and laboratories fully operational</span>
                 </div>
               </div>
             </div>
 
             <div className="lg:col-span-7 bg-white p-6 border border-[#2E1E17]/10 rounded-3xl shadow-sm">
-              <h4 className="text-xs font-bold uppercase text-gray-400 tracking-wider mb-6 text-left">Academic & Placement Progression Index (2022-2026)</h4>
+              <h4 className="text-xs font-bold uppercase text-gray-400 tracking-wider mb-6 text-left">Academic Achievement Index (2022-2026)</h4>
               
               <div className="relative h-60 w-full flex items-end justify-between px-4 pb-2 border-b border-[#2E1E17]/10">
                 <svg className="absolute inset-0 w-full h-full p-4 overflow-visible" viewBox="0 0 500 200">
@@ -254,9 +248,8 @@ export default function MarketingSite() {
               {activeReportTab === 'curriculum' && (
                 <div className="space-y-3">
                   {[
-                    { title: 'Biomedical & Genomes AI Syllabus (Term 1-4)', size: '2.4 MB' },
-                    { title: 'Quantum Financial Engineering Specialization Code', size: '3.1 MB' },
-                    { title: 'Interactive Generative WebGL Design Module', size: '1.8 MB' }
+                    { title: 'Mathematics & Science School Syllabus (Class 1-12)', size: '2.4 MB' },
+                    { title: 'English & Social Studies Curriculum Guide', size: '1.8 MB' }
                   ].map((item, idx) => (
                     <div key={idx} className="flex justify-between items-center p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/5">
                       <span className="font-bold text-[#2E1E17] flex items-center gap-2">
@@ -276,8 +269,8 @@ export default function MarketingSite() {
               {activeReportTab === 'reports' && (
                 <div className="space-y-3">
                   {[
-                    { title: 'DTV Operational Efficiency Progress Audit 2025', size: '4.8 MB' },
-                    { title: 'Multi-Tenant Placement Metrics & Review Report', size: '5.2 MB' }
+                    { title: 'Edukids School Academic Performance Report 2025', size: '4.8 MB' },
+                    { title: 'School Infrastructure and Facilities Review Report', size: '5.2 MB' }
                   ].map((item, idx) => (
                     <div key={idx} className="flex justify-between items-center p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/5">
                       <span className="font-bold text-[#2E1E17] flex items-center gap-2">
@@ -297,8 +290,8 @@ export default function MarketingSite() {
               {activeReportTab === 'manual' && (
                 <div className="space-y-3">
                   {[
-                    { title: 'Student Sandbox Code of Conduct & Honor Guide', size: '1.2 MB' },
-                    { title: 'Parent Portal Security & Consent Directory', size: '1.5 MB' }
+                    { title: 'Student Handbook & School Honor Code', size: '1.2 MB' },
+                    { title: 'Parent Portal Security & Consent Guidelines', size: '1.5 MB' }
                   ].map((item, idx) => (
                     <div key={idx} className="flex justify-between items-center p-3 bg-[#FAF6F0] rounded-xl border border-[#2E1E17]/5">
                       <span className="font-bold text-[#2E1E17] flex items-center gap-2">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LogIn, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { LogIn, ArrowLeft } from 'lucide-react';
 
 export default function LoginPage({ onLogin }) {
   const location = useLocation();
@@ -15,12 +15,7 @@ export default function LoginPage({ onLogin }) {
     if (location.state?.role) setActiveRole(location.state.role);
   }, [location.state]);
 
-  const simulationPresets = [
-    { role: 'super_admin', email: 'superadmin@school.edu', pass: '123456', label: 'Super Admin' },
-    { role: 'school_admin', email: 'schooladmin@school.edu', pass: '123456', label: 'School Admin' },
-    { role: 'principal', email: 'principal@school.edu', pass: '123456', label: 'Principal' },
-    { role: 'teacher', email: 'teacher@school.edu', pass: '123456', label: 'Teacher' },
-  ];
+
 
   const attemptLogin = async (loginEmail, loginPassword, roleHint) => {
     if (!loginEmail || !loginPassword) {
@@ -32,7 +27,6 @@ export default function LoginPage({ onLogin }) {
     setIsSubmitting(true);
     try {
       await onLogin(loginEmail, loginPassword);
-      // App.jsx switches to PortalLayout once currentUser is set.
     } catch (err) {
       alert(err?.message || 'Authentication failed. Invalid email or password.');
     } finally {
@@ -57,32 +51,15 @@ export default function LoginPage({ onLogin }) {
         <div className="absolute right-[-10%] top-[-10%] w-[150px] h-[150px] bg-[#FF733B]/5 rounded-full blur-[40px] pointer-events-none" />
 
         <h3 className="text-xl md:text-2xl font-bold text-[#2E1E17] text-center font-serif flex items-center justify-center gap-2">
-          <LogIn className="text-[#FF733B]" size={22} /> ERP Credentials Gate
+          <LogIn className="text-[#FF733B]" size={22} /> School Portal Login
         </h3>
-        <p className="text-xs text-[#2E1E17]/60 text-center mb-6 mt-1 font-medium">Select your portal role directory and enter system tokens</p>
+        <p className="text-xs text-[#2E1E17]/60 text-center mb-6 mt-1 font-medium">Select your role and enter your login credentials</p>
 
-        <div className="bg-[#FAF6F0] p-4 rounded-2xl border border-[#2E1E17]/10 mb-4 text-left shadow-sm">
-          <span className="text-[10px] font-extrabold text-[#FF733B] uppercase tracking-wider block mb-2 flex items-center gap-1">
-            <ShieldCheck size={12} /> One-Click Simulation Helper:
-          </span>
-          <div className="grid grid-cols-2 gap-1.5">
-            {simulationPresets.map((preset) => (
-              <button
-                key={preset.role}
-                type="button"
-                disabled={isSubmitting}
-                onClick={() => attemptLogin(preset.email, preset.pass, preset.role)}
-                className="px-2 py-1.5 bg-white border border-[#2E1E17]/10 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-[9px] font-extrabold text-[#2E1E17] transition text-center truncate"
-              >
-                {preset.label}
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1.5">1. Active Workspace Role</label>
+            <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1.5">1. Select Your Role</label>
             <div className="grid grid-cols-2 gap-1.5">
               {[
                 { id: 'super_admin', label: 'Super Admin' },
@@ -107,7 +84,7 @@ export default function LoginPage({ onLogin }) {
           </div>
 
           <div>
-            <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1">Email / Simulation Token</label>
+            <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1">Email Address</label>
             <input
               type="text"
               placeholder="e.g. teacher@school.edu"
@@ -119,8 +96,8 @@ export default function LoginPage({ onLogin }) {
 
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest">Secret Access Key</label>
-              <Link to="/forgot-password" className="text-[10px] text-[#FF733B] font-bold hover:underline">Forgot Key?</Link>
+              <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest">Password</label>
+              <Link to="/forgot-password" className="text-[10px] text-[#FF733B] font-bold hover:underline">Forgot Password?</Link>
             </div>
             <input
               type="password"
@@ -136,15 +113,8 @@ export default function LoginPage({ onLogin }) {
             disabled={isSubmitting}
             className="w-full mt-4 bg-[#FF733B] hover:bg-[#E6622E] disabled:opacity-60 text-white font-extrabold py-3 rounded-xl text-xs md:text-sm uppercase tracking-widest transition duration-300 shadow-lg shadow-orange-500/20"
           >
-            {isSubmitting ? 'Authenticating…' : 'Authenticate Session'}
+            {isSubmitting ? 'Logging in…' : 'Login to Portal'}
           </button>
-
-          <p className="text-[10px] text-center text-gray-400 mt-2 font-bold uppercase tracking-wider">
-            Need a secure login token?{' '}
-            <Link to="/registration" className="text-[#FF733B] hover:underline flex items-center justify-center gap-1 mt-1">
-              Create Account Here
-            </Link>
-          </p>
         </form>
       </div>
     </div>

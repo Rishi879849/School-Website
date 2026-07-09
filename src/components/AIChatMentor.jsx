@@ -4,7 +4,7 @@ import { MessageSquare, X, Send, Sparkles, User, BrainCircuit } from 'lucide-rea
 export default function AIChatMentor() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { sender: 'ai', text: "Hello! I am your AI Compass Mentor. I've audited your mathematical transcripts against live quantitative engineering roles. How can I guide your learning roadmap today?", time: 'Just now' }
+    { sender: 'ai', text: "Hello! I am your AI Study Assistant. I am here to help you with your school subjects, lessons, and homework. What would you like to study today?", time: 'Just now' }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -18,19 +18,19 @@ export default function AIChatMentor() {
 
   const getAIResponse = (userText) => {
     const text = userText.toLowerCase();
-    if (text.includes('math') || text.includes('grade') || text.includes('score')) {
-      return "Based on your mid-term grade of B in Algebra, I recommend spending 3 hours in the Quantum Simulation sandbox this week. I've unlocked the Linear Algebra module for you.";
+    if (text.includes('math') || text.includes('grade') || text.includes('score') || text.includes('algebra')) {
+      return "Based on your math progress, I recommend practicing algebra and geometry problems for 20 minutes today. I've unlocked some extra practice worksheets for you.";
     }
-    if (text.includes('career') || text.includes('job') || text.includes('engineer') || text.includes('road')) {
-      return "Your skill alignment score for Quantum Financial Engineering is currently 74%. To reach the 90% threshold for top trading firms, you should complete the 'Smart Contracts Auditing' seminar in Term 2.";
+    if (text.includes('science') || text.includes('physics') || text.includes('chemistry')) {
+      return "To prepare for your upcoming Science class test, I suggest reviewing the force and energy chapters. I've prepared a brief mock test to help you practice.";
     }
     if (text.includes('fee') || text.includes('pay') || text.includes('finance')) {
-      return "For fee ledger structures, you can view the parent monitoring portal where pending class sections balances can be paid using safe card transactions.";
+      return "You can view the school fee structure on our Fee Matrix page, or log in to the Parent Portal to pay pending dues securely.";
     }
-    if (text.includes('twin') || text.includes('simulation') || text.includes('dtv')) {
-      return "The Digital Twin Verse replicates clinical, financial, and mechanical settings in WebGL, compiling live telemetry nodes to assess performance gaps instantly.";
+    if (text.includes('study') || text.includes('syllabus') || text.includes('exam')) {
+      return "You can download the syllabus and term guides for all subjects on our Scheme & Syllabus page.";
     }
-    return "That is a great direction! I recommend combining your elective coursework with high-frequency project submissions to train your digital skill profile nodes.";
+    return "That is a great question! I suggest reading the relevant textbook chapter and completing the exercises at the end. Let me know if you need help with a specific problem!";
   };
 
   const handleSend = (e) => {

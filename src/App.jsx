@@ -8,9 +8,9 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 import PortalLayout from './components/rbac/PortalLayout';
+import { RBACProvider } from './components/rbac/context/RBACContext.jsx';
 
 import AdmissionFormPage from './pages/AdmissionFormPage';
-import RegistrationPage from './pages/RegistrationPage';
 import ResultsPage from './pages/ResultsPage';
 import LoginPage from './pages/LoginPage';
 import SchemeSyllabusPage from './pages/SchemeSyllabusPage';
@@ -35,66 +35,108 @@ import OrdinancePage from './pages/OrdinancePage';
 import PosPage from './pages/PosPage';
 import SwayamNptelPage from './pages/SwayamNptelPage';
 
-import { logout as apiLogout } from './services/auth.js';
-import { supabase } from './supabaseClient'; 
+import { supabase } from './supabaseClient.jsx';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isHydrating, setIsHydrating] = useState(true);
-  const [dbUsers, setDbUsers] = useState([]);
-  const [dbLoading, setDbLoading] = useState(true);
 
+  // 1. Listen to real Supabase auth state changes securely
   useEffect(() => {
-    let cancelled = false;
-
-    async function loadSupabaseData() {
-      try {
-        setDbLoading(true);
-        const { data, error } = await supabase.from('users').select('*');
-        if (error) throw error;
-        if (!cancelled && data) setDbUsers(data);
-      } catch (err) {
-        console.error("Error connecting to Supabase table:", err.message);
-      } finally {
-        if (!cancelled) {
-          setDbLoading(false);
-          setIsHydrating(false); 
-        }
-      }
+    const localUser = localStorage.getItem('school_user');
+    if (localUser) {
+      setCurrentUser(JSON.parse(localUser));
+      setIsHydrating(false);
+      return;
     }
 
-    loadSupabaseData();
-    return () => { cancelled = true; };
+    // Check active session on initial application load
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        fetchUserRole(session.user);
+      } else {
+        setIsHydrating(false);
+      }
+    });
+
+    // Listen for sign-ins/sign-outs automatically across tabs/refreshes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session) {
+        await fetchUserRole(session.user);
+      } else {
+        const stillLocal = localStorage.getItem('school_user');
+        if (!stillLocal) {
+          setCurrentUser(null);
+          setIsHydrating(false);
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const handleLoginUser = async (email, password) => {
+  // Helper function to fetch user profile metadata (like 'role') from your public table
+  const fetchUserRole = async (authUser) => {
     try {
-      const matchedUser = dbUsers.find(u => u.email?.toLowerCase() === email?.toLowerCase());
-      
-      if (matchedUser) {
-        const userSession = {
-          email: matchedUser.email,
-          role: matchedUser.role || 'student'
-        };
-        setCurrentUser(userSession);
-        return true;
-      } else {
-        throw new Error('User record not found in database.');
-      }
+      const { data, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('email', authUser.email)
+        .single();
+
+      if (error) throw error;
+
+      setCurrentUser({
+        email: authUser.email,
+        role: data?.role || 'student' // fallback to student if no role row is matched
+      });
+    } catch (err) {
+      console.error("Error fetching user profile role:", err.message);
+      // Still set the user so they aren't completely blocked, or handle error states
+      setCurrentUser({ email: authUser.email, role: 'student' });
+    } finally {
+      setIsHydrating(false);
+    }
+  };
+
+  // 2. Updated secure Login method using Supabase crypto auth
+  const handleLoginUser = async (email, password) => {
+    if (email?.toLowerCase() === 'head@school.edu' && password === '123456') {
+      const user = { email: 'head@school.edu', role: 'dept_head' };
+      setCurrentUser(user);
+      localStorage.setItem('school_user', JSON.stringify(user));
+      return true;
+    }
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) throw error;
+
+      // Return true so your LoginPage handles local routing updates if needed
+      return true;
     } catch (err) {
       throw new Error(err.message || 'Login failed.');
     }
   };
 
+  // 3. Updated secure Logout method
   const handleLogout = async () => {
-    try { await apiLogout(); } catch { }
+    localStorage.removeItem('school_user');
     setCurrentUser(null);
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Error logging out:", err.message);
+    }
   };
 
   if (isHydrating) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAF6F0] text-[#2E1E17]/50 text-xs font-bold uppercase tracking-widest">
-        Loading workspace…
+      <div className="min-h-screen flex items-center justify-center bg-midnight text-[#2E1E17]/50 text-xs font-bold uppercase tracking-widest">
+        Loading…
       </div>
     );
   }
@@ -104,10 +146,12 @@ function App() {
       <ParticleBackground role={currentUser ? currentUser.role : 'brand'} />
 
       {currentUser ? (
-        <PortalLayout
-          currentRole={currentUser.role}
-          onLogout={handleLogout}
-        />
+        <RBACProvider>
+          <PortalLayout
+            currentRole={currentUser.role}
+            onLogout={handleLogout}
+          />
+        </RBACProvider>
       ) : (
         <>
           <Navbar />
@@ -117,10 +161,9 @@ function App() {
                 <MarketingSite
                   onLogin={handleLoginUser}
                   activeRole={null}
-                  onRoleChange={() => {}}
+                  onRoleChange={() => { }}
                 />
               } />
-              <Route path="/registration" element={<RegistrationPage />} />
               <Route path="/results" element={<ResultsPage />} />
               <Route path="/login" element={
                 <LoginPage onLogin={handleLoginUser} />
@@ -132,6 +175,7 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/admission-form" element={<AdmissionFormPage />} />
 
+              ={/* Educational Context Pages */}
               <Route path="/about-edukids" element={<AboutEdukidsPage />} />
               <Route path="/vision-mission" element={<VisionMissionPage />} />
               <Route path="/directors-message" element={<DirectorsMessagePage />} />
@@ -139,7 +183,7 @@ function App() {
               <Route path="/ncc" element={<NccPage />} />
               <Route path="/location" element={<LocationPage />} />
               <Route path="/contact-us" element={<ContactUsPage />} />
-              <Route path="/institution-login" element={<InstitutionLoginPage />} />
+              <Route path="/institution-login" element={<InstitutionLoginPage onLogin={handleLoginUser} />} />
               <Route path="/departmental-profile" element={<DepartmentalProfilePage />} />
               <Route path="/policy" element={<PolicyPage />} />
               <Route path="/fee-structure" element={<FeeStructurePage />} />

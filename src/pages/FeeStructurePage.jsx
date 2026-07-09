@@ -81,7 +81,7 @@ export default function FeeStructurePage() {
             <DollarSign size={14} className="text-[#FF733B]" /> Scholarship & Installment Waiver Rules
           </h4>
           <p className="text-gray-500 leading-relaxed font-semibold">
-            Installment payment requests can be submitted via the parent portal. Students with average grades above 90% or with qualified research paper submissions can apply for the 75% tuition support scholarship track using <Link to="/download-forms" className="text-[#FF733B] hover:underline font-bold">FORM-SCH-2026</Link>.
+            Installment payment requests can be submitted via the parent portal. Students with average grades above 90% or with notable achievements in sports or co-curricular activities can apply for the 75% tuition support scholarship track using <Link to="/download-forms" className="text-[#FF733B] hover:underline font-bold">FORM-SCH-2026</Link>.
           </p>
         </div>
       </div>

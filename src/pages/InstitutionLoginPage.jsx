@@ -2,21 +2,29 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ShieldAlert, LogIn } from 'lucide-react';
 
-export default function InstitutionLoginPage() {
+export default function InstitutionLoginPage({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       alert('Please fill out all credentials.');
       return;
     }
-    setTimeout(() => {
-      setEmail('');
-      setPassword('');
-      alert('Simulation Node: Institutional session validation offline. Register via primary login portal.');
-    }, 2000);
+    setIsSubmitting(true);
+    try {
+      if (onLogin) {
+        await onLogin(email, password);
+      } else {
+        alert('Authentication system offline.');
+      }
+    } catch (err) {
+      alert(err.message || 'Login failed.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -31,13 +39,13 @@ export default function InstitutionLoginPage() {
         <div className="absolute right-[-10%] top-[-10%] w-[150px] h-[150px] bg-[#FF733B]/5 rounded-full blur-[40px] pointer-events-none" />
 
         <h3 className="text-xl md:text-2xl font-bold text-[#2E1E17] text-center font-serif flex items-center justify-center gap-2">
-          <ShieldAlert className="text-[#FF733B]" size={22} /> Stream Authority Login
+          <ShieldAlert className="text-[#FF733B]" size={22} /> Staff Portal Login
         </h3>
-        <p className="text-xs text-[#2E1E17]/60 text-center mb-6 mt-1 font-medium">Access node for department heads and system registry nodes</p>
+        <p className="text-xs text-[#2E1E17]/60 text-center mb-6 mt-1 font-medium">Access node for department heads, principal, and staff</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1.5">Stream ID / Admin Email</label>
+            <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1.5">Staff Email Address</label>
             <input 
               type="text" 
               required
@@ -49,7 +57,7 @@ export default function InstitutionLoginPage() {
           </div>
 
           <div>
-            <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1.5">Administrative Access Key</label>
+            <label className="block text-[10px] font-extrabold text-[#2E1E17]/60 uppercase tracking-widest mb-1.5">Secret Access Key</label>
             <input 
               type="password" 
               required
@@ -62,10 +70,16 @@ export default function InstitutionLoginPage() {
 
           <button 
             type="submit"
-            className="w-full mt-4 bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3 rounded-xl text-xs md:text-sm uppercase tracking-widest transition duration-300 shadow-lg shadow-orange-500/20 flex items-center justify-center gap-1.5"
+            disabled={isSubmitting}
+            className="w-full mt-4 bg-[#FF733B] hover:bg-[#E6622E] disabled:opacity-60 text-white font-extrabold py-3 rounded-xl text-xs md:text-sm uppercase tracking-widest transition duration-300 shadow-lg shadow-orange-500/20 flex items-center justify-center gap-1.5"
           >
-            <LogIn size={12} /> Validate Stream Authority
+            <LogIn size={12} /> {isSubmitting ? 'Logging in…' : 'Login to Staff Portal'}
           </button>
+          
+          <div className="pt-2 text-center">
+            <span className="text-[10px] text-gray-400 font-bold block">Predefined Staff Credentials:</span>
+            <code className="text-[10px] text-[#FF733B] font-extrabold mt-0.5 block font-mono">head@school.edu / 123456</code>
+          </div>
         </form>
       </div>
     </div>

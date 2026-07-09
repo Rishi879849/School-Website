@@ -4,7 +4,7 @@ import { ArrowLeft, BookOpen, Globe, Award } from 'lucide-react';
 
 export default function SwayamNptelPage() {
   const handleRegister = () => {
-    alert('Simulation Node: Redirecting session connection to the central SWAYAM-NPTEL registration portal.');
+    alert('Redirecting to the central e-learning resource portal.');
   };
 
   return (
@@ -20,33 +20,33 @@ export default function SwayamNptelPage() {
 
         <div className="space-y-3">
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">E-Learning Portal</span>
-          <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">SWAYAM - NPTEL Local Chapter</h2>
+          <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">E-Learning & Digital Resources</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Edukids Academy is an active participant in SWAYAM-NPTEL online course programs, enabling students to gain supplementary certifications through virtual lectures.
+            Edukids School integrates with digital portals like Diksha and NCERT e-Pathshala, enabling students to access supplementary study guides and video lessons.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
           <div className="border border-[#2E1E17]/10 p-6 rounded-[2rem] space-y-3">
             <Globe className="text-[#FF733B]" size={20} />
-            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">Certifications</h4>
-            <p className="text-[11px] text-gray-500 font-medium">Students can supplement their academic progress by completing certified online NPTEL courses.</p>
+            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">Video Lessons</h4>
+            <p className="text-[11px] text-gray-500 font-medium">Students can clarify their concepts by watching certified animation and video lessons created by educators.</p>
           </div>
 
           <div className="border border-[#2E1E17]/10 p-6 rounded-[2rem] space-y-3">
             <Award className="text-[#FF733B]" size={20} />
-            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">Elite Certifications</h4>
-            <p className="text-[11px] text-gray-500 font-medium">Acquire Elite, Silver, or Gold certificates directly endorsed by IITs and IISc experts.</p>
+            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">Interactive Quizzes</h4>
+            <p className="text-[11px] text-gray-500 font-medium">Practice multiple-choice questions, solve sample board exam papers, and evaluate learning progress instantly.</p>
           </div>
         </div>
 
         <div className="space-y-4 pt-4 border-t border-[#2E1E17]/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="max-w-xl">
             <h3 className="text-sm font-bold text-[#2E1E17] uppercase tracking-wider flex items-center gap-2">
-              <BookOpen size={16} className="text-[#FF733B]" /> Open Enrollments
+              <BookOpen size={16} className="text-[#FF733B]" /> Study Guides
             </h3>
             <p className="text-xs text-gray-500 leading-relaxed font-semibold mt-1">
-              Enrollments for the winter/summer semesters are currently open. Check out the recommended courses list and register your local student profile.
+              Curated e-books and CBSE/NCERT revision notes are available for download. Select your class and access the digital study material portal.
             </p>
           </div>
           

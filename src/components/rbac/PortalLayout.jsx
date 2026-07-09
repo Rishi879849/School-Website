@@ -6,6 +6,7 @@ import PrincipalDashboard from './Principal/PrincipalDashboard';
 import TeacherDashboard from './Teacher/TeacherDashboard';
 import StudentDashboard from './Student/StudentDashboard';
 import ParentDashboard from './Parent/ParentDashboard';
+import DeptHeadDashboard from './DeptHead/DeptHeadDashboard';
 import { LogOut } from 'lucide-react';
 
 export default function PortalLayout({ currentRole, onLogout }) {
@@ -26,6 +27,8 @@ export default function PortalLayout({ currentRole, onLogout }) {
         return <StudentDashboard />;
       case 'parent':
         return <ParentDashboard />;
+      case 'dept_head':
+        return <DeptHeadDashboard />;
       default:
         return <TeacherDashboard />;
     }
@@ -38,6 +41,7 @@ export default function PortalLayout({ currentRole, onLogout }) {
     teacher: 'Teacher',
     student: 'Student',
     parent: 'Parent',
+    dept_head: 'Department Head',
   };
 
   return (

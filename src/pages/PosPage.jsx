@@ -4,11 +4,11 @@ import { ArrowLeft, Target, Check } from 'lucide-react';
 
 export default function PosPage() {
   const outcomes = [
-    { code: 'PO-1: Engineering Knowledge', desc: 'Apply mathematical principles, scientific fundamentals, and computational vectors to solve complex engineering challenges.' },
-    { code: 'PO-2: Problem Analysis', desc: 'Identify, formulate, and analyze structural tech problems to reach validated conclusions using computational frameworks.' },
-    { code: 'PO-3: Design & Development', desc: 'Design systems or design twins that meet specified technical and environmental safety standards.' },
-    { code: 'PO-4: Modern Tool Usage', desc: 'Deploy neural network libraries, quantum physics simulators, and virtual sandbox resources effectively.' },
-    { code: 'PO-5: Ethics & Compliance', desc: 'Commit to professional engineering ethics, grading standards, and strict anti-harassment codes.' }
+    { code: 'LO-1: Foundational Knowledge', desc: 'Apply mathematical concepts, scientific facts, and language skills to solve real-world problems.' },
+    { code: 'LO-2: Critical Thinking', desc: 'Identify and analyze local and global problems to reach logical solutions using scientific inquiry.' },
+    { code: 'LO-3: Creative Expression', desc: 'Develop artistic, physical, and verbal skills through active co-curricular and sports programs.' },
+    { code: 'LO-4: Modern Learning Tools', desc: 'Utilize digital libraries, smart classroom tools, and e-learning resources safely and effectively.' },
+    { code: 'LO-5: Moral & Ethical Values', desc: 'Understand school values, respect towards peers, social responsibility, and civic awareness.' }
   ];
 
   return (
@@ -24,9 +24,9 @@ export default function PosPage() {
 
         <div className="space-y-3">
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Accreditation Matrix</span>
-          <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Program Outcomes (POs)</h2>
+          <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Learning Outcomes (LOs)</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Review learning objectives, professional targets, and accreditation criteria mapping defined for graduate engineers.
+            Review learning objectives, school targets, and developmental criteria mapped for our students.
           </p>
         </div>
 

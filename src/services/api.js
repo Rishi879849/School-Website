@@ -84,7 +84,9 @@ api.interceptors.response.use(
         
         console.warn('⚠️ Silent session refresh failed. Clearing credentials and logging out.');
         localStorage.removeItem('auth_token');
-        window.location.href = '/login';
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       }
     }

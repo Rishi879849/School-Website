@@ -18,7 +18,7 @@ export default function PolicyPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Rules & Directives</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Admissions Policy</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Review registration guidelines, seat allocations, reservations, and compliance codes for engineering track intakes.
+            Review registration guidelines, seat allocations, reservations, and compliance codes for school admissions.
           </p>
         </div>
 
@@ -27,8 +27,10 @@ export default function PolicyPage() {
             <Award size={16} className="text-[#FF733B]" /> Eligibility Criteria
           </h3>
           <ul className="list-disc list-inside text-xs text-gray-500 space-y-2 font-semibold pl-2">
-            <li><strong>Undergraduate (B.Tech):</strong> Candidates must pass 10+2 with Physics, Mathematics, and Chemistry with a minimum average score of 60%.</li>
-            <li><strong>Postgraduate (M.Tech):</strong> Candidates must possess a valid B.E./B.Tech degree in a relevant discipline with a qualifying GATE index score.</li>
+            <li><strong>Nursery & Kindergarten:</strong> Child must be 3+ years old as of March 31st of the academic year. No formal test required.</li>
+            <li><strong>Primary School (Class 1 - 5):</strong> Based on age eligibility and completion of the previous grade level from a recognized school.</li>
+            <li><strong>Middle & Secondary School (Class 6 - 10):</strong> Based on a basic admission evaluation in English, Mathematics, and General Science.</li>
+            <li><strong>Senior Secondary School (Class 11 - 12):</strong> Based on Class 10 Board exam scorecard and stream selection requirements.</li>
           </ul>
         </div>
 

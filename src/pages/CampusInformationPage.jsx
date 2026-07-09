@@ -18,21 +18,21 @@ export default function CampusInformationPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Facilities</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Campus Information</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Edukids Academy boasts a state-of-the-art campus, complete with computational hubs, extensive library catalogs, and dedicated laboratory complexes.
+            Edukids School boasts a modern campus, complete with smart classrooms, a well-stocked library, and dedicated science and computer laboratories.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
           <div className="border border-[#2E1E17]/10 p-6 rounded-[2rem] space-y-3 hover:border-[#FF733B]/30 transition">
             <Library className="text-[#FF733B]" size={20} />
-            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">Central Glass Library</h4>
-            <p className="text-[11px] text-gray-500 font-medium">Over 100,000 scientific binders, online computational databases, and 24/7 digital remote access catalogs.</p>
+            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">School Library</h4>
+            <p className="text-[11px] text-gray-500 font-medium">Over 10,005 books, children's encyclopedias, reference guides, and quiet reading spaces.</p>
           </div>
 
           <div className="border border-[#2E1E17]/10 p-6 rounded-[2rem] space-y-3 hover:border-[#FF733B]/30 transition">
             <Server className="text-[#FF733B]" size={20} />
-            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">VR Sandbox Labs</h4>
-            <p className="text-[11px] text-gray-500 font-medium">Fully virtual sandbox simulators mapping design twin graphics and genomics model telemetry.</p>
+            <h4 className="text-xs font-extrabold text-[#2E1E17] uppercase tracking-wider">Science & Computer Labs</h4>
+            <p className="text-[11px] text-gray-500 font-medium">Equipped science labs for physics, chemistry, and biology experiments, along with a modern computer center.</p>
           </div>
         </div>
 
@@ -41,7 +41,7 @@ export default function CampusInformationPage() {
             <Key size={16} className="text-[#FF733B]" /> Campus Infrastructure Overview
           </h3>
           <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-            Spanning over 240 acres of lush greenery, the campus houses separate departmental wings, modern smart classrooms, separate student hostels with high-speed connectivity, and student recreation centers to enable holistic development.
+            Spanning over 5 acres of lush greenery, the campus houses modern smart classrooms, separate wings for primary and secondary students, spacious playgrounds, an assembly hall, and student recreation centers to enable holistic development.
           </p>
         </div>
       </div>

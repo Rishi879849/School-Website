@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Menu, X, GraduationCap, UserPlus, LogIn, Key, Award, Calendar, FileText, ShieldAlert, BookOpen } from 'lucide-react';
+import { ChevronDown, Menu, X, LogIn, Key, Award, Calendar, FileText, ShieldAlert, BookOpen } from 'lucide-react';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -160,9 +160,6 @@ export default function Navbar() {
                 : 'opacity-0 -translate-y-2 scale-95 invisible pointer-events-none'
             }`}
           >
-            <Link to="/registration" className="flex items-center gap-2 px-4 py-2 hover:bg-[#FAF6F0] text-[11px] text-[#2E1E17]/85 hover:text-black font-bold">
-              <UserPlus size={12} className="text-[#FF733B]" /> Registration
-            </Link>
             <Link to="/results" className="flex items-center gap-2 px-4 py-2 hover:bg-[#FAF6F0] text-[11px] text-[#2E1E17]/85 hover:text-black font-bold">
               <Award size={12} className="text-[#FF733B]" /> Results
             </Link>
@@ -188,13 +185,13 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Standalone Action buttons */}
-      <div className="flex items-center gap-3">
+      {/* Auth Action Buttons */}
+      <div className="flex items-center gap-2.5">
         <Link 
-          to="/admission-form"
-          className="hidden md:flex bg-[#FF733B] hover:bg-[#E6622E] text-white text-xs font-extrabold px-5 py-2.5 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-md shadow-orange-500/10 items-center gap-1.5"
+          to="/login"
+          className="hidden md:flex items-center gap-1.5 text-xs font-extrabold px-5 py-2.5 rounded-full border-2 border-[#2E1E17]/15 text-[#2E1E17] bg-[#FF733B] hover:bg-[#E6622E] text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-md shadow-orange-500/10"
         >
-          <GraduationCap size={14} /> Apply Now
+          <LogIn size={14} /> Login Portal
         </Link>
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -269,7 +266,6 @@ export default function Navbar() {
           {/* Student Life */}
           <div className="flex flex-col gap-2 text-left">
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Student Life</span>
-            <Link to="/registration" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-[#2E1E17]/80 hover:text-black pl-2">Registration</Link>
             <Link to="/results" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-[#2E1E17]/80 hover:text-black pl-2">Results</Link>
             <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-[#2E1E17]/80 hover:text-black pl-2">Login</Link>
             <Link to="/scheme-syllabus" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-[#2E1E17]/80 hover:text-black pl-2">Scheme/Syllabus</Link>
@@ -277,6 +273,19 @@ export default function Navbar() {
             <Link to="/download-forms" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-[#2E1E17]/80 hover:text-black pl-2">Download Forms</Link>
             <Link to="/anti-ragging" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-[#2E1E17]/80 hover:text-black pl-2">Anti Ragging</Link>
             <Link to="/forgot-password" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-[#2E1E17]/80 hover:text-black pl-2">Forgot Password</Link>
+          </div>
+
+          <div className="h-px bg-[#2E1E17]/5 my-1" />
+
+          {/* Mobile Auth Buttons */}
+          <div className="flex gap-3 pt-2">
+            <Link 
+              to="/login" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-extrabold py-3 rounded-xl bg-gradient-to-r from-[#FF733B] to-[#FF9A5C] text-white shadow-md transition-all"
+            >
+              <LogIn size={14} /> Login Portal
+            </Link>
           </div>
         </div>
       )}

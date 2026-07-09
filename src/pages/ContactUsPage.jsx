@@ -40,20 +40,20 @@ export default function ContactUsPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Support Directory</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Contact Us</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Get in touch with our administrative office, admissions desk, or technical support nodes.
+            Get in touch with our school administrative office, admissions desk, or parent support team.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
           {/* Information */}
           <div className="md:col-span-5 space-y-6">
-            <h3 className="text-sm font-bold text-[#2E1E17] uppercase tracking-wider">Contact Directories</h3>
+            <h3 className="text-sm font-bold text-[#2E1E17] uppercase tracking-wider">School Contacts</h3>
             
             <div className="space-y-4 text-xs font-semibold text-[#2E1E17]/80">
               <div className="flex items-start gap-3">
                 <MapPin size={16} className="text-[#FF733B] shrink-0 mt-0.5" />
                 <div>
-                  <span className="block font-bold">Institution Address</span>
+                  <span className="block font-bold">School Address</span>
                   <span className="block text-gray-500 font-medium mt-0.5">Bhopal Bypass Road, Gandhi Nagar, Bhopal, MP 462033</span>
                 </div>
               </div>
@@ -61,7 +61,7 @@ export default function ContactUsPage() {
               <div className="flex items-start gap-3">
                 <Phone size={16} className="text-[#FF733B] shrink-0 mt-0.5" />
                 <div>
-                  <span className="block font-bold">Direct Phone Helpline</span>
+                  <span className="block font-bold">Phone Helpline</span>
                   <span className="block text-gray-500 font-medium mt-0.5">+91 (755) 267-8812</span>
                 </div>
               </div>
@@ -69,8 +69,8 @@ export default function ContactUsPage() {
               <div className="flex items-start gap-3">
                 <Mail size={16} className="text-[#FF733B] shrink-0 mt-0.5" />
                 <div>
-                  <span className="block font-bold">Email Inbox Nodes</span>
-                  <span className="block text-gray-500 font-medium mt-0.5">support@edukids.edu</span>
+                  <span className="block font-bold">Email Address</span>
+                  <span className="block text-gray-500 font-medium mt-0.5">contact@edukids.edu</span>
                 </div>
               </div>
             </div>

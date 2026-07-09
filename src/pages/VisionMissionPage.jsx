@@ -18,7 +18,7 @@ export default function VisionMissionPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Aspirations</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Vision & Mission</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Discover our long-term objectives and academic core mandates guiding the student growth index.
+            Discover our long-term objectives and academic core mandates guiding the student development.
           </p>
         </div>
 
@@ -28,7 +28,7 @@ export default function VisionMissionPage() {
               <Eye size={18} className="text-[#FF733B]" /> Institutional Vision
             </h3>
             <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-              To be a global centre of learning and research in engineering and technology, nurturing creative minds capable of leading technological advancements and addressing global challenges with ethical values.
+              To be a premier center of foundational learning and holistic development, nurturing young minds to become creative thinkers, compassionate leaders, and responsible global citizens with strong moral values.
             </p>
           </div>
 
@@ -37,7 +37,7 @@ export default function VisionMissionPage() {
               <Target size={18} className="text-[#FF733B]" /> Institutional Mission
             </h3>
             <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-              To provide state-of-the-art infrastructure and learning systems, promote research-driven inquiry in collaborative environments, and foster industrial linkages to ensure students graduate with high placement viability.
+              To provide modern learning spaces and play areas, promote curiosity-driven inquiry in a collaborative and safe environment, and partner with parents to ensure students achieve academic success and strong character.
             </p>
           </div>
         </div>
@@ -47,9 +47,9 @@ export default function VisionMissionPage() {
             <ShieldAlert size={16} className="text-[#FF733B]" /> Core Values
           </h3>
           <ul className="list-disc list-inside text-xs text-gray-500 space-y-2 font-semibold">
-            <li><strong>Innovation:</strong> Supporting computational sandboxes and design twins.</li>
-            <li><strong>Integrity:</strong> Upholding strict grading, academic honesty, and code of conduct.</li>
-            <li><strong>Inclusivity:</strong> Ensuring multi-tenant educational support across regions.</li>
+            <li><strong>Creativity:</strong> Supporting hands-on activities, arts, and smart learning.</li>
+            <li><strong>Integrity:</strong> Upholding honesty, respect, and a safe code of conduct.</li>
+            <li><strong>Inclusivity:</strong> Ensuring a warm, supportive school experience for every child.</li>
           </ul>
         </div>
       </div>

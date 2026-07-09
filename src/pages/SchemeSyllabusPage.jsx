@@ -7,46 +7,46 @@ export default function SchemeSyllabusPage() {
 
   const syllabusData = {
     science: {
-      title: 'Department of Science & Artificial Intelligence',
+      title: 'Department of Science & Computer Science',
       icon: <Terminal size={18} className="text-[#FF733B]" />,
       courses: [
-        { code: 'SCI-101', name: 'Introduction to Neural Architecture & Weights', semester: 'Semester I', credits: '4.0 Credits', file: 'Neural_Architecture_Syllabus.pdf' },
-        { code: 'SCI-204', name: 'Biomedical Engineering & Genomics Modeling', semester: 'Semester II', credits: '4.0 Credits', file: 'Biomedical_Genomics_Syllabus.pdf' },
-        { code: 'SCI-309', name: 'Advanced Machine Learning & Vector Math', semester: 'Semester III', credits: '3.0 Credits', file: 'Machine_Learning_Syllabus.pdf' },
-        { code: 'SCI-412', name: 'WebGL Quantum Design & Space Telemetry', semester: 'Semester IV', credits: '4.5 Credits', file: 'WebGL_Quantum_Telemetry.pdf' }
+        { code: 'SCI-01', name: 'General Science & Life Systems', semester: 'Term I', credits: '5 Periods/Wk', file: 'General_Science_Syllabus.pdf' },
+        { code: 'SCI-02', name: 'Basic Computer Programming & Logic', semester: 'Term I', credits: '4 Periods/Wk', file: 'Computer_Logic_Syllabus.pdf' },
+        { code: 'SCI-03', name: 'Physics: Force, Work & Energy', semester: 'Term II', credits: '5 Periods/Wk', file: 'Physics_Force_Energy.pdf' },
+        { code: 'SCI-04', name: 'Introduction to Chemistry & Lab Practices', semester: 'Term II', credits: '4 Periods/Wk', file: 'Chemistry_Intro_Syllabus.pdf' }
       ]
     },
-    finance: {
-      title: 'Department of Computational Finance & Cryptography',
+    mathematics: {
+      title: 'Department of Mathematics & Statistics',
       icon: <PieChart size={18} className="text-[#FF733B]" />,
       courses: [
-        { code: 'FIN-102', name: 'Foundations of Algorithmic Trading & Ledger', semester: 'Semester I', credits: '3.0 Credits', file: 'Algo_Trading_Syllabus.pdf' },
-        { code: 'FIN-208', name: 'Quantitative Micro-Market Economics', semester: 'Semester II', credits: '4.0 Credits', file: 'Microeconomics_Syllabus.pdf' },
-        { code: 'FIN-315', name: 'Predictive Stock Constellation Math', semester: 'Semester III', credits: '4.0 Credits', file: 'Stock_Constellation_Syllabus.pdf' }
+        { code: 'MAT-01', name: 'Algebra, Geometry & Trigonometry', semester: 'Term I', credits: '6 Periods/Wk', file: 'Algebra_Geometry_Syllabus.pdf' },
+        { code: 'MAT-02', name: 'Commercial Mathematics & Bookkeeping', semester: 'Term II', credits: '5 Periods/Wk', file: 'Commercial_Maths_Syllabus.pdf' },
+        { code: 'MAT-03', name: 'Statistics & Probability Foundations', semester: 'Term II', credits: '4 Periods/Wk', file: 'Statistics_Foundations.pdf' }
       ]
     },
-    arts: {
-      title: 'Department of Generative Arts & Interactive Media',
+    languages: {
+      title: 'Department of Languages & Literature',
       icon: <PenTool size={18} className="text-[#FF733B]" />,
       courses: [
-        { code: 'ART-104', name: 'WebGL Binders & Physics Engine Renders', semester: 'Semester I', credits: '3.0 Credits', file: 'WebGL_Binders_Syllabus.pdf' },
-        { code: 'ART-211', name: 'Interactive Virtual Reality Design', semester: 'Semester II', credits: '4.0 Credits', file: 'VR_Interactive_Design.pdf' },
-        { code: 'ART-320', name: '3D Mesh Generation & Algorithmic Clay', semester: 'Semester III', credits: '4.0 Credits', file: 'Algorithmic_Clay_Syllabus.pdf' }
+        { code: 'ENG-01', name: 'English Grammar & Writing Composition', semester: 'Term I', credits: '5 Periods/Wk', file: 'English_Writing_Syllabus.pdf' },
+        { code: 'ENG-02', name: 'English Literature: Classics & Poetry', semester: 'Term II', credits: '4 Periods/Wk', file: 'English_Literature_Syllabus.pdf' },
+        { code: 'HIN-01', name: 'Hindi Literature & Creative Writing', semester: 'Term I', credits: '4 Periods/Wk', file: 'Hindi_Literature_Syllabus.pdf' }
       ]
     },
-    law: {
-      title: 'Department of Cyber Law & Digital Ethics',
+    social: {
+      title: 'Department of Social Sciences & Civics',
       icon: <ShieldAlert size={18} className="text-[#FF733B]" />,
       courses: [
-        { code: 'LAW-202', name: 'Introduction to Internet Jurisprudence & IP', semester: 'Semester II', credits: '3.0 Credits', file: 'Internet_Jurisprudence_Syllabus.pdf' },
-        { code: 'LAW-305', name: 'AI Ethics, Safety Standards & Alignment Codes', semester: 'Semester III', credits: '4.0 Credits', file: 'AI_Alignment_Ethics.pdf' },
-        { code: 'LAW-401', name: 'Corporate Multi-Tenant Compliance Regulations', semester: 'Semester IV', credits: '3.0 Credits', file: 'Compliance_Regulation.pdf' }
+        { code: 'SOC-01', name: 'History: Ancient & Modern Civilizations', semester: 'Term I', credits: '4 Periods/Wk', file: 'History_Civilizations_Syllabus.pdf' },
+        { code: 'SOC-02', name: 'Geography: Map Study & Climatic Regions', semester: 'Term II', credits: '4 Periods/Wk', file: 'Geography_Map_Study.pdf' },
+        { code: 'SOC-03', name: 'Civics: Indian Constitution & Local Governance', semester: 'Term II', credits: '3 Periods/Wk', file: 'Civics_Constitution_Syllabus.pdf' }
       ]
     }
   };
 
   const handleDownload = (fileName) => {
-    alert(`Compiling DTV Secure Archive: ${fileName} is preparing for system download.`);
+    alert(`Compiling Secure Archive: ${fileName} is preparing for system download.`);
   };
 
   return (
@@ -98,10 +98,10 @@ export default function SchemeSyllabusPage() {
               <table className="w-full text-xs text-left border-collapse">
                 <thead>
                   <tr className="bg-gray-50 border-b border-[#2E1E17]/10 font-bold text-gray-500">
-                    <th className="p-4 w-24">Course Code</th>
-                    <th className="p-4">Course Title</th>
-                    <th className="p-4 w-28">Semester</th>
-                    <th className="p-4 w-28">Weight</th>
+                    <th className="p-4 w-24">Subject Code</th>
+                    <th className="p-4">Subject Title</th>
+                    <th className="p-4 w-28">Term</th>
+                    <th className="p-4 w-28">Weekly Periods</th>
                     <th className="p-4 w-24 text-center">Action</th>
                   </tr>
                 </thead>

@@ -29,7 +29,7 @@ export default function DirectorsMessagePage() {
                 className="w-full h-full object-cover object-top"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-[#2F221E] text-white py-2 text-center text-[10px] font-extrabold uppercase tracking-wider">
-                Dr. Alistair Cook, Ph.D.
+                Mr. Rajesh Kumar
               </div>
             </div>
           </div>
@@ -39,19 +39,19 @@ export default function DirectorsMessagePage() {
             <div className="text-xs text-gray-500 font-semibold leading-relaxed space-y-4">
               <p>
                 <Quote size={20} className="text-[#FF733B] inline-block mr-1.5 shrink-0 rotate-180" />
-                Welcome to Edukids Academy. As Director, I am immensely proud of our legacy in scientific rigor and fundamental education.
+                Welcome to Edukids School. As Director, I am immensely proud of our legacy in nurturing young minds and providing quality primary and secondary education.
               </p>
               <p>
-                In today's digital era, we believe that education must evolve beyond standard classroom walls. We are building sandbox systems, virtual design models, and immersive learning programs to prepare our pupils for senior secondary and board milestones.
+                In today's modern era, we believe that education must go beyond standard textbook learning. We are building smart classrooms, active science labs, and creative play areas to prepare our students for board exam milestones and future life challenges.
               </p>
               <p>
-                We invite you to participate in our active computational labs, explore our departmental tracks, and build a premium educational trajectory.
+                We invite you to join our school community, explore our sports and arts facilities, and build a rewarding academic path for your child.
               </p>
             </div>
             
             <div className="pt-2">
-              <span className="block text-xs font-bold text-[#2E1E17]">Dr. Alistair Cook</span>
-              <span className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Director, Edukids Academy</span>
+              <span className="block text-xs font-bold text-[#2E1E17]">Mr. Rajesh Kumar</span>
+              <span className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Director, Edukids School</span>
             </div>
           </div>
         </div>

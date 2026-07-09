@@ -89,7 +89,7 @@ export default function AdmissionFormPage() {
               <GraduationCap className="text-[#FF733B]" /> Student Intake Application
             </h2>
             <p className="text-xs text-gray-400 mt-2 max-w-xl font-medium">
-              Submit your pupil's credentials to initiate enrollment in the Digital Twin Verse academy tracks.
+              Submit your pupil's details to initiate enrollment in the Edukids School academic streams.
             </p>
 
             {/* Stepper tracker */}

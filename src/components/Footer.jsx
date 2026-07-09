@@ -38,16 +38,16 @@ export default function Footer() {
             </span>
           </div>
           <p className="text-xs text-gray-400 leading-relaxed max-w-md font-medium">
-            Our mission is to foster high-fidelity developmental thinking in children, blending foundational academic instruction with computational sandboxes and advanced learning telemetry. We prepare pupils to lead the next generation of creative technologists, science innovators, and global leaders.
+            Our mission is to foster holistic growth in children, blending foundational academic instruction with smart learning, sports, and arts. We prepare students to become creative thinkers, responsible citizens, and future leaders.
           </p>
           <div className="space-y-3 pt-2 text-xs font-semibold text-gray-300">
             <div className="flex items-center gap-3">
               <MapPin size={14} className="text-[#FF733B]" />
-              <span>128 Innovation Parkway, Silicon Valley, CA 94025</span>
+              <span>Bhopal Bypass Road, Gandhi Nagar, Bhopal, MP 462033</span>
             </div>
             <div className="flex items-center gap-3">
               <Phone size={14} className="text-[#FF733B]" />
-              <span>+1 (800) 555-KIDS</span>
+              <span>+91 (755) 267-8812</span>
             </div>
             <div className="flex items-center gap-3">
               <Mail size={14} className="text-[#FF733B]" />
@@ -59,14 +59,14 @@ export default function Footer() {
         {/* Quick Links Column */}
         <div className="lg:col-span-3 space-y-4 text-left">
           <h4 className="text-xs font-bold uppercase tracking-wider text-[#FF733B] border-b border-white/10 pb-2">
-            Institutional links
+            School Links
           </h4>
           <div className="grid grid-cols-1 gap-2 text-xs text-gray-400 font-semibold">
-            <a href="/" className="hover:text-white transition">Our Academy Profile</a>
+            <a href="/" className="hover:text-white transition">Our School Profile</a>
             <a href="/" className="hover:text-white transition">Academic Calendar</a>
             <a href="/" className="hover:text-white transition">Campus Virtual Tour</a>
-            <a href="/" className="hover:text-white transition">Faculty Directory</a>
-            <a href="/" className="hover:text-white transition">Anti-Ragging Affidavits</a>
+            <a href="/" className="hover:text-white transition">Our Teachers</a>
+            <a href="/" className="hover:text-white transition">Anti-Ragging Policy</a>
             <a href="/" className="hover:text-white transition">Public Disclosures</a>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function Footer() {
               <CheckCircle size={28} className="text-[#4ADE80] mx-auto animate-bounce" />
               <h5 className="text-sm font-bold text-white">Message Logged!</h5>
               <p className="text-[11px] text-gray-400">
-                Our support node has registered your request. An admissions mentor will respond shortly.
+                Our support team has registered your request. A school representative will respond shortly.
               </p>
             </div>
           ) : (

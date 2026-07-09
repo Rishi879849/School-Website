@@ -4,11 +4,11 @@ import { ArrowLeft, Calendar, FileText } from 'lucide-react';
 
 export default function AcademicCalendarPage() {
   const dates = [
-    { date: 'July 10, 2026', event: 'Academic Semester I & III Commences', type: 'commence' },
-    { date: 'August 15, 2026', event: 'Independence Day Holiday', type: 'holiday' },
-    { date: 'September 20-25, 2026', event: 'Mid-Term Evaluation Exams', type: 'evaluation' },
-    { date: 'October 12, 2026', event: 'Syllabus lock & Grade Sheet compilation', type: 'lock' },
-    { date: 'November 15-30, 2026', event: 'Final Examination Term Audits', type: 'exam' }
+    { date: 'July 10, 2026', event: 'New Academic Session Commences', type: 'commence' },
+    { date: 'August 15, 2026', event: 'Independence Day Celebrations & Holiday', type: 'holiday' },
+    { date: 'September 20-25, 2026', event: 'Half-Yearly Written Examinations', type: 'evaluation' },
+    { date: 'October 12, 2026', event: 'Syllabus completion & Progress Report Compilation', type: 'lock' },
+    { date: 'November 15-30, 2026', event: 'Annual School Board Examinations', type: 'exam' }
   ];
 
   return (
@@ -26,7 +26,7 @@ export default function AcademicCalendarPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Academic Calendar</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Term Schedules & Events</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Track key institutional dates, semester registrations, examinations weeks, and academic calendar audits.
+            Track key school dates, parent-teacher meetings, examinations weeks, and academic activities.
           </p>
         </div>
 
@@ -41,7 +41,7 @@ export default function AcademicCalendarPage() {
                 <tr className="bg-gray-50 border-b border-[#2E1E17]/10 font-bold text-gray-500">
                   <th className="p-4 w-40">Scheduled Date</th>
                   <th className="p-4">Event Description</th>
-                  <th className="p-4 w-32 text-center">Audit Node</th>
+                  <th className="p-4 w-32 text-center">Event Type</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#2E1E17]/10 font-semibold text-[#2E1E17]/80">
