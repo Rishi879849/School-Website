@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 
 export default function Footer() {
@@ -62,12 +63,12 @@ export default function Footer() {
             School Links
           </h4>
           <div className="grid grid-cols-1 gap-2 text-xs text-gray-400 font-semibold">
-            <a href="/" className="hover:text-white transition">Our School Profile</a>
-            <a href="/" className="hover:text-white transition">Academic Calendar</a>
-            <a href="/" className="hover:text-white transition">Campus Virtual Tour</a>
-            <a href="/" className="hover:text-white transition">Our Teachers</a>
-            <a href="/" className="hover:text-white transition">Anti-Ragging Policy</a>
-            <a href="/" className="hover:text-white transition">Public Disclosures</a>
+            <Link to="/about-edukids" className="hover:text-white transition">Our School Profile</Link>
+            <Link to="/academic-calendar" className="hover:text-white transition">Academic Calendar</Link>
+            <Link to="/campus-information" className="hover:text-white transition">Campus Virtual Tour</Link>
+            <Link to="/departmental-profile" className="hover:text-white transition">Our Teachers</Link>
+            <Link to="/anti-ragging" className="hover:text-white transition">Anti-Ragging Policy</Link>
+            <Link to="/policy" className="hover:text-white transition">Public Disclosures</Link>
           </div>
         </div>
 
@@ -130,11 +131,11 @@ export default function Footer() {
 
       {/* Footer copyright */}
       <div className="max-w-7xl mx-auto border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-        <span>© 2026 Edukids Inc. All Rights Reserved.</span>
+        <span>© 2026 Edukids School. All Rights Reserved.</span>
         <div className="flex gap-4">
-          <a href="/" className="hover:text-gray-300 transition">Privacy Policy</a>
-          <a href="/" className="hover:text-gray-300 transition">Terms of Service</a>
-          <a href="/" className="hover:text-gray-300 transition">Cyber Compliance</a>
+          <Link to="/privacy-policy" className="hover:text-gray-300 transition">Privacy Policy</Link>
+          <Link to="/terms" className="hover:text-gray-300 transition">Terms of Service</Link>
+          <Link to="/cyber-compliance" className="hover:text-gray-300 transition">Cyber Compliance</Link>
         </div>
       </div>
     </footer>

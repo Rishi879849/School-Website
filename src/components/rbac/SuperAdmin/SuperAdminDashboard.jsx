@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRBAC } from '../context/RBACContext';
 import { Settings, ShieldCheck, DollarSign, RefreshCw, Layers, Award, Check } from 'lucide-react';
 
@@ -46,17 +47,17 @@ export default function SuperAdminDashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
       {/* Header Info */}
-      <div className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+      <div className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white p-8 rounded-3xl relative overflow-hidden shadow-xl border border-white/5">
         <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-1">
-          <span className="text-[9px] bg-blue-600 text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+          <span className="text-[9px] bg-blue-600 text-white font-extrabold uppercase px-3 py-0.5 rounded-full tracking-widest inline-block">
             Global SaaS Operator Portal
           </span>
-          <h3 className="text-xl md:text-2xl font-bold font-serif">Super Admin Command Center</h3>
+          <h3 className="text-xl md:text-2xl font-bold font-serif mt-1">Super Admin Command Center</h3>
           <p className="text-xs text-white/70">
-            White-Labeling, Promotion Lifecycles, and Multi-Tenant Configurations.
+            Configure White-Label parameters, execute promotion lifecycles, and audit database nodes.
           </p>
         </div>
       </div>
@@ -132,7 +133,7 @@ export default function SuperAdminDashboard() {
 
             <button 
               type="submit"
-              className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition"
+              className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer"
             >
               Update Brand Configurations
             </button>
@@ -147,79 +148,58 @@ export default function SuperAdminDashboard() {
               <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Global Fee Templates Editor</h4>
             </div>
 
-            <form onSubmit={handleGlobalFeeUpdate} className="space-y-3">
+            <form onSubmit={handleGlobalFeeUpdate} className="space-y-3.5 text-xs text-left">
               <div>
-                <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Select Grade Level Range</label>
+                <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Target Roster Segment</label>
                 <select 
-                  value={selectedGrade}
+                  value={selectedGrade} 
                   onChange={(e) => setSelectedGrade(e.target.value)}
-                  className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none"
+                  className="w-full py-2.5 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17]"
                 >
-                  <option value="Grade 10-A">Classes 9-10 Segment</option>
-                  <option value="Grade 11-A">Classes 11-12 Secondary</option>
-                  <option value="Primary">Classes 1-8 Primary</option>
+                  <option value="Grade 9-A">Grade 9-A Segment</option>
+                  <option value="Grade 10-A">Grade 10-A Segment</option>
+                  <option value="Grade 11-A">Grade 11-A Segment</option>
+                  <option value="Grade 12-A">Grade 12-A Segment</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Base Monthly Tuition Rate ($)</label>
+                <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Fee Amount Rate ($)</label>
                 <input 
-                  type="number"
-                  value={feeRateInput}
+                  type="number" 
+                  value={feeRateInput} 
                   onChange={(e) => setFeeRateInput(Number(e.target.value))}
-                  className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17]"
-                  required
+                  className="w-full py-2.5 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17]"
+                  required 
                 />
               </div>
 
-              <button 
-                type="submit"
-                className="w-full bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest shadow-md transition"
-              >
-                Apply Fee Template
+              <button type="submit" className="w-full bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer">
+                Propagate Fee Template
               </button>
             </form>
           </div>
-        </div>
 
-      </div>
-
-      {/* Lifecycle Actions */}
-      <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 border-b border-[#2E1E17]/5 pb-3">
-          <Layers size={18} className="text-emerald-600" />
-          <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Academic Year Lifecycle Management</h4>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-[#FAF6F0]/40 border border-[#2E1E17]/5 rounded-2xl text-xs text-left">
-            <h5 className="font-extrabold text-[#2E1E17]">Promote Student Roster Grade levels</h5>
-            <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">
-              Triggers the annual promotion pipeline. Advances student mappings (e.g. from Class 10 to Class 11), checks graduation parameters, and resets calendar events.
-            </p>
+          {/* Promotion lifecycle */}
+          <div className="bg-[#FAF6F0]/40 rounded-2xl p-4.5 border border-[#2E1E17]/5 flex flex-col justify-between mt-4">
+            <div>
+              <h5 className="text-[10px] font-extrabold text-[#2E1E17] uppercase tracking-wider flex items-center gap-1.5">
+                <RefreshCw size={12} className="text-[#FF733B]" /> Academic Roster Promotion
+              </h5>
+              <p className="text-[10px] text-gray-500 leading-relaxed font-semibold mt-1">
+                Advance active student rosters up one academic grade level. Archives current timetables.
+              </p>
+            </div>
             <button 
               onClick={triggerPromotionLifecycle}
-              className="mt-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[10px] px-4 py-2 rounded-xl transition uppercase tracking-wider"
+              className="w-full bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-extrabold py-2.5 rounded-xl text-[10px] uppercase tracking-widest transition mt-3.5 cursor-pointer"
             >
-              Advance Grade Levels
-            </button>
-          </div>
-
-          <div className="p-4 bg-[#FAF6F0]/40 border border-[#2E1E17]/5 rounded-2xl text-xs text-left">
-            <h5 className="font-extrabold text-[#2E1E17]">Lock Active Academic Term</h5>
-            <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">
-              Locks editing access to timetables and attendance logs for past terms. Archives current term data in local SQL files.
-            </p>
-            <button 
-              onClick={() => alert('Active Academic Term locked. Historical logs archived in database.')}
-              className="mt-3.5 bg-[#2E1E17] hover:bg-black text-white font-extrabold text-[10px] px-4 py-2 rounded-xl transition uppercase tracking-wider"
-            >
-              Lock Term Data
+              Trigger Promotion Lifecycle
             </button>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   );
 }

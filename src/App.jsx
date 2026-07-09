@@ -34,6 +34,9 @@ import AcademicCalendarPage from './pages/AcademicCalendarPage';
 import OrdinancePage from './pages/OrdinancePage';
 import PosPage from './pages/PosPage';
 import SwayamNptelPage from './pages/SwayamNptelPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import CyberCompliancePage from './pages/CyberCompliancePage';
 
 import { supabase } from './supabaseClient.jsx';
 
@@ -191,6 +194,9 @@ function App() {
               <Route path="/ordinance" element={<OrdinancePage />} />
               <Route path="/pos" element={<PosPage />} />
               <Route path="/swayam-nptel" element={<SwayamNptelPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="/terms" element={<TermsOfServicePage />} />
+              <Route path="/cyber-compliance" element={<CyberCompliancePage />} />
 
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

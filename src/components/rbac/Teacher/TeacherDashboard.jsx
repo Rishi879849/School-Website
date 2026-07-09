@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRBAC } from '../context/RBACContext';
-import { Clock, CheckSquare, Sparkles, Send, UserCheck, Star, HelpCircle } from 'lucide-react';
+import { Clock, CheckSquare, Sparkles, Send, UserCheck, Star, HelpCircle, AlertCircle } from 'lucide-react';
 
 export default function TeacherDashboard() {
   const { 
@@ -53,17 +54,17 @@ export default function TeacherDashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
       {/* Header Info */}
-      <div className="bg-gradient-to-br from-[#1E293B] to-[#334155] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+      <div className="bg-gradient-to-br from-[#1E293B] to-[#334155] text-white p-8 rounded-3xl relative overflow-hidden shadow-xl border border-white/5">
         <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-1">
-          <span className="text-[9px] bg-[#FF733B] text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+          <span className="text-[9px] bg-[#FF733B] text-white font-extrabold uppercase px-3 py-0.5 rounded-full tracking-widest inline-block">
             Classroom Leader Portal
           </span>
-          <h3 className="text-xl md:text-2xl font-bold font-serif">Teacher Homeroom Advisor Workspace</h3>
+          <h3 className="text-xl md:text-2xl font-bold font-serif mt-1">Teacher Homeroom Advisor Workspace</h3>
           <p className="text-xs text-white/70">
-            Log periodic attendance, configure study feedback with AI, and alert parent profiles.
+            Log periodic attendance, configure study feedback with AI, and alert parent profiles instantly.
           </p>
         </div>
       </div>
@@ -82,7 +83,7 @@ export default function TeacherDashboard() {
               <select 
                 value={selectedPeriod}
                 onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="py-1 px-3.5 rounded-lg border border-gray-300 text-xs bg-white text-[#2E1E17]"
+                className="py-1.5 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none"
               >
                 <option value="Period 1">Period 1 (08:30 AM)</option>
                 <option value="Period 2">Period 2 (10:00 AM)</option>
@@ -126,15 +127,15 @@ export default function TeacherDashboard() {
                         </span>
                       </td>
                       <td className="py-3 text-right">
-                        <div className="inline-flex gap-1">
+                        <div className="inline-flex gap-1 bg-[#FAF6F0] p-1 rounded-xl border border-[#2E1E17]/5">
                           {['Present', 'Absent', 'Tardy'].map((st) => (
                             <button
                               key={st}
                               onClick={() => handleToggleAttendance(student.id, st)}
-                              className={`text-[8px] font-extrabold uppercase px-2 py-0.5 rounded border transition-all ${
+                              className={`text-[8.5px] font-extrabold uppercase px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
                                 currentStatus === st
-                                  ? 'bg-[#2E1E17] text-white border-black'
-                                  : 'bg-white hover:bg-gray-100 text-gray-500 border-gray-200'
+                                  ? 'bg-[#2E1E17] text-white border-black shadow-sm'
+                                  : 'bg-transparent hover:bg-white text-gray-500 border-transparent'
                               }`}
                             >
                               {st}
@@ -150,94 +151,110 @@ export default function TeacherDashboard() {
           </div>
         </div>
 
-        {/* AI-Assisted Grading Feedbacks */}
-        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between min-h-[350px]">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 border-b border-[#2E1E17]/5 pb-3">
-              <Sparkles size={18} className="text-[#FF733B]" />
-              <h4 className="text-sm font-bold text-[#2E1E17] font-serif">AI-Assisted Student Grading Feedback</h4>
-            </div>
+        {/* Engine C: Gradebook with AI study suggestions */}
+        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#2E1E17]/5 pb-3">
+            <Sparkles size={18} className="text-[#FF733B]" />
+            <h4 className="text-sm font-bold text-[#2E1E17] font-serif">AI Feedback Engine</h4>
+          </div>
 
-            <div className="space-y-3.5 text-left">
-              <div>
-                <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Select Student</label>
-                <select 
-                  value={selectedStudent} 
-                  onChange={(e) => {
-                    setSelectedStudent(e.target.value);
-                    setAiFeedbackText('');
-                  }} 
-                  className="w-full py-1.5 px-3 rounded-lg border border-gray-300 text-xs bg-white text-[#2E1E17]"
-                >
-                  {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Assigned Mark / Score (%)</label>
-                <input 
-                  type="number" 
-                  value={marksInput}
-                  onChange={(e) => setMarksInput(Number(e.target.value))}
-                  className="w-full py-1.5 px-3 rounded-lg border border-gray-300 text-xs bg-white text-[#2E1E17]"
-                />
-              </div>
-
-              <button 
-                onClick={generateAiFeedback}
-                disabled={isGeneratingFeedback}
-                className="w-full bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-2.5 rounded-xl text-xs uppercase tracking-widest transition flex items-center justify-center gap-1.5"
+          <div className="space-y-4 text-xs text-left">
+            <div>
+              <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Select Student</label>
+              <select 
+                value={selectedStudent}
+                onChange={(e) => setSelectedStudent(e.target.value)}
+                className="w-full py-2 px-3 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none"
               >
-                {isGeneratingFeedback ? 'Evaluating...' : 'Generate AI Feedback'}
-              </button>
-
-              {aiFeedbackText && (
-                <div className="p-3 bg-purple-50/50 border border-purple-200/55 rounded-2xl text-[10px] text-purple-900 leading-relaxed italic text-left">
-                  <strong>AI Generated Paragraph:</strong> "{aiFeedbackText}"
-                </div>
-              )}
+                {students.map(s => (
+                  <option key={s.id} value={s.id}>{s.name} ({s.roll})</option>
+                ))}
+              </select>
             </div>
+
+            <div>
+              <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Assigned Marks (Max 100)</label>
+              <input 
+                type="number"
+                min="0"
+                max="100"
+                value={marksInput}
+                onChange={(e) => setMarksInput(Number(e.target.value))}
+                className="w-full py-2 px-3 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none"
+              />
+            </div>
+
+            <button 
+              onClick={generateAiFeedback}
+              disabled={isGeneratingFeedback}
+              className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-2.5 rounded-xl text-xs uppercase tracking-widest transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              {isGeneratingFeedback ? (
+                <>
+                  <RefreshCw size={12} className="animate-spin" /> Synthesizing Suggestions...
+                </>
+              ) : (
+                <>
+                  <Sparkles size={12} /> Generate AI Feedback Suggestions
+                </>
+              )}
+            </button>
+
+            {aiFeedbackText && (
+              <div className="p-3.5 bg-indigo-50/50 border border-indigo-150 rounded-2xl space-y-1.5">
+                <span className="text-[9px] text-indigo-800 uppercase font-bold tracking-wider block">Suggested Feedback:</span>
+                <p className="text-[10px] text-indigo-950 leading-relaxed font-semibold">{aiFeedbackText}</p>
+              </div>
+            )}
           </div>
         </div>
 
       </div>
 
-      {/* Parent communications hub */}
-      <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
+      {/* Dispatch alerts to parent profiles */}
+      <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4 max-w-3xl">
         <div className="flex items-center gap-2 border-b border-[#2E1E17]/5 pb-3">
-          <Clock size={18} className="text-indigo-600" />
-          <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Parent Communications & Advisories Channel</h4>
+          <Send size={18} className="text-emerald-600" />
+          <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Post Roster Alert Notice</h4>
         </div>
 
-        <form onSubmit={handlePostMessage} className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-4 space-y-3.5 text-left">
+        <form onSubmit={handlePostMessage} className="space-y-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Alert Topic</label>
+              <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Alert Headline</label>
               <input 
-                type="text"
+                type="text" 
                 value={msgTitle}
                 onChange={(e) => setMsgTitle(e.target.value)}
-                placeholder="e.g. Unit Test Results Advisory"
-                className="w-full py-2 px-3 rounded-xl border border-gray-300 text-xs bg-white"
+                placeholder="e.g. Absentee Alert: Algebra Homework"
+                className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none"
                 required
               />
             </div>
-            <button type="submit" className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition">
-              Post Advisory Log
-            </button>
+
+            <div>
+              <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Target Guardian Group</label>
+              <select className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none">
+                <option value="parents">Linked Parents (Grade 10-A)</option>
+              </select>
+            </div>
           </div>
 
-          <div className="lg:col-span-8">
-            <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1 text-left">Advisory Message Content</label>
+          <div>
+            <label className="block text-[9px] text-gray-500 uppercase font-extrabold mb-1">Detailed Message Content</label>
             <textarea 
-              rows={3}
+              rows={2}
               value={msgContent}
               onChange={(e) => setMsgContent(e.target.value)}
-              placeholder="Detail comments or classroom updates to parents..."
-              className="w-full py-2 px-3 rounded-xl border border-gray-300 text-xs bg-white focus:outline-none"
+              placeholder="Provide exact details for parental attention..."
+              className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B]"
               required
             ></textarea>
           </div>
+
+          <button type="submit" className="bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3 px-6 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer">
+            Broadcast Alert to Parents
+          </button>
         </form>
       </div>
 

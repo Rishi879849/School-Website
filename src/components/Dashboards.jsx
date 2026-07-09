@@ -3,7 +3,7 @@ import {
   Users, BookOpen, Calendar, Settings, ShieldAlert, Award, Star,
   DollarSign, Activity, Bell, FileText, Send, Mail, Check, AlertTriangle, 
   TrendingUp, BarChart2, CheckCircle2, UserCheck, ShieldCheck, ChevronRight,
-  Plus, UploadCloud, RefreshCw, Eye, HelpCircle, Lock, ArrowRight, MessageSquare
+  Plus, UploadCloud, RefreshCw, Eye, HelpCircle, Lock, ArrowRight, MessageSquare, Unlock
 } from 'lucide-react';
 import CareerConstellation from './CareerConstellation';
 
@@ -50,8 +50,6 @@ export default function Dashboards({
     { id: 1, studentName: 'Kaelen Miller', date: '2026-07-08', time: '10:00 AM', status: 'Scheduled' }
   ]);
   const [superAdminSubTab, setSuperAdminSubTab] = useState('system');
-
-
 
   // Auto timestamp log locks on initial mount
   useEffect(() => {
@@ -216,7 +214,7 @@ export default function Dashboards({
         ...prev,
         { id: Date.now(), studentName, date, time, status: 'Scheduled' }
       ]);
-      alert(`Meeting scheduled with parents of ${studentName} on ${date} at ${time}.`);
+      alert(`Meeting scheduled with parents of {studentName} on ${date} at ${time}.`);
     }
   };
 
@@ -230,25 +228,21 @@ export default function Dashboards({
     alert("Payment Successful! Mock payment transaction completed via secure gateway.");
   };
 
-
-
-
-
   // Get active identity config
   const getRoleTheme = (role) => {
     switch (role) {
       case 'super_admin':
-        return { label: 'Super Admin', gradient: 'from-blue-600 to-indigo-500', text: 'text-blue-600', border: 'border-blue-500/20' };
+        return { label: 'Super Admin', gradient: 'from-[#1E293B] to-[#0F172A]', text: 'text-slate-700', border: 'border-slate-500/20' };
       case 'school_admin':
-        return { label: 'School Admin', gradient: 'from-blue-600 to-indigo-500', text: 'text-blue-600', border: 'border-blue-500/20' };
+        return { label: 'School Admin', gradient: 'from-[#2E1E17] to-[#4A3226]', text: 'text-[#FF733B]', border: 'border-orange-500/20' };
       case 'principal':
-        return { label: 'Principal Command', gradient: 'from-rose-600 to-red-400', text: 'text-rose-600', border: 'border-rose-500/20' };
+        return { label: 'Principal Command', gradient: 'from-[#451A03] to-[#2E1001]', text: 'text-amber-700', border: 'border-amber-500/20' };
       case 'teacher':
-        return { label: 'Teacher Workspace', gradient: 'from-emerald-600 to-emerald-400', text: 'text-emerald-600', border: 'border-emerald-500/20' };
+        return { label: 'Teacher Workspace', gradient: 'from-[#064E3B] to-[#022C22]', text: 'text-emerald-700', border: 'border-emerald-500/20' };
       case 'student':
         return { label: 'Student Hub (AI active)', gradient: 'from-[#FF733B] to-amber-500', text: 'text-[#FF733B]', border: 'border-orange-500/20' };
       case 'parent':
-        return { label: 'Parent Monitoring', gradient: 'from-purple-600 to-purple-400', text: 'text-purple-600', border: 'border-purple-500/20' };
+        return { label: 'Parent Monitoring', gradient: 'from-purple-700 to-purple-900', text: 'text-purple-700', border: 'border-purple-500/20' };
       default:
         return { label: 'User Hub', gradient: 'from-gray-700 to-gray-400', text: 'text-gray-600', border: 'border-gray-500/10' };
     }
@@ -259,20 +253,20 @@ export default function Dashboards({
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-[#FAF6F0] text-[#2E1E17]">
       {/* Dynamic Top Bar */}
-      <div className="w-full bg-[#FAF6F0] border-b border-[#2E1E17]/10 py-4 px-4 md:px-8 flex justify-between items-center z-10">
+      <div className="w-full bg-white border-b border-[#2E1E17]/10 py-4.5 px-4 md:px-8 flex justify-between items-center z-10 shadow-sm">
         <div className="flex items-center gap-3">
           <span className={`w-3.5 h-3.5 rounded-full bg-gradient-to-r ${currentTheme.gradient} animate-pulse`}></span>
           <span className="text-xs uppercase tracking-widest font-extrabold text-[#2E1E17]">DTV Portal // {currentTheme.label}</span>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-2 bg-[#2E1E17]/5 border border-[#2E1E17]/10 rounded-lg py-1 px-3 text-[10px] text-gray-600">
+          <div className="hidden md:flex items-center gap-2 bg-[#2E1E17]/5 border border-[#2E1E17]/10 rounded-xl py-1.5 px-3.5 text-[10px] text-gray-500 font-extrabold">
             <ShieldCheck size={12} className="text-emerald-600" />
             <span>JWT Signed Session</span>
           </div>
           <button 
             onClick={onLogout}
-            className="text-[10px] uppercase font-extrabold tracking-wider text-red-600 hover:text-red-500 transition"
+            className="text-[10px] uppercase font-extrabold tracking-wider text-red-600 hover:text-red-500 transition cursor-pointer"
           >
             Logout
           </button>
@@ -281,18 +275,18 @@ export default function Dashboards({
 
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 max-w-[1600px] w-full mx-auto p-4 md:p-6 gap-6">
         {/* Left Persistent Sidebar */}
-        <aside className="lg:col-span-2 bg-white border border-[#2E1E17]/10 rounded-3xl p-4 flex flex-col justify-between h-[calc(100vh-120px)] lg:sticky lg:top-24 shadow-sm">
+        <aside className="lg:col-span-2 bg-white border border-[#2E1E17]/10 rounded-[2rem] p-4 flex flex-col justify-between h-[calc(100vh-140px)] lg:sticky lg:top-24 shadow-sm">
           <div className="space-y-6">
-            <div className="text-left py-2 border-b border-[#2E1E17]/10">
-              <span className="text-[9px] uppercase tracking-widest text-gray-500 font-bold block">Academic Year</span>
+            <div className="text-left py-2.5 border-b border-[#2E1E17]/10">
+              <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold block">Academic Year</span>
               <span className="text-xs font-bold text-[#2E1E17] block mt-0.5">AY 2026 - 2027</span>
             </div>
 
             {/* Sidebar navigation tabs based on role */}
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-1.5">
               <button 
                 onClick={() => setActiveTab('overview')}
-                className={`w-full text-left py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                className={`w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                   activeTab === 'overview' ? 'bg-[#2E1E17]/5 text-black' : 'text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                 }`}
               >
@@ -303,7 +297,7 @@ export default function Dashboards({
               {activeRole === 'super_admin' && (
                 <button 
                   onClick={() => setActiveTab('tenants')}
-                  className={`w-full text-left py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                  className={`w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                     activeTab === 'tenants' ? 'bg-[#2E1E17]/5 text-black' : 'text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                   }`}
                 >
@@ -316,7 +310,7 @@ export default function Dashboards({
                 <>
                   <button 
                     onClick={() => setActiveTab('fees_setup')}
-                    className={`w-full text-left py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                    className={`w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                       activeTab === 'fees_setup' ? 'bg-[#2E1E17]/5 text-black' : 'text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                     }`}
                   >
@@ -325,7 +319,7 @@ export default function Dashboards({
                   </button>
                   <button 
                     onClick={() => setActiveTab('bulk_ingest')}
-                    className={`w-full text-left py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                    className={`w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                       activeTab === 'bulk_ingest' ? 'bg-[#2E1E17]/5 text-black' : 'text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                     }`}
                   >
@@ -339,7 +333,7 @@ export default function Dashboards({
                 <>
                   <button 
                     onClick={() => setActiveTab('attendance')}
-                    className={`w-full text-left py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                    className={`w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                       activeTab === 'attendance' ? 'bg-[#2E1E17]/5 text-black' : 'text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                     }`}
                   >
@@ -348,7 +342,7 @@ export default function Dashboards({
                   </button>
                   <button 
                     onClick={() => setActiveTab('gradebook')}
-                    className={`w-full text-left py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                    className={`w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                       activeTab === 'gradebook' ? 'bg-[#2E1E17]/5 text-black' : 'text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                     }`}
                   >
@@ -362,7 +356,7 @@ export default function Dashboards({
                 <>
                   <button 
                     onClick={() => setActiveTab('roadmap')}
-                    className={`w-full text-left py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                    className={`w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                       activeTab === 'roadmap' ? 'bg-[#2E1E17]/5 text-black' : 'text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                     }`}
                   >
@@ -375,7 +369,7 @@ export default function Dashboards({
               {activeRole === 'parent' && (
                 <button 
                   onClick={() => setActiveTab('parent_comms')}
-                  className={`w-full text-left py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                  className={`w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
                     activeTab === 'parent_comms' ? 'bg-[#2E1E17]/5 text-black' : 'text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                   }`}
                 >
@@ -387,7 +381,7 @@ export default function Dashboards({
           </div>
 
           <div className="text-left border-t border-[#2E1E17]/10 pt-4">
-            <span className="text-[9px] uppercase tracking-widest text-gray-500 font-bold block">Status Nodes</span>
+            <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold block">Status Nodes</span>
             <div className="flex items-center gap-1.5 mt-1 text-[10px] text-emerald-600 font-semibold">
               <Check size={12} /> Database Connected
             </div>
@@ -399,10 +393,10 @@ export default function Dashboards({
           {/* NOTICE INDICATOR BANNER */}
           <div className="w-full bg-white border border-[#2E1E17]/10 rounded-2xl p-4 flex flex-wrap justify-between items-center gap-3 shadow-sm">
             <div className="flex items-center gap-2.5 text-xs text-[#2E1E17]">
-              <Bell size={16} className={`${currentTheme.text}`} />
+              <Bell size={16} className={`${currentTheme.text} animate-bounce`} />
               <span>Latest Broadcast: <strong>{broadcasts[0]?.title}</strong> - {broadcasts[0]?.content}</span>
             </div>
-            <span className="text-[9px] uppercase text-gray-500 font-bold">{broadcasts[0]?.date}</span>
+            <span className="text-[9px] uppercase text-gray-400 font-bold">{broadcasts[0]?.date}</span>
           </div>
 
           {/* Render Active Tab */}
@@ -412,7 +406,7 @@ export default function Dashboards({
               {activeRole === 'super_admin' && (
                 <div className="space-y-6">
                   {/* Premium Admin Header */}
-                  <div className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                  <div className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl border border-white/10">
                     <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
                     
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -422,7 +416,7 @@ export default function Dashboards({
                         </span>
                         <h3 className="text-xl md:text-2xl font-bold font-serif">Edukids School Trust Command</h3>
                         <p className="text-xs text-white/70">
-                          Account: <strong className="text-white">superadmin@school.edu</strong> • Global Database: <strong className="text-emerald-400">Synced & Protected</strong>
+                          Account: <strong className="text-white font-bold">superadmin@school.edu</strong> • Global Database: <strong className="text-emerald-400">Synced & Protected</strong>
                         </p>
                       </div>
 
@@ -444,16 +438,14 @@ export default function Dashboards({
                       <button
                         key={tab.id}
                         onClick={() => setSuperAdminSubTab(tab.id)}
-                        className={`py-2.5 px-4 rounded-xl text-xs font-bold transition-all text-left flex flex-col justify-center min-w-[120px] ${
+                        className={`py-2 px-4 rounded-xl text-xs font-bold transition-all text-left flex flex-col justify-center min-w-[120px] cursor-pointer ${
                           superAdminSubTab === tab.id
                             ? 'bg-[#2E1E17] text-white shadow-md'
                             : 'bg-white border border-[#2E1E17]/10 text-gray-500 hover:bg-[#2E1E17]/5 hover:text-black'
                         }`}
                       >
-                        <span>{tab.label}</span>
-                        <span className={`text-[8.5px] font-normal block mt-0.5 ${superAdminSubTab === tab.id ? 'text-white/70' : 'text-gray-400'}`}>
-                          {tab.desc}
-                        </span>
+                        <span className="text-[10px] uppercase block tracking-wider">{tab.label}</span>
+                        <span className="text-[8px] font-medium opacity-60 mt-0.5">{tab.desc}</span>
                       </button>
                     ))}
                   </div>
@@ -461,44 +453,17 @@ export default function Dashboards({
                   {/* Tab 1: System Telemetry */}
                   {superAdminSubTab === 'system' && (
                     <div className="space-y-6">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {[
-                          { title: 'Campuses Registered', value: '4 Campuses', detail: 'Delhi, Mumbai, Bangalore, Pune', icon: BookOpen, color: 'text-blue-600 bg-blue-50 border-blue-500/10' },
-                          { title: 'Global Student Roster', value: '4,200 Pupils', detail: 'Classes 1 to 12', icon: Users, color: 'text-indigo-600 bg-indigo-50 border-indigo-500/10' },
-                          { title: 'Sync Node Health', value: '99.98%', detail: 'All active campus nodes OK', icon: Activity, color: 'text-emerald-600 bg-emerald-50 border-emerald-500/10' },
-                          { title: 'Backup Status', value: 'Protected', detail: 'Encrypted via SHA-256', icon: ShieldCheck, color: 'text-teal-600 bg-teal-50 border-teal-500/10' }
-                        ].map((stat, idx) => (
-                          <div key={idx} className={`bg-white border rounded-2xl p-4 flex items-start gap-4 shadow-sm hover:scale-[1.02] transition duration-300 ${stat.color}`}>
-                            <div className="p-3 rounded-xl bg-white border border-[#2E1E17]/5 shadow-sm">
-                              <stat.icon size={18} />
-                            </div>
-                            <div>
-                              <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">{stat.title}</span>
-                              <h4 className="text-lg font-bold text-[#2E1E17] mt-1">{stat.value}</h4>
-                              <span className="text-[9.5px] text-gray-400 block mt-0.5">{stat.detail}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
                       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
-                          <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
-                            <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Trust Systems Digital Network Load</h4>
-                            <button 
-                              onClick={() => alert("Server Ping Latency:\n- Delhi Campus: 12ms\n- Mumbai Campus: 15ms\n- Bangalore Campus: 18ms\n- Pune Campus: 22ms")}
-                              className="text-[10px] font-extrabold text-blue-600 hover:underline uppercase tracking-wider animate-pulse"
-                            >
-                              Ping Server Nodes
-                            </button>
-                          </div>
-                          
-                          <div className="h-48 w-full bg-[#FAF6F0]/60 border border-[#2E1E17]/10 rounded-2xl flex items-end p-4 relative justify-between overflow-hidden shadow-inner">
-                            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#2e1e17_1px,transparent_1px)] [background-size:12px_12px]" />
-                            {[35, 45, 60, 50, 42, 65, 80, 72, 90, 85, 95, 78, 62, 54, 40].map((val, idx) => (
-                              <div key={idx} className="flex-1 mx-0.5 bg-blue-600 hover:bg-blue-500 rounded-t transition-all duration-300" style={{ height: `${val}%` }} title={`Node load: ${val}%`} />
-                            ))}
-                            <span className="absolute bottom-2 left-4 text-[9px] text-gray-400 uppercase tracking-widest font-extrabold font-mono">Network query requests last 15 mins</span>
+                        <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm relative overflow-hidden">
+                          <h4 className="text-sm font-bold text-[#2E1E17] font-serif border-b border-[#2E1E17]/5 pb-3">Server Resources Load</h4>
+                          <div className="h-44 w-full bg-[#2F221E] rounded-2xl mt-4 relative overflow-hidden border border-amber-900/10 flex items-center justify-center p-4">
+                            {/* Graphic lines simulation */}
+                            <div className="flex items-end gap-1 w-full h-full justify-between pt-6">
+                              {[35, 45, 30, 60, 75, 40, 50, 35, 65, 80, 55, 45, 90, 70, 65, 50, 60].map((h, i) => (
+                                <div key={i} className="bg-gradient-to-t from-[#FF733B] to-amber-400 w-full rounded-t" style={{ height: `${h}%` }} />
+                              ))}
+                            </div>
+                            <span className="absolute bottom-2 left-4 text-[9px] text-orange-200 uppercase tracking-widest font-extrabold font-mono">Network Query Requests Last 15 Mins</span>
                           </div>
                         </div>
 
@@ -530,13 +495,13 @@ export default function Dashboards({
                             <button 
                               onClick={handleTriggerBackup}
                               disabled={isBackingUp}
-                              className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 transition"
+                              className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-2.5 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 transition cursor-pointer"
                             >
                               {isBackingUp ? <RefreshCw size={12} className="animate-spin" /> : <ShieldCheck size={14} />} Backup Node
                             </button>
                             <button 
                               onClick={() => setActiveTab('tenants')}
-                              className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1 transition"
+                              className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1 transition cursor-pointer"
                             >
                               Provision <ArrowRight size={12} />
                             </button>
@@ -547,7 +512,7 @@ export default function Dashboards({
                       {backupProgress && (
                         <div className="bg-white border border-[#2E1E17]/10 rounded-3xl p-5 shadow-sm space-y-2">
                           <h5 className="text-[9px] font-extrabold uppercase tracking-widest text-[#FF733B]">Live Telemetry Backup Stream</h5>
-                          <pre className="text-[10px] font-mono text-gray-600 bg-[#FAF6F0] p-4 rounded-xl border border-[#2E1E17]/5 overflow-x-auto leading-relaxed whitespace-pre-line text-left">
+                          <pre className="text-[10px] font-mono text-emerald-400 bg-black/90 p-4 rounded-xl border border-white/10 overflow-x-auto leading-relaxed whitespace-pre-line text-left">
                             {backupProgress}
                           </pre>
                         </div>
@@ -585,13 +550,13 @@ export default function Dashboards({
                         <div className="flex gap-2.5 pt-3">
                           <button 
                             onClick={() => alert("Redirecting to Bulk Pupil loader...")}
-                            className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition"
+                            className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition cursor-pointer"
                           >
                             <UploadCloud size={14} /> Bulk Student Ingest
                           </button>
                           <button 
                             onClick={() => alert("Opening trust fee configuration console...")}
-                            className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition"
+                            className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition cursor-pointer"
                           >
                             <DollarSign size={14} /> Global Fee Setup
                           </button>
@@ -622,7 +587,7 @@ export default function Dashboards({
                               <label className="block text-[10px] text-gray-500 uppercase font-extrabold mb-1">Target Audience</label>
                               <select 
                                 value={broadcastTarget}
-                                onChange={(e) => setBroadcastTarget(e.target.value)}
+                                onChange={(e) => setGalleryFilter(e.target.value)}
                                 className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
                               >
                                 <option value="all">All Campuses & Roles</option>
@@ -644,7 +609,7 @@ export default function Dashboards({
                           </div>
                           <button 
                             type="submit"
-                            className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition"
+                            className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer"
                           >
                             Publish Trust Broadcast
                           </button>
@@ -688,7 +653,7 @@ export default function Dashboards({
                                       {s.atRisk ? (
                                         <button 
                                           onClick={() => handleScheduleMeeting(s.name)}
-                                          className="text-[9px] font-extrabold bg-red-50 hover:bg-red-100 text-red-600 px-2 py-0.5 rounded-lg border border-red-200"
+                                          className="text-[9px] font-extrabold bg-red-50 hover:bg-red-100 text-red-600 px-2 py-0.5 rounded-lg border border-red-200 cursor-pointer"
                                         >
                                           Schedule Parent Meeting
                                         </button>
@@ -755,7 +720,7 @@ export default function Dashboards({
                                     setMeetingLogs(prev => prev.filter(m => m.id !== log.id));
                                     alert('Meeting logged and completed.');
                                   }}
-                                  className="text-[9.5px] font-extrabold text-emerald-600 hover:text-emerald-700 uppercase"
+                                  className="text-[9.5px] font-extrabold text-emerald-600 hover:text-emerald-700 uppercase cursor-pointer"
                                 >
                                   Complete
                                 </button>
@@ -809,7 +774,7 @@ export default function Dashboards({
                                   {fee.status !== 'paid' ? (
                                     <button 
                                       onClick={() => handlePayFee(fee.studentId)}
-                                      className="text-[9px] font-extrabold bg-[#FF733B]/10 hover:bg-[#FF733B]/20 text-[#FF733B] px-2.5 py-1 rounded-lg border border-[#FF733B]/20 transition"
+                                      className="text-[9px] font-extrabold bg-[#FF733B]/10 hover:bg-[#FF733B]/20 text-[#FF733B] px-2.5 py-1 rounded-lg border border-[#FF733B]/20 transition cursor-pointer"
                                     >
                                       Mark Paid
                                     </button>
@@ -824,7 +789,7 @@ export default function Dashboards({
                                         }));
                                         alert("Status reverted to unpaid.");
                                       }}
-                                      className="text-[9px] font-extrabold bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-200 transition"
+                                      className="text-[9px] font-extrabold bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-200 transition cursor-pointer"
                                     >
                                       Mark Unpaid
                                     </button>
@@ -844,7 +809,7 @@ export default function Dashboards({
               {activeRole === 'school_admin' && (
                 <div className="space-y-6">
                   {/* Premium Admin Header Banner */}
-                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#4A3226] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#4A3226] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl border border-orange-500/10">
                     <div className="absolute right-[-5%] top-[-20%] w-64 h-64 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
                     
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -897,13 +862,13 @@ export default function Dashboards({
                       <div className="flex gap-2.5 pt-3">
                         <button 
                           onClick={() => setActiveTab('bulk_ingest')}
-                          className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition"
+                          className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition cursor-pointer"
                         >
                           <UploadCloud size={14} /> Bulk Pupil Load
                         </button>
                         <button 
                           onClick={() => setActiveTab('fees_setup')}
-                          className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition"
+                          className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-bold py-3 rounded-xl text-[10px] uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition cursor-pointer"
                         >
                           <DollarSign size={14} /> Configure Fees
                         </button>
@@ -925,7 +890,7 @@ export default function Dashboards({
                             placeholder="e.g. Term Schedule Update"
                             value={broadcastTitle}
                             onChange={(e) => setBroadcastTitle(e.target.value)}
-                            className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
+                            className="w-full py-2.5 px-4 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
                             required
                           />
                         </div>
@@ -934,7 +899,7 @@ export default function Dashboards({
                           <select 
                             value={broadcastTarget}
                             onChange={(e) => setBroadcastTarget(e.target.value)}
-                            className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
+                            className="w-full py-2.5 px-4 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
                           >
                             <option value="all">All School Roles</option>
                             <option value="teachers">Teachers Only</option>
@@ -948,13 +913,13 @@ export default function Dashboards({
                             rows={2}
                             value={broadcastContent}
                             onChange={(e) => setBroadcastContent(e.target.value)}
-                            className="w-full py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
+                            className="w-full py-2.5 px-4 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
                             required
                           ></textarea>
                         </div>
                         <button 
                           type="submit"
-                          className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition"
+                          className="w-full bg-[#2E1E17] hover:bg-black text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer"
                         >
                           Publish School Broadcast
                         </button>
@@ -968,7 +933,7 @@ export default function Dashboards({
               {activeRole === 'principal' && (
                 <div className="space-y-6">
                   {/* Premium Header Banner */}
-                  <div className="bg-gradient-to-br from-[#451A03] to-[#2E1001] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                  <div className="bg-gradient-to-br from-[#451A03] to-[#2E1001] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl border border-amber-500/10">
                     <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
                     
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -978,7 +943,7 @@ export default function Dashboards({
                         </span>
                         <h3 className="text-xl md:text-2xl font-bold font-serif">Academic Command Center</h3>
                         <p className="text-xs text-white/70">
-                          User: <strong className="text-white">principal@school.edu</strong> • Campus Jurisdiction: <strong className="text-white">Active</strong>
+                          User: <strong className="text-white font-bold">principal@school.edu</strong> • Campus Jurisdiction: <strong className="text-white">Active</strong>
                         </p>
                       </div>
 
@@ -993,12 +958,12 @@ export default function Dashboards({
                   {/* Overview Stats */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {[
-                      { title: 'Campus Attendance', value: '94.8%', detail: 'Term 1 average', icon: UserCheck, color: 'text-rose-600 bg-rose-50 border-rose-500/10' },
+                      { title: 'Campus Attendance', value: '94.8%', detail: 'Term 1 average', icon: UserCheck, color: 'text-[#FF733B] bg-orange-50 border-orange-500/10' },
                       { title: 'Fee Collection Progress', value: '88.5%', detail: '$4,200 remaining dues', icon: DollarSign, color: 'text-emerald-600 bg-emerald-50 border-emerald-500/10' },
                       { title: 'Teacher Performance Index', value: '4.8 / 5.0', detail: 'Based on student feedback', icon: Award, color: 'text-amber-600 bg-amber-50 border-amber-500/10' },
                       { title: 'Academic Risk Roster', value: `${students.filter(s => s.atRisk).length} Pupil`, detail: 'Needs immediate support', icon: ShieldAlert, color: 'text-red-600 bg-red-50 border-red-500/10' }
                     ].map((stat, idx) => (
-                      <div key={idx} className={`bg-white border rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:scale-[1.02] transition duration-300 ${stat.color}`}>
+                      <div key={idx} className={`bg-white border rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:scale-[1.02] transition duration-300 cursor-pointer ${stat.color}`}>
                         <div className="p-3 rounded-xl bg-white border border-[#2E1E17]/5 shadow-sm">
                           <stat.icon size={20} />
                         </div>
@@ -1045,7 +1010,7 @@ export default function Dashboards({
                                   {s.atRisk ? (
                                     <button 
                                       onClick={() => handleScheduleMeeting(s.name)}
-                                      className="text-[9px] font-extrabold bg-red-100 hover:bg-red-200 text-red-700 px-2.5 py-1 rounded-lg border border-red-200 transition"
+                                      className="text-[9px] font-extrabold bg-red-100 hover:bg-red-200 text-red-700 px-2.5 py-1 rounded-lg border border-red-200 transition cursor-pointer"
                                     >
                                       Schedule Parent Meeting
                                     </button>
@@ -1113,7 +1078,7 @@ export default function Dashboards({
                                 setMeetingLogs(prev => prev.filter(m => m.id !== log.id));
                                 alert('Meeting completed and logged.');
                               }}
-                              className="text-[9.5px] font-extrabold text-emerald-600 hover:text-emerald-700 uppercase"
+                              className="text-[9.5px] font-extrabold text-emerald-600 hover:text-emerald-700 uppercase cursor-pointer"
                             >
                               Mark Done
                             </button>
@@ -1129,15 +1094,15 @@ export default function Dashboards({
               {activeRole === 'teacher' && (
                 <div className="space-y-6">
                   {/* Premium Teacher Header Banner */}
-                  <div className="bg-gradient-to-br from-[#064E3B] to-[#022C22] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                  <div className="bg-gradient-to-br from-[#064E3B] to-[#022C22] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl border border-emerald-500/10">
                     <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
                     
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="space-y-1">
+                      <div className="space-y-1 flex flex-col items-start text-left">
                         <span className="text-[9px] bg-emerald-600 text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
                           Faculty Workspace
                         </span>
-                        <h3 className="text-xl md:text-2xl font-bold font-serif">Homeroom Advisor Console</h3>
+                        <h3 className="text-xl md:text-2xl font-bold font-serif mt-1.5">Homeroom Advisor Console</h3>
                         <p className="text-xs text-white/70">
                           Teacher: <strong className="text-white">Dr. Christopher Vance</strong> • Classroom: <strong className="text-white">Grade 10-A (Room 101)</strong>
                         </p>
@@ -1160,7 +1125,7 @@ export default function Dashboards({
                           <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Class Section Telemetry</h4>
                           <span className="text-[10px] text-emerald-600 font-extrabold uppercase bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">AY 2026-27</span>
                         </div>
-                        <p className="text-xs text-gray-500 leading-relaxed">
+                        <p className="text-xs text-gray-500 leading-relaxed font-semibold">
                           You are currently assigned to **Grade 10 - Section A** for Mathematics and General Science courses. Active rosters are connected to the central SQL trust database.
                         </p>
                       </div>
@@ -1168,13 +1133,13 @@ export default function Dashboards({
                       <div className="flex gap-2.5 mt-4">
                         <button 
                           onClick={() => setActiveTab('attendance')}
-                          className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition"
+                          className="flex-1 bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 transition cursor-pointer"
                         >
                           <UserCheck size={14} /> Mark Attendance
                         </button>
                         <button 
                           onClick={() => setActiveTab('gradebook')}
-                          className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 transition"
+                          className="flex-1 bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 font-bold py-3 rounded-xl text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 transition cursor-pointer"
                         >
                           <FileText size={14} /> Enter Scores
                         </button>
@@ -1210,14 +1175,14 @@ export default function Dashboards({
                         <form onSubmit={handleTeacherSendMsg} className="flex gap-2">
                           <input 
                             type="text" 
-                            placeholder="Send attendance warning or homework check to parents..."
+                            placeholder="Send warnings or updates..."
                             value={teacherNewMsg}
                             onChange={(e) => setTeacherNewMsg(e.target.value)}
                             className="flex-1 py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] placeholder-gray-400 focus:outline-none focus:border-[#FF733B] transition"
                           />
                           <button 
                             type="submit"
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition"
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition cursor-pointer"
                           >
                             Send
                           </button>
@@ -1232,12 +1197,12 @@ export default function Dashboards({
               {activeRole === 'student' && (
                 <div className="space-y-6">
                   {/* Premium Welcome Panel */}
-                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#4A3226] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#4A3226] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl border border-[#FF733B]/10">
                     <div className="absolute right-[-5%] top-[-20%] w-64 h-64 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
                     <div className="absolute left-[-10%] bottom-[-30%] w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none" />
                     
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="space-y-1.5">
+                      <div className="space-y-1.5 text-left">
                         <span className="text-[10px] bg-[#FF733B] text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
                           Active Student Workspace
                         </span>
@@ -1263,7 +1228,7 @@ export default function Dashboards({
                       { title: 'Homework Status', value: algebraHWStatus === 'Pending' ? '14 / 16' : '15 / 16', detail: algebraHWStatus === 'Pending' ? '1 Pending Task' : '0 Pending Tasks', icon: FileText, color: 'text-purple-600 bg-purple-50 border-purple-500/10' },
                       { title: 'House Points', value: '450 pts', detail: '+50 gained yesterday', icon: Star, color: 'text-amber-600 bg-amber-50 border-amber-500/10' }
                     ].map((stat, idx) => (
-                      <div key={idx} className={`bg-white border rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:scale-[1.02] transition duration-300 ${stat.color}`}>
+                      <div key={idx} className={`bg-white border rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:scale-[1.02] transition duration-300 cursor-pointer ${stat.color}`}>
                         <div className="p-3 rounded-xl bg-white border border-[#2E1E17]/5 shadow-sm">
                           <stat.icon size={20} />
                         </div>
@@ -1281,7 +1246,7 @@ export default function Dashboards({
                     {/* Period Timeline Schedule */}
                     <div className="lg:col-span-7 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
                       <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
-                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Today's Daily Timetable</h4>
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif font-serif">Today's Daily Timetable</h4>
                         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">AY 2026-27</span>
                       </div>
 
@@ -1299,13 +1264,13 @@ export default function Dashboards({
                               ? 'border-amber-500/20 bg-amber-50/40'
                               : 'border-[#2E1E17]/5 bg-[#FAF6F0]/40'
                           }`}>
-                            <div className="flex items-start gap-3">
+                            <div className="flex items-start gap-3 text-left">
                               <span className="text-[11px] font-extrabold text-[#FF733B] bg-white border border-[#2E1E17]/10 rounded-xl px-2.5 py-1 text-center shadow-sm whitespace-nowrap">
                                 Period {index + 1}
                               </span>
                               <div>
                                 <h5 className="text-xs font-bold text-[#2E1E17]">{period.subject}</h5>
-                                <span className="text-[10px] text-gray-500">{period.teacher} • Room {period.room}</span>
+                                <span className="text-[10px] text-gray-400 font-semibold">{period.teacher} • Room {period.room}</span>
                               </div>
                             </div>
                             <div className="flex items-center gap-2 self-start sm:self-center">
@@ -1335,7 +1300,7 @@ export default function Dashboards({
                           { subject: 'English Language', score: students[0]?.engGrade || 95, max: 100, color: 'bg-emerald-500' },
                           { subject: 'Computer Studies', score: 94, max: 100, color: 'bg-purple-500' }
                         ].map((prog, idx) => (
-                          <div key={idx} className="space-y-1.5 text-xs">
+                          <div key={idx} className="space-y-1.5 text-xs text-left">
                             <div className="flex justify-between font-bold text-[#2E1E17]/90">
                               <span>{prog.subject}</span>
                               <span>{prog.score} / {prog.max}</span>
@@ -1349,7 +1314,7 @@ export default function Dashboards({
 
                       <button 
                         onClick={() => setActiveTab('roadmap')}
-                        className="w-full bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3.5 rounded-xl text-xs uppercase tracking-widest hover:scale-[1.02] transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-1.5 mt-2"
+                        className="w-full bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold py-3.5 rounded-xl text-xs uppercase tracking-widest hover:scale-[1.02] transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-1.5 mt-2 cursor-pointer"
                       >
                         <Award size={14} /> Open AI Academic Roadmap
                       </button>
@@ -1361,7 +1326,7 @@ export default function Dashboards({
                     {/* Homework list */}
                     <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
                       <div className="flex justify-between items-center border-b border-[#2E1E17]/5 pb-3">
-                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif font-serif">Class Assignments & Projects</h4>
+                        <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Class Assignments & Projects</h4>
                         <span className="text-[9.5px] bg-[#FF733B]/10 text-[#FF733B] border border-[#FF733B]/20 px-2 py-0.5 rounded font-extrabold uppercase">Active</span>
                       </div>
 
@@ -1369,7 +1334,7 @@ export default function Dashboards({
                         <div className="p-3.5 bg-[#FAF6F0]/40 border border-[#2E1E17]/5 rounded-2xl text-xs text-left flex justify-between items-center gap-4">
                           <div>
                             <h5 className="font-extrabold text-[#2E1E17]">Algebra Practice Sheet</h5>
-                            <span className="text-[10px] text-gray-500 block mt-0.5">Due: July 10, 2026 • Teacher: Dr. Vance</span>
+                            <span className="text-[10px] text-gray-400 font-semibold block mt-0.5">Due: July 10, 2026 • Teacher: Dr. Vance</span>
                             <span className={`text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded border mt-1.5 inline-block ${
                               algebraHWStatus === 'Pending' 
                                 ? 'bg-amber-50 text-amber-700 border-amber-200' 
@@ -1381,7 +1346,7 @@ export default function Dashboards({
                           {algebraHWStatus === 'Pending' ? (
                             <button 
                               onClick={handleUploadHomework}
-                              className="bg-white border border-[#2E1E17]/10 hover:border-black text-[#2E1E17] font-extrabold text-[10px] px-3.5 py-2 rounded-xl transition duration-200 shadow-sm whitespace-nowrap"
+                              className="bg-white border border-[#2E1E17]/10 hover:border-black text-[#2E1E17] font-extrabold text-[10px] px-3.5 py-2 rounded-xl transition duration-200 shadow-sm whitespace-nowrap cursor-pointer"
                             >
                               Upload File
                             </button>
@@ -1393,14 +1358,14 @@ export default function Dashboards({
                         <div className="p-3.5 bg-[#FAF6F0]/40 border border-[#2E1E17]/5 rounded-2xl text-xs text-left flex justify-between items-center gap-4">
                           <div>
                             <h5 className="font-extrabold text-[#2E1E17]">Science Optics Lab Report</h5>
-                            <span className="text-[10px] text-gray-500 block mt-0.5">Due: July 15, 2026 • Teacher: Mrs. Lin</span>
+                            <span className="text-[10px] text-gray-400 font-semibold block mt-0.5">Due: July 15, 2026 • Teacher: Mrs. Lin</span>
                             <span className="text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded border mt-1.5 inline-block bg-purple-50 text-purple-700 border-purple-200">
                               In Progress
                             </span>
                           </div>
                           <button 
                             onClick={() => alert('Mock science report started. Resources are loading.')}
-                            className="bg-white border border-[#2E1E17]/10 hover:border-black text-[#2E1E17] font-extrabold text-[10px] px-3.5 py-2 rounded-xl transition duration-200 shadow-sm whitespace-nowrap"
+                            className="bg-white border border-[#2E1E17]/10 hover:border-black text-[#2E1E17] font-extrabold text-[10px] px-3.5 py-2 rounded-xl transition duration-200 shadow-sm whitespace-nowrap cursor-pointer"
                           >
                             Open Lab
                           </button>
@@ -1436,14 +1401,14 @@ export default function Dashboards({
                         <form onSubmit={handleStudentSendChat} className="flex gap-2">
                           <input 
                             type="text" 
-                            placeholder="Ask AI Study Buddy (e.g. 'Math', 'Science')..."
+                            placeholder="Ask Study Buddy (e.g. 'Math', 'Science')..."
                             value={studentChatInput}
                             onChange={(e) => setStudentChatInput(e.target.value)}
                             className="flex-1 py-2 px-3.5 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] placeholder-gray-400 focus:outline-none focus:border-[#FF733B] transition"
                           />
                           <button 
                             type="submit"
-                            className="bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition"
+                            className="bg-[#FF733B] hover:bg-[#E6622E] text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition cursor-pointer"
                           >
                             Send
                           </button>
@@ -1458,11 +1423,11 @@ export default function Dashboards({
               {activeRole === 'parent' && (
                 <div className="space-y-6">
                   {/* Premium Parent Header Banner */}
-                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#3D251A] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                  <div className="bg-gradient-to-br from-[#2E1E17] to-[#3D251A] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl border border-purple-500/10">
                     <div className="absolute right-[-5%] top-[-20%] w-64 h-64 bg-[#FF733B]/10 rounded-full blur-3xl pointer-events-none" />
                     
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="space-y-1">
+                      <div className="space-y-1 text-left">
                         <span className="text-[9px] bg-[#FF733B] text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
                           Parent Portal Workspace
                         </span>
@@ -1482,17 +1447,17 @@ export default function Dashboards({
 
                   {/* Scholar Summary Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm">
+                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm cursor-pointer hover:scale-[1.02] transition-transform">
                       <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Overall Grade Average</span>
                       <h5 className="text-2xl font-extrabold text-[#2E1E17] mt-1">92.5%</h5>
                       <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">Grade A (Passing)</span>
                     </div>
-                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm">
+                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm cursor-pointer hover:scale-[1.02] transition-transform">
                       <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Term Attendance</span>
                       <h5 className="text-2xl font-extrabold text-[#2E1E17] mt-1">98.2%</h5>
                       <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">0 Unexcused Absences</span>
                     </div>
-                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm">
+                    <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm cursor-pointer hover:scale-[1.02] transition-transform">
                       <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Assignments Completed</span>
                       <h5 className="text-2xl font-extrabold text-[#2E1E17] mt-1">15 / 16</h5>
                       <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">1 Grading Pending</span>
@@ -1510,11 +1475,11 @@ export default function Dashboards({
 
                       <div className="space-y-3.5">
                         {[
-                          { subject: 'Mathematics (Algebra & Geometry)', score: 92, status: 'Outstanding', color: 'text-orange-600' },
+                          { subject: 'Mathematics (Algebra & Geometry)', score: 92, status: 'Outstanding', color: 'text-[#FF733B]' },
                           { subject: 'Science (Physics & Chemistry)', score: 88, status: 'Satisfactory', color: 'text-[#2E1E17]' },
                           { subject: 'Computer Studies (Coding & Logic)', score: 95, status: 'Outstanding', color: 'text-purple-600' }
                         ].map((s, idx) => (
-                          <div key={idx} className="p-3.5 bg-[#FAF6F0]/40 rounded-2xl border border-[#2E1E17]/5 text-xs text-left flex items-center justify-between gap-4 transition hover:bg-[#FAF6F0]/80">
+                          <div key={idx} className="p-3.5 bg-[#FAF6F0]/40 rounded-2xl border border-[#2E1E17]/5 text-xs text-left flex items-center justify-between gap-4 transition hover:bg-[#FAF6F0]/80 cursor-pointer">
                             <div>
                               <strong className="text-[#2E1E17] block font-bold">{s.subject}</strong>
                               <span className="text-[9.5px] text-gray-500 block mt-0.5">Status: <strong className={s.color}>{s.status}</strong></span>
@@ -1538,17 +1503,17 @@ export default function Dashboards({
 
                         <div className="space-y-3">
                           {feeLedger.slice(0, 3).map((fee, idx) => (
-                            <div key={idx} className="p-3 bg-[#FAF6F0]/40 rounded-2xl border border-[#2E1E17]/5 text-left flex justify-between items-center transition">
+                            <div key={idx} className="p-3 bg-[#FAF6F0]/40 rounded-2xl border border-[#2E1E17]/5 text-left flex justify-between items-center transition cursor-pointer">
                               <div>
                                 <h5 className="font-extrabold text-[#2E1E17]">{fee.studentName}</h5>
                                 <span className="text-[9.5px] text-gray-500 block mt-0.5">Due: {fee.dueDate}</span>
                               </div>
-                              <div className="text-right">
+                              <div className="text-right flex flex-col items-end">
                                 <span className="text-xs font-extrabold text-[#2E1E17] block">${fee.amountDue - fee.amountPaid}</span>
                                 {fee.status !== 'paid' ? (
                                   <button 
                                     onClick={() => handlePayFee(fee.studentId)}
-                                    className="text-[8px] bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-2 py-0.5 rounded font-extrabold uppercase mt-1 transition animate-pulse"
+                                    className="text-[8px] bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-2 py-0.5 rounded font-extrabold uppercase mt-1 transition animate-pulse cursor-pointer"
                                   >
                                     Pay ${fee.amountDue - fee.amountPaid}
                                   </button>
@@ -1585,7 +1550,7 @@ export default function Dashboards({
                       ]);
                     }
                   }}
-                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 px-4 rounded-xl flex items-center gap-1"
+                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 px-4 rounded-xl flex items-center gap-1 cursor-pointer"
                 >
                   <Plus size={14} /> Provision New Campus
                 </button>
@@ -1637,7 +1602,7 @@ export default function Dashboards({
                       alert('Fee structure updated globally across class sections.');
                     }
                   }}
-                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 px-4 rounded-xl flex items-center gap-1"
+                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 px-4 rounded-xl flex items-center gap-1 cursor-pointer"
                 >
                   <Plus size={14} /> Add Structure
                 </button>
@@ -1706,7 +1671,7 @@ export default function Dashboards({
                 <button 
                   type="submit"
                   disabled={isIngesting}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl text-xs uppercase tracking-widest transition flex items-center gap-2"
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl text-xs uppercase tracking-widest transition flex items-center gap-2 cursor-pointer"
                 >
                   {isIngesting ? <RefreshCw size={12} className="animate-spin" /> : null}
                   Start Database Ingestion
@@ -1726,10 +1691,10 @@ export default function Dashboards({
           {activeTab === 'attendance' && activeRole === 'teacher' && (
             <div className="bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#2E1E17]/10 pb-4 gap-4">
-                <div>
+                <div className="text-left">
                   <h3 className="text-base font-bold text-[#2E1E17] flex items-center gap-1.5">
                     Daily Attendance Matrix 
-                    {attendanceLocked && <Lock size={14} className="text-red-500" />}
+                    {attendanceLocked ? <Lock size={14} className="text-red-500" /> : <Unlock size={14} className="text-emerald-500" />}
                   </h3>
                   <p className="text-xs text-gray-400 mt-1">
                     Class: Grade 10-Section A • Roster Size: {students.length}
@@ -1737,25 +1702,28 @@ export default function Dashboards({
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
+                    type="button"
                     onClick={() => {
                       setStudents(students.map(s => ({ ...s, attendance: 'present' })));
                       alert('Roster set to present.');
                     }}
                     disabled={attendanceLocked}
-                    className="bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 text-[10px] font-extrabold uppercase px-3 py-2 rounded-lg transition"
+                    className="bg-[#2E1E17]/5 hover:bg-[#2E1E17]/10 text-[#2E1E17] border border-[#2E1E17]/10 text-[10px] font-extrabold uppercase px-3 py-2 rounded-lg transition cursor-pointer"
                   >
                     Mark All Present
                   </button>
                   <button 
+                    type="button"
                     onClick={lockAttendanceLogs}
-                    className="bg-gradient-to-r from-emerald-600 to-emerald-400 text-white text-[10px] font-extrabold uppercase px-4 py-2 rounded-lg transition shadow-md"
+                    className="bg-gradient-to-r from-emerald-600 to-emerald-400 text-white text-[10px] font-extrabold uppercase px-4 py-2 rounded-lg transition shadow-md cursor-pointer"
                   >
                     Lock Telemetry Log
                   </button>
                   {attendanceLocked && (
                     <button 
+                      type="button"
                       onClick={unlockAttendanceLogs}
-                      className="bg-red-50 text-red-600 border border-red-200 text-[9px] font-bold px-2.5 py-2 rounded-lg transition"
+                      className="bg-red-50 text-red-600 border border-red-200 text-[9px] font-bold px-2.5 py-2 rounded-lg transition cursor-pointer"
                     >
                       Self-Service Correct
                     </button>
@@ -1805,16 +1773,16 @@ export default function Dashboards({
           {/* GRADEBOOK & REPORT CARD PREVIEW (TEACHER) */}
           {activeTab === 'gradebook' && activeRole === 'teacher' && (
             <div className="bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-6">
-              <div className="border-b border-[#2E1E17]/10 pb-4">
+              <div className="border-b border-[#2E1E17]/10 pb-4 text-left">
                 <h3 className="text-base font-bold text-[#2E1E17]">Gradebook & Terminal Marks Entry</h3>
                 <p className="text-xs text-gray-400 mt-1">Compile subject scores to generate automated reports cards.</p>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div className="lg:col-span-5 bg-white p-5 rounded-2xl border border-[#2E1E17]/10 shadow-sm">
-                  <h4 className="text-xs font-bold uppercase text-gray-400 mb-3">Update Mathematics Marks</h4>
+                  <h4 className="text-xs font-bold uppercase text-gray-400 mb-3 text-left">Update Mathematics Marks</h4>
                   
-                  <form onSubmit={updateStudentGrade} className="space-y-4 text-xs">
+                  <form onSubmit={updateStudentGrade} className="space-y-4 text-xs text-left">
                     <div>
                       <label className="block text-gray-500 mb-1">Select Student Scholar</label>
                       <select 
@@ -1843,7 +1811,7 @@ export default function Dashboards({
 
                     <button 
                       type="submit"
-                      className="w-full bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-bold py-2.5 rounded-lg text-xs uppercase tracking-widest shadow-md"
+                      className="w-full bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-bold py-2.5 rounded-lg text-xs uppercase tracking-widest shadow-md cursor-pointer"
                     >
                       Save Score & Compile
                     </button>
@@ -1851,29 +1819,29 @@ export default function Dashboards({
                 </div>
 
                 <div className="lg:col-span-7 bg-white p-5 rounded-2xl border border-[#2E1E17]/10 shadow-sm">
-                  <h4 className="text-xs font-bold uppercase text-gray-400 mb-3">Report Card Output Preview</h4>
+                  <h4 className="text-xs font-bold uppercase text-gray-400 mb-3 text-left">Report Card Output Preview</h4>
                   {(() => {
-                    const selectedStudent = students.find(s => s.id === newMathGrade.studentId);
+                    const selectedStudent = students.find(s => s.id === newMathGrade.studentId) || students[0];
                     return (
-                      <div className="border border-[#2E1E17]/10 rounded-xl p-4 bg-[#FAF6F0] text-xs space-y-3">
+                      <div className="border border-[#2E1E17]/10 rounded-xl p-4 bg-[#FAF6F0] text-xs space-y-3 text-left">
                         <div className="flex justify-between border-b border-[#2E1E17]/10 pb-2">
                           <div>
                             <h5 className="font-bold text-[#2E1E17]">{selectedStudent.name}</h5>
                             <span className="text-[9px] text-gray-400">{selectedStudent.roll} • {selectedStudent.class}</span>
                           </div>
-                          <span className="text-[10px] text-gray-500 font-bold uppercase">Term 1 Terminal Report</span>
+                          <span className="text-[10px] text-gray-400 font-bold uppercase">Term 1 Report</span>
                         </div>
 
-                        <div className="space-y-1.5">
-                          <div className="flex justify-between text-gray-500">
+                        <div className="space-y-1.5 font-semibold text-gray-600">
+                          <div className="flex justify-between">
                             <span>Subject: Mathematics:</span>
                             <strong className="text-[#2E1E17]">{selectedStudent.mathGrade}%</strong>
                           </div>
-                          <div className="flex justify-between text-gray-500">
+                          <div className="flex justify-between">
                             <span>Subject: General Science:</span>
                             <strong className="text-[#2E1E17]">{selectedStudent.physGrade}%</strong>
                           </div>
-                          <div className="flex justify-between text-gray-500">
+                          <div className="flex justify-between">
                             <span>Subject: English Language:</span>
                             <strong className="text-[#2E1E17]">{selectedStudent.engGrade}%</strong>
                           </div>
@@ -1930,13 +1898,13 @@ export default function Dashboards({
           {/* PARENT DIRECT MESSAGE PIPELINE (PARENT) */}
           {activeTab === 'parent_comms' && activeRole === 'parent' && (
             <div className="bg-white rounded-2xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
-              <h3 className="text-base font-bold text-[#2E1E17] mb-2">Text Messenger (Assigned Subject Teachers)</h3>
+              <h3 className="text-base font-bold text-[#2E1E17] mb-2 text-left">Text Messenger (Assigned Subject Teachers)</h3>
               
               <div className="h-48 overflow-y-auto space-y-2 border border-[#2E1E17]/10 rounded-xl p-4 bg-[#FAF6F0] text-xs">
                 {parentMessages.map((m, idx) => (
-                  <div key={idx} className={`p-2.5 rounded-lg max-w-[85%] ${m.sender === 'parent' ? 'bg-purple-100 text-purple-900 ml-auto' : 'bg-white border border-[#2E1E17]/5 text-[#2E1E17] mr-auto'}`}>
+                  <div key={idx} className={`p-2.5 rounded-lg max-w-[85%] ${m.sender === 'parent' ? 'bg-purple-600 text-white ml-auto shadow-md' : 'bg-white border border-[#2E1E17]/5 text-[#2E1E17] mr-auto'}`}>
                     <p className="leading-relaxed font-semibold">{m.text}</p>
-                    <span className="text-[8px] text-gray-500 block mt-1 text-right">{m.date}</span>
+                    <span className="text-[8px] text-gray-400 block mt-1 text-right">{m.date}</span>
                   </div>
                 ))}
               </div>
@@ -1944,14 +1912,14 @@ export default function Dashboards({
               <form onSubmit={handleParentSendMsg} className="flex gap-2 text-xs">
                 <input 
                   type="text" 
-                  placeholder="Ask teachers regarding grade curves or attendance dropped logs..."
+                  placeholder="Ask teachers regarding grades or attendance..."
                   value={parentNewMsg}
                   onChange={(e) => setParentNewMsg(e.target.value)}
                   className="flex-1 py-2 px-3 rounded-lg border border-gray-300 text-xs bg-white text-[#2E1E17]"
                 />
                 <button 
                   type="submit"
-                  className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest transition"
+                  className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest transition cursor-pointer"
                 >
                   Send Message
                 </button>

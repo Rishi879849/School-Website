@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRBAC } from '../context/RBACContext';
-import { Award, BookOpen, Clock, CheckSquare, Smile, Calendar } from 'lucide-react';
+import { Award, BookOpen, Clock, CheckSquare, Smile, Calendar, CheckCircle2, Circle } from 'lucide-react';
 
 export default function StudentDashboard() {
   const { 
@@ -48,34 +49,34 @@ export default function StudentDashboard() {
   const attendancePercentage = totalMarked > 0 ? Math.round((presentCount / totalMarked) * 100) : 100;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
       {/* Header Info */}
-      <div className="bg-gradient-to-br from-[#FF733B] to-[#E6622E] text-white p-6 rounded-3xl relative overflow-hidden shadow-xl">
+      <div className="bg-gradient-to-br from-[#FF733B] to-[#D85620] text-white p-8 rounded-3xl relative overflow-hidden shadow-xl border border-white/5">
         <div className="absolute right-[-10%] top-[-25%] w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-1">
-          <span className="text-[9px] bg-white text-[#FF733B] font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
+          <span className="text-[9px] bg-white text-[#FF733B] font-extrabold uppercase px-3 py-0.5 rounded-full tracking-widest inline-block">
             Gamified Learner Portal
           </span>
-          <h3 className="text-xl md:text-2xl font-bold font-serif">Welcome back, {studentObj.name}!</h3>
+          <h3 className="text-xl md:text-2xl font-bold font-serif mt-1">Welcome back, {studentObj.name}!</h3>
           <p className="text-xs text-white/80">
-            Track your XP standings, review class periods, check off homework tasks, and log your well-being.
+            Track your XP standings, review class periods, check off study tasks, and log your daily well-being status.
           </p>
         </div>
       </div>
 
       {/* Gamification metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-        <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between">
+        <div className="bg-white rounded-2xl p-5 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between hover:scale-[1.02] transition-transform">
           <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Level Standing</span>
-          <h5 className="text-3xl font-extrabold text-[#2E1E17] mt-1">Lvl {studentObj.level}</h5>
+          <h5 className="text-3xl font-extrabold text-[#2E1E17] mt-1.5">Lvl {studentObj.level}</h5>
           <span className="text-[10px] text-[#FF733B] font-bold block mt-1">{studentObj.xp} Cumulative XP</span>
         </div>
-        <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between">
+        <div className="bg-white rounded-2xl p-5 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between hover:scale-[1.02] transition-transform">
           <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Cumulative Attendance</span>
-          <h5 className="text-3xl font-extrabold text-[#2E1E17] mt-1">{attendancePercentage}%</h5>
+          <h5 className="text-3xl font-extrabold text-[#2E1E17] mt-1.5">{attendancePercentage}%</h5>
           <span className="text-[10px] text-emerald-600 font-bold block mt-1">Excellent Record</span>
         </div>
-        <div className="bg-white rounded-2xl p-4 border border-[#2E1E17]/10 shadow-sm">
+        <div className="bg-white rounded-2xl p-5 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between hover:scale-[1.02] transition-transform">
           <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-2 block">Acquired Badges</span>
           <div className="flex justify-center gap-1.5 flex-wrap">
             {studentObj.badges.map((b, idx) => (
@@ -132,7 +133,7 @@ export default function StudentDashboard() {
           {/* Study checklist */}
           <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
             <div className="flex items-center gap-2 border-b border-[#2E1E17]/5 pb-3">
-              <CheckSquare size={18} className="text-indigo-600" />
+              <CheckSquare size={18} className="text-[#FF733B]" />
               <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Study Tasks To-Do</h4>
             </div>
 
@@ -142,53 +143,61 @@ export default function StudentDashboard() {
                 placeholder="Add new study goal..."
                 value={newTaskText}
                 onChange={(e) => setNewTaskText(e.target.value)}
-                className="flex-1 py-1.5 px-3 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17]"
+                className="flex-1 py-2 px-3 rounded-xl border border-gray-300 text-xs bg-white text-[#2E1E17] focus:outline-none focus:border-[#FF733B] transition"
               />
-              <button type="submit" className="bg-[#2E1E17] text-white text-[10px] font-extrabold uppercase px-3 py-1.5 rounded-xl">Add</button>
+              <button type="submit" className="bg-[#2E1E17] text-white text-[10px] font-extrabold uppercase px-4 py-2 rounded-xl cursor-pointer">Add</button>
             </form>
 
             <div className="space-y-2 mt-3">
-              {todoList.map((todo) => (
-                <div key={todo.id} className="flex items-center justify-between text-xs p-2 bg-[#FAF6F0]/40 rounded-xl border border-[#2E1E17]/5">
-                  <span className={`${todo.completed ? 'line-through text-gray-400' : 'text-[#2E1E17]'}`}>{todo.text}</span>
-                  <input 
-                    type="checkbox" 
-                    checked={todo.completed} 
-                    onChange={() => handleToggleTask(todo.id)}
-                    className="w-4 h-4 rounded cursor-pointer accent-[#FF733B]" 
-                  />
+              {todoList.map((item) => (
+                <div 
+                  key={item.id} 
+                  onClick={() => handleToggleTask(item.id)}
+                  className={`p-3 rounded-xl border text-xs text-left cursor-pointer flex items-center justify-between transition ${
+                    item.completed 
+                      ? 'bg-emerald-50/50 border-emerald-200 text-emerald-800 line-through' 
+                      : 'bg-[#FAF6F0]/30 border-[#2E1E17]/5 text-[#2E1E17] hover:bg-[#FAF6F0]/80'
+                  }`}
+                >
+                  <span className="font-semibold">{item.text}</span>
+                  {item.completed ? <CheckCircle2 size={14} className="text-emerald-600" /> : <Circle size={14} className="text-gray-400" />}
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Wellbeing */}
-          <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4 text-left">
+          {/* Daily Well-being */}
+          <div className="bg-white rounded-3xl p-6 border border-[#2E1E17]/10 shadow-sm space-y-4">
             <div className="flex items-center gap-2 border-b border-[#2E1E17]/5 pb-3">
-              <Smile size={18} className="text-emerald-600" />
-              <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Well-Being Check-in</h4>
+              <Smile size={18} className="text-indigo-600" />
+              <h4 className="text-sm font-bold text-[#2E1E17] font-serif">Daily Well-being Tracker</h4>
             </div>
-            
-            <p className="text-[11px] text-gray-500">How is your study pace and energy balance today?</p>
-            <div className="flex justify-between gap-2 mt-2">
+
+            <p className="text-xs text-gray-500 font-semibold leading-relaxed">
+              How are you feeling today? Log status for principal check-ins.
+            </p>
+
+            <div className="flex gap-2.5 justify-between">
               {[
-                { label: 'Energetic', emoji: '🌟', moodVal: 'happy' },
-                { label: 'Balanced', emoji: '😊', moodVal: 'good' },
-                { label: 'Exhausted', emoji: '🥱', moodVal: 'tired' },
-                { label: 'Anxious', emoji: '😟', moodVal: 'anxious' }
-              ].map((m) => (
-                <button
-                  key={m.moodVal}
+                { emoji: '😊', label: 'Motivated' },
+                { emoji: '🥱', label: 'Tired' },
+                { emoji: '🤯', label: 'Stressed' },
+                { emoji: '🤩', label: 'Inspired' }
+              ].map((m, idx) => (
+                <button 
+                  key={idx}
                   onClick={() => {
-                    setMood(m.moodVal);
-                    alert(`Thanks for checking in! Your homeroom team has been logged.`);
+                    setMood(m.label);
+                    alert(`Well-being logged: ${m.label}`);
                   }}
-                  className={`flex-1 p-2 rounded-xl text-center border transition-all ${
-                    mood === m.moodVal ? 'bg-emerald-50 border-emerald-300' : 'bg-white border-[#2E1E17]/10'
+                  className={`flex-1 p-2.5 rounded-xl border text-center transition cursor-pointer ${
+                    mood === m.label 
+                      ? 'bg-indigo-50 border-indigo-400 shadow-sm' 
+                      : 'bg-white hover:bg-gray-50 border-[#2E1E17]/10'
                   }`}
                 >
-                  <span className="text-xl block">{m.emoji}</span>
-                  <span className="text-[8px] text-gray-500 font-bold block mt-1">{m.label}</span>
+                  <span className="text-lg block">{m.emoji}</span>
+                  <span className="text-[8.5px] font-bold text-gray-500 block mt-1 uppercase tracking-wider">{m.label}</span>
                 </button>
               ))}
             </div>
@@ -197,7 +206,6 @@ export default function StudentDashboard() {
         </div>
 
       </div>
-
     </div>
   );
 }
