@@ -104,11 +104,23 @@ function App() {
 
   // 2. Updated secure Login method using Supabase crypto auth
   const handleLoginUser = async (email, password) => {
-    if (email?.toLowerCase() === 'head@school.edu' && password === '123456') {
-      const user = { email: 'head@school.edu', role: 'dept_head' };
-      setCurrentUser(user);
-      localStorage.setItem('school_user', JSON.stringify(user));
-      return true;
+    const lowerEmail = email?.toLowerCase();
+    if (password === '123456') {
+      let role = null;
+      if (lowerEmail === 'superadmin@school.edu') role = 'super_admin';
+      else if (lowerEmail === 'schooladmin@school.edu') role = 'school_admin';
+      else if (lowerEmail === 'principal@school.edu') role = 'principal';
+      else if (lowerEmail === 'teacher@school.edu') role = 'teacher';
+      else if (lowerEmail === 'student@school.edu') role = 'student';
+      else if (lowerEmail === 'parent@school.edu') role = 'parent';
+      else if (lowerEmail === 'head@school.edu') role = 'dept_head';
+
+      if (role) {
+        const user = { email: lowerEmail, role };
+        setCurrentUser(user);
+        localStorage.setItem('school_user', JSON.stringify(user));
+        return true;
+      }
     }
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
