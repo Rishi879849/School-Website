@@ -35,7 +35,7 @@ export default function Footer() {
         <div className="lg:col-span-5 space-y-6 text-left">
           <div className="flex items-center gap-2">
             <span className="text-2xl font-extrabold tracking-tight text-white font-serif">
-              Edukids<span className="text-[#FF733B]">.</span>
+              DTV School Support<span className="text-[#FF733B]">.</span>
             </span>
           </div>
           <p className="text-xs text-gray-400 leading-relaxed max-w-md font-medium">
@@ -52,7 +52,7 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-3">
               <Mail size={14} className="text-[#FF733B]" />
-              <span>contact@edukids.edu</span>
+              <span>contact@dtvschoolsupport.edu</span>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function Footer() {
             School Links
           </h4>
           <div className="grid grid-cols-1 gap-2 text-xs text-gray-400 font-semibold">
-            <Link to="/about-edukids" className="hover:text-white transition">Our School Profile</Link>
+            <Link to="/about-dtvschoolsupport" className="hover:text-white transition">Our School Profile</Link>
             <Link to="/academic-calendar" className="hover:text-white transition">Academic Calendar</Link>
             <Link to="/campus-information" className="hover:text-white transition">Campus Virtual Tour</Link>
             <Link to="/departmental-profile" className="hover:text-white transition">Our Teachers</Link>
@@ -129,9 +129,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Footer copyright */}
       <div className="max-w-7xl mx-auto border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-        <span>© 2026 Edukids School. All Rights Reserved.</span>
+        <span>© 2026 DTV School Support. All Rights Reserved.</span>
         <div className="flex gap-4">
           <Link to="/privacy-policy" className="hover:text-gray-300 transition">Privacy Policy</Link>
           <Link to="/terms" className="hover:text-gray-300 transition">Terms of Service</Link>

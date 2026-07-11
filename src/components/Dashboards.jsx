@@ -40,7 +40,7 @@ export default function Dashboards({
   const [parentNewMsg, setParentNewMsg] = useState('');
   const [teacherNewMsg, setTeacherNewMsg] = useState('');
   const [studentChatMessages, setStudentChatMessages] = useState([
-    { sender: 'ai', text: "Hello Alexander! I'm your Edukids Study Buddy. Ask me about your Math or Science homework today! 📚", date: 'Just now' }
+    { sender: 'ai', text: "Hello Alexander! I'm your DTV School Support Study Buddy. Ask me about your Math or Science homework today! 📚", date: 'Just now' }
   ]);
   const [studentChatInput, setStudentChatInput] = useState('');
   const [algebraHWStatus, setAlgebraHWStatus] = useState('Pending');
@@ -414,7 +414,7 @@ export default function Dashboards({
                         <span className="text-[9px] bg-blue-600 text-white font-extrabold uppercase px-2.5 py-0.5 rounded-full tracking-wider inline-block">
                           Head of Trust Workspace
                         </span>
-                        <h3 className="text-xl md:text-2xl font-bold font-serif">Edukids School Trust Command</h3>
+                        <h3 className="text-xl md:text-2xl font-bold font-serif">DTV School Support Trust Command</h3>
                         <p className="text-xs text-white/70">
                           Account: <strong className="text-white font-bold">superadmin@school.edu</strong> • Global Database: <strong className="text-emerald-400">Synced & Protected</strong>
                         </p>
@@ -1826,8 +1826,8 @@ export default function Dashboards({
                       <div className="border border-[#2E1E17]/10 rounded-xl p-4 bg-[#FAF6F0] text-xs space-y-3 text-left">
                         <div className="flex justify-between border-b border-[#2E1E17]/10 pb-2">
                           <div>
-                            <h5 className="font-bold text-[#2E1E17]">{selectedStudent.name}</h5>
-                            <span className="text-[9px] text-gray-400">{selectedStudent.roll} • {selectedStudent.class}</span>
+                            <h5 className="font-bold text-[#2E1E17]">{selectedStudent?.name}</h5>
+                            <span className="text-[9px] text-gray-400">{selectedStudent?.roll} • {selectedStudent?.class}</span>
                           </div>
                           <span className="text-[10px] text-gray-400 font-bold uppercase">Term 1 Report</span>
                         </div>
@@ -1835,19 +1835,19 @@ export default function Dashboards({
                         <div className="space-y-1.5 font-semibold text-gray-600">
                           <div className="flex justify-between">
                             <span>Subject: Mathematics:</span>
-                            <strong className="text-[#2E1E17]">{selectedStudent.mathGrade}%</strong>
+                            <strong className="text-[#2E1E17]">{selectedStudent?.mathGrade}%</strong>
                           </div>
                           <div className="flex justify-between">
                             <span>Subject: General Science:</span>
-                            <strong className="text-[#2E1E17]">{selectedStudent.physGrade}%</strong>
+                            <strong className="text-[#2E1E17]">{selectedStudent?.physGrade}%</strong>
                           </div>
                           <div className="flex justify-between">
                             <span>Subject: English Language:</span>
-                            <strong className="text-[#2E1E17]">{selectedStudent.engGrade}%</strong>
+                            <strong className="text-[#2E1E17]">{selectedStudent?.engGrade}%</strong>
                           </div>
                           <div className="flex justify-between border-t border-[#2E1E17]/10 pt-2 text-[#2E1E17] font-extrabold">
                             <span>Aggregate Mark Average:</span>
-                            <span className="text-emerald-600">{selectedStudent.grade}%</span>
+                            <span className="text-emerald-600">{selectedStudent?.grade}%</span>
                           </div>
                         </div>
                       </div>

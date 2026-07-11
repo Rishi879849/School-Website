@@ -18,13 +18,13 @@ async function main() {
 
   const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
 
-  let school = await prisma.school.findFirst({ where: { subdomain: 'edukids' } });
+  let school = await prisma.school.findFirst({ where: { subdomain: 'dtvschoolsupport' } });
   if (!school) {
     school = await prisma.school.create({
       data: {
-        name: 'Edukids Academy',
-        subdomain: 'edukids',
-        contactEmail: 'contact@edukids.edu',
+        name: 'DTV School Support',
+        subdomain: 'dtvschoolsupport',
+        contactEmail: 'contact@dtvschoolsupport.edu',
         logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=100&auto=format&fit=crop&q=60',
         subscriptionStatus: 'active',
       },

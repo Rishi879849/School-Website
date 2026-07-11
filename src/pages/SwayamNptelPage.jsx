@@ -22,7 +22,7 @@ export default function SwayamNptelPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">E-Learning Portal</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">E-Learning & Digital Resources</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Edukids School integrates with digital portals like Diksha and NCERT e-Pathshala, enabling students to access supplementary study guides and video lessons.
+            DTV School Support integrates with digital portals like Diksha and NCERT e-Pathshala, enabling students to access supplementary study guides and video lessons.
           </p>
         </div>
 

@@ -12,7 +12,7 @@ export default function FeeStructurePage() {
   ];
 
   const handleDownload = () => {
-    alert('Compiling Edukids Secure Archive: School_Fee_Structure_2026.pdf is preparing for system download.');
+    alert('Compiling DTV School Support Secure Archive: School_Fee_Structure_2026.pdf is preparing for system download.');
   };
 
   return (

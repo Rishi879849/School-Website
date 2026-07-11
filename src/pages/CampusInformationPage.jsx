@@ -18,7 +18,7 @@ export default function CampusInformationPage() {
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">Facilities</span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Campus Information</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Edukids School boasts a modern campus, complete with smart classrooms, a well-stocked library, and dedicated science and computer laboratories.
+            DTV School Support boasts a modern campus, complete with smart classrooms, a well-stocked library, and dedicated science and computer laboratories.
           </p>
         </div>
 

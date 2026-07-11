@@ -107,7 +107,7 @@ export default function AdmissionFormPage() {
                 <GraduationCap className="text-[#FF733B]" /> Student Intake Application
               </h2>
               <p className="text-xs text-gray-400 mt-2 max-w-xl font-semibold">
-                Submit your pupil's details to initiate enrollment in the Edukids School academic streams.
+                Submit your pupil's details to initiate enrollment in the DTV School Support academic streams.
               </p>
 
               {/* Stepper tracker */}

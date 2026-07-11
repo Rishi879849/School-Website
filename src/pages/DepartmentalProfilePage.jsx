@@ -15,7 +15,7 @@ export default function DepartmentalProfilePage() {
       dept: 'Science',
       role: 'Head of Science Department',
       bio: 'Dr. Connor holds a Ph.D. in Biological Sciences and has over 12 years of teaching experience. She leads our biology lab research projects and coordinates the annual Science Fair.',
-      email: 's.connor@edukids.edu',
+      email: 's.connor@dtvschoolsupport.edu',
       phone: '+91 755 267-8812 (Ext: 101)',
       hours: 'Mon - Fri: 2:00 PM - 4:00 PM',
       rating: '4.9/5',
@@ -28,7 +28,7 @@ export default function DepartmentalProfilePage() {
       dept: 'Mathematics',
       role: 'Head of Mathematics Department',
       bio: 'Prof. Mercer has a Master\'s in Mathematics and is passionate about calculus and spatial geometry. He mentors our student math olympiad teams and leads algebra learning tracks.',
-      email: 'a.mercer@edukids.edu',
+      email: 'a.mercer@dtvschoolsupport.edu',
       phone: '+91 755 267-8812 (Ext: 102)',
       hours: 'Mon - Wed: 1:00 PM - 3:00 PM',
       rating: '4.8/5',
@@ -41,7 +41,7 @@ export default function DepartmentalProfilePage() {
       dept: 'Humanities',
       role: 'Subject Lead - Geography & Civics',
       bio: 'Mrs. Vance has spent a decade teaching history and world geography. She organizes the Student Mock Parliament and helps middle-schoolers develop strong citizenship values.',
-      email: 'e.vance@edukids.edu',
+      email: 'e.vance@dtvschoolsupport.edu',
       phone: '+91 755 267-8812 (Ext: 103)',
       hours: 'Tue - Thu: 3:00 PM - 5:00 PM',
       rating: '4.9/5',
@@ -54,7 +54,7 @@ export default function DepartmentalProfilePage() {
       dept: 'Languages',
       role: 'Senior English Literature Coach',
       bio: 'Mr. Devlin is an author and English Language expert. He guides the creative writing workshops, school magazine editorial board, and student debate clubs.',
-      email: 'j.devlin@edukids.edu',
+      email: 'j.devlin@dtvschoolsupport.edu',
       phone: '+91 755 267-8812 (Ext: 104)',
       hours: 'Mon - Fri: 9:00 AM - 10:30 AM',
       rating: '4.9/5',
@@ -84,7 +84,7 @@ export default function DepartmentalProfilePage() {
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B] block">Academic Directory</span>
             <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Meet Our Certified Educators</h2>
             <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-              At Edukids School, our teachers are certified experts committed to nurturing students, mentoring sports activities, and facilitating advanced smart learning guides.
+              At DTV School Support, our teachers are certified experts committed to nurturing students, mentoring sports activities, and facilitating advanced smart learning guides.
             </p>
           </div>
 

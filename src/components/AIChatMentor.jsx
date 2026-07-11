@@ -8,14 +8,14 @@ export default function AIChatMentor() {
   const [messages, setMessages] = useState([
     { 
       sender: 'ai', 
-      text: "Hello! Welcome to Edukids School. I am your AI Guidance Assistant. How can I help you and your child today?", 
+      text: "Hello! Welcome to DTV School Support. I am your AI Guidance Assistant. How can I help you and your child today?", 
       time: 'Just now' 
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef(null);
-
+  
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -34,7 +34,7 @@ export default function AIChatMentor() {
       return "We follow a CBSE-aligned curriculum featuring Science, Mathematics, Languages, and Humanities. Term calendars and syllabus guides can be downloaded on our Scheme & Syllabus page.";
     }
     if (text.includes('contact') || text.includes('phone') || text.includes('call')) {
-      return "You can reach our administrative office at +91 (755) 267-8812 or email contact@edukids.edu. Our campus is open Mon-Sat: 8:00 AM - 2:00 PM.";
+      return "You can reach our administrative office at +91 (755) 267-8812 or email contact@dtvschoolsupport.edu. Our campus is open Mon-Sat: 8:00 AM - 2:00 PM.";
     }
     return "Thank you for your question. I recommend reviewing our School Profile on the About Us page, or filling out a contact inquiry form in the footer so our admin team can follow up directly!";
   };
@@ -87,7 +87,7 @@ export default function AIChatMentor() {
                 </div>
                 <div className="text-left">
                   <h4 className="text-xs font-bold text-white flex items-center gap-1">
-                    Edukids Assistant
+                    DTV School Support Assistant
                   </h4>
                   <span className="text-[9px] text-gray-400 font-extrabold uppercase tracking-widest block">24/7 Virtual Guide</span>
                 </div>

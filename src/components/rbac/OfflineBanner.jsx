@@ -32,7 +32,7 @@ export default function OfflineBanner() {
   return (
     <div className="fixed top-0 left-0 right-0 z-[9999] bg-red-600 text-white px-4 py-2 text-center text-xs font-bold flex items-center justify-center gap-2 shadow-md animate-slide-down">
       <WifiOff size={16} className="animate-pulse" />
-      <span>Lost connection to the Edukids ERP network node. Reconnection attempts active...</span>
+      <span>Lost connection to the DTV School Support ERP network node. Reconnection attempts active...</span>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ParticleBackground from './components/ParticleBackground';
 import MarketingSite from './components/MarketingSite';
@@ -10,33 +10,33 @@ import Footer from './components/Footer';
 import PortalLayout from './components/rbac/PortalLayout';
 import { RBACProvider } from './components/rbac/context/RBACContext.jsx';
 
-import AdmissionFormPage from './pages/AdmissionFormPage';
-import ResultsPage from './pages/ResultsPage';
-import LoginPage from './pages/LoginPage';
-import SchemeSyllabusPage from './pages/SchemeSyllabusPage';
-import TimeTablePage from './pages/TimeTablePage';
-import DownloadFormsPage from './pages/DownloadFormsPage';
-import AntiRaggingPage from './pages/AntiRaggingPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
+const AdmissionFormPage = lazy(() => import('./pages/AdmissionFormPage'));
+const ResultsPage = lazy(() => import('./pages/ResultsPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const SchemeSyllabusPage = lazy(() => import('./pages/SchemeSyllabusPage'));
+const TimeTablePage = lazy(() => import('./pages/TimeTablePage'));
+const DownloadFormsPage = lazy(() => import('./pages/DownloadFormsPage'));
+const AntiRaggingPage = lazy(() => import('./pages/AntiRaggingPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 
-import AboutEdukidsPage from './pages/AboutEdukidsPage';
-import VisionMissionPage from './pages/VisionMissionPage';
-import DirectorsMessagePage from './pages/DirectorsMessagePage';
-import CampusInformationPage from './pages/CampusInformationPage';
-import NccPage from './pages/NccPage';
-import LocationPage from './pages/LocationPage';
-import ContactUsPage from './pages/ContactUsPage';
-import InstitutionLoginPage from './pages/InstitutionLoginPage';
-import DepartmentalProfilePage from './pages/DepartmentalProfilePage';
-import PolicyPage from './pages/PolicyPage';
-import FeeStructurePage from './pages/FeeStructurePage';
-import AcademicCalendarPage from './pages/AcademicCalendarPage';
-import OrdinancePage from './pages/OrdinancePage';
-import PosPage from './pages/PosPage';
-import SwayamNptelPage from './pages/SwayamNptelPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
-import TermsOfServicePage from './pages/TermsOfServicePage';
-import CyberCompliancePage from './pages/CyberCompliancePage';
+const AboutEdukidsPage = lazy(() => import('./pages/AboutEdukidsPage'));
+const VisionMissionPage = lazy(() => import('./pages/VisionMissionPage'));
+const DirectorsMessagePage = lazy(() => import('./pages/DirectorsMessagePage'));
+const CampusInformationPage = lazy(() => import('./pages/CampusInformationPage'));
+const NccPage = lazy(() => import('./pages/NccPage'));
+const LocationPage = lazy(() => import('./pages/LocationPage'));
+const ContactUsPage = lazy(() => import('./pages/ContactUsPage'));
+const InstitutionLoginPage = lazy(() => import('./pages/InstitutionLoginPage'));
+const DepartmentalProfilePage = lazy(() => import('./pages/DepartmentalProfilePage'));
+const PolicyPage = lazy(() => import('./pages/PolicyPage'));
+const FeeStructurePage = lazy(() => import('./pages/FeeStructurePage'));
+const AcademicCalendarPage = lazy(() => import('./pages/AcademicCalendarPage'));
+const OrdinancePage = lazy(() => import('./pages/OrdinancePage'));
+const PosPage = lazy(() => import('./pages/PosPage'));
+const SwayamNptelPage = lazy(() => import('./pages/SwayamNptelPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
+const CyberCompliancePage = lazy(() => import('./pages/CyberCompliancePage'));
 
 import { supabase } from './supabaseClient.jsx';
 
@@ -111,8 +111,6 @@ function App() {
       else if (lowerEmail === 'schooladmin@school.edu') role = 'school_admin';
       else if (lowerEmail === 'principal@school.edu') role = 'principal';
       else if (lowerEmail === 'teacher@school.edu') role = 'teacher';
-      else if (lowerEmail === 'student@school.edu') role = 'student';
-      else if (lowerEmail === 'parent@school.edu') role = 'parent';
       else if (lowerEmail === 'head@school.edu') role = 'dept_head';
 
       if (role) {
@@ -171,47 +169,58 @@ function App() {
         <>
           <Navbar />
           <div className="flex-1">
-            <Routes>
-              <Route path="/" element={
-                <MarketingSite
-                  onLogin={handleLoginUser}
-                  activeRole={null}
-                  onRoleChange={() => { }}
-                />
-              } />
-              <Route path="/results" element={<ResultsPage />} />
-              <Route path="/login" element={
-                <LoginPage onLogin={handleLoginUser} />
-              } />
-              <Route path="/scheme-syllabus" element={<SchemeSyllabusPage />} />
-              <Route path="/timetable" element={<TimeTablePage />} />
-              <Route path="/download-forms" element={<DownloadFormsPage />} />
-              <Route path="/anti-ragging" element={<AntiRaggingPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/admission-form" element={<AdmissionFormPage />} />
+            <Suspense fallback={
+              <div className="flex items-center justify-center min-h-[400px] w-full">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 border-4 border-[#FF733B]/20 border-t-[#FF733B] rounded-full animate-spin" />
+                  <span className="text-[10px] uppercase tracking-widest text-[#2E1E17]/65 font-extrabold animate-pulse">
+                    Loading Campus Assets...
+                  </span>
+                </div>
+              </div>
+            }>
+              <Routes>
+                <Route path="/" element={
+                  <MarketingSite
+                    onLogin={handleLoginUser}
+                    activeRole={null}
+                    onRoleChange={() => { }}
+                  />
+                } />
+                <Route path="/results" element={<ResultsPage />} />
+                <Route path="/login" element={
+                  <LoginPage onLogin={handleLoginUser} />
+                } />
+                <Route path="/scheme-syllabus" element={<SchemeSyllabusPage />} />
+                <Route path="/timetable" element={<TimeTablePage />} />
+                <Route path="/download-forms" element={<DownloadFormsPage />} />
+                <Route path="/anti-ragging" element={<AntiRaggingPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/admission-form" element={<AdmissionFormPage />} />
 
-              ={/* Educational Context Pages */}
-              <Route path="/about-edukids" element={<AboutEdukidsPage />} />
-              <Route path="/vision-mission" element={<VisionMissionPage />} />
-              <Route path="/directors-message" element={<DirectorsMessagePage />} />
-              <Route path="/campus-information" element={<CampusInformationPage />} />
-              <Route path="/ncc" element={<NccPage />} />
-              <Route path="/location" element={<LocationPage />} />
-              <Route path="/contact-us" element={<ContactUsPage />} />
-              <Route path="/institution-login" element={<InstitutionLoginPage onLogin={handleLoginUser} />} />
-              <Route path="/departmental-profile" element={<DepartmentalProfilePage />} />
-              <Route path="/policy" element={<PolicyPage />} />
-              <Route path="/fee-structure" element={<FeeStructurePage />} />
-              <Route path="/academic-calendar" element={<AcademicCalendarPage />} />
-              <Route path="/ordinance" element={<OrdinancePage />} />
-              <Route path="/pos" element={<PosPage />} />
-              <Route path="/swayam-nptel" element={<SwayamNptelPage />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-              <Route path="/terms" element={<TermsOfServicePage />} />
-              <Route path="/cyber-compliance" element={<CyberCompliancePage />} />
+                {/* Educational Context Pages */}
+                <Route path="/about-dtvschoolsupport" element={<AboutEdukidsPage />} />
+                <Route path="/vision-mission" element={<VisionMissionPage />} />
+                <Route path="/directors-message" element={<DirectorsMessagePage />} />
+                <Route path="/campus-information" element={<CampusInformationPage />} />
+                <Route path="/ncc" element={<NccPage />} />
+                <Route path="/location" element={<LocationPage />} />
+                <Route path="/contact-us" element={<ContactUsPage />} />
+                <Route path="/institution-login" element={<InstitutionLoginPage onLogin={handleLoginUser} />} />
+                <Route path="/departmental-profile" element={<DepartmentalProfilePage />} />
+                <Route path="/policy" element={<PolicyPage />} />
+                <Route path="/fee-structure" element={<FeeStructurePage />} />
+                <Route path="/academic-calendar" element={<AcademicCalendarPage />} />
+                <Route path="/ordinance" element={<OrdinancePage />} />
+                <Route path="/pos" element={<PosPage />} />
+                <Route path="/swayam-nptel" element={<SwayamNptelPage />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms" element={<TermsOfServicePage />} />
+                <Route path="/cyber-compliance" element={<CyberCompliancePage />} />
 
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
           </div>
           <Footer />
         </>

@@ -43,7 +43,7 @@ export default function StudentDashboard() {
   };
 
   // Cumulative Attendance Calculation
-  const studentLogs = attendance.filter(log => log.studentId === studentObj.id);
+  const studentLogs = attendance.filter(log => log.studentId === studentObj?.id);
   const presentCount = studentLogs.filter(log => log.status === 'Present').length;
   const totalMarked = studentLogs.length;
   const attendancePercentage = totalMarked > 0 ? Math.round((presentCount / totalMarked) * 100) : 100;
@@ -57,7 +57,7 @@ export default function StudentDashboard() {
           <span className="text-[9px] bg-white text-[#FF733B] font-extrabold uppercase px-3 py-0.5 rounded-full tracking-widest inline-block">
             Gamified Learner Portal
           </span>
-          <h3 className="text-xl md:text-2xl font-bold font-serif mt-1">Welcome back, {studentObj.name}!</h3>
+          <h3 className="text-xl md:text-2xl font-bold font-serif mt-1">Welcome back, {studentObj?.name}!</h3>
           <p className="text-xs text-white/80">
             Track your XP standings, review class periods, check off study tasks, and log your daily well-being status.
           </p>
@@ -68,8 +68,8 @@ export default function StudentDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
         <div className="bg-white rounded-2xl p-5 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between hover:scale-[1.02] transition-transform">
           <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Level Standing</span>
-          <h5 className="text-3xl font-extrabold text-[#2E1E17] mt-1.5">Lvl {studentObj.level}</h5>
-          <span className="text-[10px] text-[#FF733B] font-bold block mt-1">{studentObj.xp} Cumulative XP</span>
+          <h5 className="text-3xl font-extrabold text-[#2E1E17] mt-1.5">Lvl {studentObj?.level}</h5>
+          <span className="text-[10px] text-[#FF733B] font-bold block mt-1">{studentObj?.xp} Cumulative XP</span>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between hover:scale-[1.02] transition-transform">
           <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">Cumulative Attendance</span>
@@ -79,7 +79,7 @@ export default function StudentDashboard() {
         <div className="bg-white rounded-2xl p-5 border border-[#2E1E17]/10 shadow-sm flex flex-col justify-between hover:scale-[1.02] transition-transform">
           <span className="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-2 block">Acquired Badges</span>
           <div className="flex justify-center gap-1.5 flex-wrap">
-            {studentObj.badges.map((b, idx) => (
+            {studentObj?.badges?.map((b, idx) => (
               <span key={idx} className="text-[9px] bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1">
                 <Award size={10} /> {b}
               </span>
@@ -99,7 +99,7 @@ export default function StudentDashboard() {
 
           <div className="space-y-3">
             {timetable.map((slot) => {
-              const attendanceLog = attendance.find(r => r.studentId === studentObj.id && r.period === slot.period);
+              const attendanceLog = attendance.find(r => r.studentId === studentObj?.id && r.period === slot.period);
               const attendanceStatus = attendanceLog ? attendanceLog.status : 'Not Marked';
 
               return (

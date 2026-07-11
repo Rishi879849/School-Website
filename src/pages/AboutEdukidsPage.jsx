@@ -16,9 +16,9 @@ export default function AboutEdukidsPage() {
 
         <div className="space-y-3">
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FF733B]">School Profile</span>
-          <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">About Edukids</h2>
+          <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">About DTV School Support</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Edukids is a premium school management and educational portal. It seamlessly bridges our public school community with a secure, feature-rich portal for parents, students, teachers, and administrators.
+            DTV School Support is a premium school management and educational portal. It seamlessly bridges our public school community with a secure, feature-rich portal for parents, students, teachers, and administrators.
           </p>
         </div>
 
@@ -45,7 +45,7 @@ export default function AboutEdukidsPage() {
             <BookOpen size={16} className="text-[#FF733B]" /> Modern Educational Excellence
           </h3>
           <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-            Edukids is designed to empower our school community. By combining standard school registries with flexible curriculum plans, online syllabus guides, and secure admission systems, Edukids delivers a unified framework for 21st-century academic growth.
+            DTV School Support is designed to empower our school community. By combining standard school registries with flexible curriculum plans, online syllabus guides, and secure admission systems, DTV School Support delivers a unified framework for 21st-century academic growth.
           </p>
         </div>
       </div>

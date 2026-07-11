@@ -20,7 +20,7 @@ export default function TermsOfServicePage() {
           </span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Terms of Service</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Please read these Terms of Service carefully before utilizing the Edukids School online portal services.
+            Please read these Terms of Service carefully before utilizing the DTV School Support online portal services.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ export default function TermsOfServicePage() {
           <section className="space-y-2">
             <h4 className="text-sm font-bold text-[#2E1E17]">3. Educational Resources</h4>
             <p>
-              All academic course materials, curriculum guidelines, exam papers, syllabus structures, and school profiles hosted on this platform are intellectual property of Edukids School.
+              All academic course materials, curriculum guidelines, exam papers, syllabus structures, and school profiles hosted on this platform are intellectual property of DTV School Support.
             </p>
           </section>
 

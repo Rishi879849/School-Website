@@ -22,7 +22,7 @@ const RBACContext = createContext(null);
 // Default white-label (used until the server returns one).
 const DEFAULT_WHITELABEL = {
   theme: 'Warm Off-White',
-  schoolName: 'Edukids School',
+  schoolName: 'DTV School Support',
   logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=100&auto=format&fit=crop&q=60',
   primaryColor: '#FF733B',
   accentColor: '#2E1E17',

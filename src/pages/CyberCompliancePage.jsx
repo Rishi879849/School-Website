@@ -20,7 +20,7 @@ export default function CyberCompliancePage() {
           </span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Cyber Compliance</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Edukids School maintains strict digital compliance standards to protect student data and school infrastructure.
+            DTV School Support maintains strict digital compliance standards to protect student data and school infrastructure.
           </p>
         </div>
 

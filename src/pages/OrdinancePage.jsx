@@ -36,7 +36,7 @@ export default function OrdinancePage() {
             <ShieldAlert size={16} className="text-[#FF733B]" /> Student Code of Conduct
           </h3>
           <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-            Edukids School enforces high standards of discipline and respect. Any student found engaging in academic dishonesty (cheating during exams or copying assignments) or violating school rules will be referred to the disciplinary committee and the Principal.
+            DTV School Support enforces high standards of discipline and respect. Any student found engaging in academic dishonesty (cheating during exams or copying assignments) or violating school rules will be referred to the disciplinary committee and the Principal.
           </p>
         </div>
       </div>

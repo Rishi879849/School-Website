@@ -21,7 +21,7 @@ export default function AntiRaggingPage() {
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-red-600">Strict Compliance Mandate</span>
             <h2 className="text-2xl md:text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Zero Tolerance Anti-Ragging Policy</h2>
             <p className="text-xs text-red-700 font-semibold">
-              Edukids Academy enforces a absolute zero-tolerance policy against any form of ragging or student harassment.
+              DTV School Support enforces an absolute zero-tolerance policy against any form of ragging or student harassment.
             </p>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function AntiRaggingPage() {
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-2">
                 <span className="block text-[9px] font-extrabold uppercase text-gray-400 tracking-wider">Academy Compliance Office</span>
                 <span className="text-xl font-bold font-serif text-[#FF733B] flex items-center gap-2">
-                  antiragging@edukids.edu
+                  antiragging@dtvschoolsupport.edu
                 </span>
                 <p className="text-[10px] text-gray-500">Intake coordinator response guaranteed within 3 business hours.</p>
               </div>

@@ -39,7 +39,7 @@ export default function DirectorsMessagePage() {
             <div className="text-xs text-gray-500 font-semibold leading-relaxed space-y-4">
               <p>
                 <Quote size={20} className="text-[#FF733B] inline-block mr-1.5 shrink-0 rotate-180" />
-                Welcome to Edukids School. As Director, I am immensely proud of our legacy in nurturing young minds and providing quality primary and secondary education.
+                Welcome to DTV School Support. As Director, I am immensely proud of our legacy in nurturing young minds and providing quality primary and secondary education.
               </p>
               <p>
                 In today's modern era, we believe that education must go beyond standard textbook learning. We are building smart classrooms, active science labs, and creative play areas to prepare our students for board exam milestones and future life challenges.
@@ -51,7 +51,7 @@ export default function DirectorsMessagePage() {
             
             <div className="pt-2">
               <span className="block text-xs font-bold text-[#2E1E17]">Mr. Rajesh Kumar</span>
-              <span className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Director, Edukids School</span>
+              <span className="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Director, DTV School Support</span>
             </div>
           </div>
         </div>

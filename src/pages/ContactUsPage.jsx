@@ -70,7 +70,7 @@ export default function ContactUsPage() {
                 <Mail size={16} className="text-[#FF733B] shrink-0 mt-0.5" />
                 <div>
                   <span className="block font-bold">Email Address</span>
-                  <span className="block text-gray-500 font-medium mt-0.5">contact@edukids.edu</span>
+                  <span className="block text-gray-500 font-medium mt-0.5">contact@dtvschoolsupport.edu</span>
                 </div>
               </div>
             </div>

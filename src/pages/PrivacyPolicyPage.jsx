@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
           </span>
           <h2 className="text-3xl font-normal font-serif text-[#2E1E17] leading-tight">Privacy Policy</h2>
           <p className="text-xs text-gray-500 font-semibold max-w-2xl leading-relaxed">
-            Edukids School is committed to protecting the privacy of our students, parents, and faculty members.
+            DTV School Support is committed to protecting the privacy of our students, parents, and faculty members.
           </p>
         </div>
 

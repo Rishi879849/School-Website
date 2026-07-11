@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useRBAC } from './context/RBACContext';
-import SuperAdminDashboard from './SuperAdmin/SuperAdminDashboard';
-import SchoolAdminDashboard from './SchoolAdmin/SchoolAdminDashboard';
-import PrincipalDashboard from './Principal/PrincipalDashboard';
-import TeacherDashboard from './Teacher/TeacherDashboard';
-import StudentDashboard from './Student/StudentDashboard';
-import ParentDashboard from './Parent/ParentDashboard';
-import DeptHeadDashboard from './DeptHead/DeptHeadDashboard';
+
+const SuperAdminDashboard = lazy(() => import('./SuperAdmin/SuperAdminDashboard'));
+const SchoolAdminDashboard = lazy(() => import('./SchoolAdmin/SchoolAdminDashboard'));
+const PrincipalDashboard = lazy(() => import('./Principal/PrincipalDashboard'));
+const TeacherDashboard = lazy(() => import('./Teacher/TeacherDashboard'));
+const StudentDashboard = lazy(() => import('./Student/StudentDashboard'));
+const ParentDashboard = lazy(() => import('./Parent/ParentDashboard'));
+const DeptHeadDashboard = lazy(() => import('./DeptHead/DeptHeadDashboard'));
 import { LogOut } from 'lucide-react';
 
 export default function PortalLayout({ currentRole, onLogout }) {
@@ -82,7 +83,18 @@ export default function PortalLayout({ currentRole, onLogout }) {
 
       {/* Main Workspace Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
-        {renderActiveDashboard()}
+        <Suspense fallback={
+          <div className="flex items-center justify-center min-h-[300px] w-full">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 border-4 border-[#FF733B]/20 border-t-[#FF733B] rounded-full animate-spin" />
+              <span className="text-[10px] uppercase tracking-widest text-[#2E1E17]/65 font-extrabold animate-pulse">
+                Loading Dashboard Node...
+              </span>
+            </div>
+          </div>
+        }>
+          {renderActiveDashboard()}
+        </Suspense>
       </main>
 
       {/* Standard Copyright Footer */}

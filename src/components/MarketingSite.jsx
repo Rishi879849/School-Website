@@ -126,7 +126,7 @@ export default function MarketingSite() {
                 variants={itemVariants}
                 className="text-xs md:text-sm text-gray-500 font-semibold max-w-lg leading-relaxed"
               >
-                At Edukids School, we combine foundational academic excellence with modern smart classroom modules, scientific lab investigations, and active sports to nurture tomorrow's leaders.
+                At DTV School Support, we combine foundational academic excellence with modern smart classroom modules, scientific lab investigations, and active sports to nurture tomorrow's leaders.
               </motion.p>
 
               <motion.div 
@@ -527,7 +527,7 @@ export default function MarketingSite() {
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
                     {[
-                      { title: 'Edukids School Academic Performance Report 2025', size: '4.8 MB', desc: 'Grade progression reports and term audit parameters.' },
+                      { title: 'DTV School Support Academic Performance Report 2025', size: '4.8 MB', desc: 'Grade progression reports and term audit parameters.' },
                       { title: 'School Infrastructure and Facilities Review Report', size: '5.2 MB', desc: 'Smart classroom setups and science laboratory safety checks.' }
                     ].map((item, idx) => (
                       <div 
@@ -712,7 +712,7 @@ export default function MarketingSite() {
           <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
             <div className="text-center space-y-3">
               <span className="text-[11px] font-bold tracking-widest text-[#FF733B] uppercase">Core Benefits</span>
-              <h2 className="text-2xl md:text-4xl font-normal text-[#2E1E17] font-serif">Why Choose Edukids School</h2>
+              <h2 className="text-2xl md:text-4xl font-normal text-[#2E1E17] font-serif">Why Choose DTV School Support</h2>
             </div>
             
             <motion.div 
