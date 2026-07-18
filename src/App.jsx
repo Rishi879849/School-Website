@@ -6,7 +6,7 @@ import Dashboards from './components/Dashboards';
 import AIChatMentor from './components/AIChatMentor';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import { Analytics } from "@vercel/analytics/next";
+
 
 import PortalLayout from './components/rbac/PortalLayout';
 import { RBACProvider } from './components/rbac/context/RBACContext.jsx';
